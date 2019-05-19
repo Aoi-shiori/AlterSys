@@ -1,0 +1,117 @@
+@import "init";
+@import "constarts";
+body{
+    background:white;
+
+}
+
+.header{
+    width: 100%;
+    height: 66px;
+    background:cornflowerblue;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    //opactity透明度
+    opacity:0.8;
+    .container{
+        width: $pagewidth;
+        height: 100%;
+        margin: auto;
+        overflow: hidden;
+        .log-box{
+            width: 140px;
+            height: 55px;
+            background:url("https://ue.17173cdn.com/a/www/index/2016v2/img/logo-2018.png") no-repeat;
+            margin-top: 8px;
+            float: left;
+            a{
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+        }
+        .nav{
+            margin-left: 128px;
+            float: left;
+
+            li{
+                float: left;
+                margin-right: 40px;
+                line-height:65px ;
+                height: 65px;
+                box-sizing: border-box;
+                font-size: 20px;
+                a{
+                    color: azure;
+                }
+                &.active{
+                    border-bottom: 8px solid beige;
+                }
+            }
+
+        }
+        .auth-box{
+                float: right;
+                line-height: 64px;
+                height: 64px;
+            color: white;
+
+                .iconfont{
+                    color:white;
+                    font-size:25px;
+                }
+                a{
+                    color: white;
+                    font-size: 20px;
+                }
+            }
+    }
+}
+
+.main{
+    width: 100%;
+    margin-top: 100px;
+    .wrapper{
+        width: $pagewidth;
+        margin: 0 auto;
+        background: bisque;
+        overflow: hidden;
+
+        .news-wrapper{
+            float: left;
+            width: 798px;
+            height: 500px;
+            background: cadetblue;
+            .banner-group{
+                width: 100%;
+                height: 202px;
+                background: darkolivegreen;
+                position: relative;//relative相对定位
+                .banner-url{
+                    overflow: hidden;
+                    width: $mainboxWidth*4;
+                    position: absolute;// absolute绝对定位
+                    li{
+                        float: left;
+                        width:$mainboxWidth;
+                        height: 202px;
+
+                        img{
+                            width: 100%;
+                            height: available;
+                        }
+                    }
+                }
+            }
+
+        }
+        .siderbar-wrapper{
+            float: right;
+            width: 356px;
+            height: 500px;
+            background: cornflowerblue;
+        }
+    }
+}
