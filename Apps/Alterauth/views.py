@@ -13,10 +13,10 @@ def login_view(request):
     form = loginform(request.POST)
     #如果验证成功
     if form.is_valid():
-        mobilephone = form.cleaned_data.get('mobilephone')
+        MobilePhone = form.cleaned_data.get('MobilePhone')
         password = form.cleaned_data.get('password')
         remember = form.cleaned_data.get('remember')
-        user = authenticate(request, username=mobilephone, password=password)
+        user = authenticate(request, username=MobilePhone, password=password)
         if user:
             if user.is_active:
                 login(request,user)
@@ -26,7 +26,7 @@ def login_view(request):
                 else:
                     #如果没有记住我，浏览器关闭后自动过期
                     request.session.set_expiry(0)
-                return resful.OK()and render(request,"index.html")
+                return resful.OK() and render(request, "Alter_management/Alter.html")
             else:
                 return resful.unauth(message="您的账号未授权！")
         else:
