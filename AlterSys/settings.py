@@ -81,10 +81,16 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alter_db',
+        # #家里的数据库配置
+        # 'USER': 'root',
+        # 'PASSWORD': '376419974',
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '3306',
+        #公司的数据库配置
         'USER': 'root',
-        'PASSWORD': '376419974',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'PASSWORD': 'conlin',
+        'HOST': '192.168.0.51',
+        'PORT': '33066',
     }
 }
 
@@ -107,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#app名称，天数墨香名称
+#app名称，模型名称
 AUTH_USER_MODEL = 'Alterauth.User'
 
 

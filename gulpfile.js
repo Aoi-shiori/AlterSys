@@ -12,7 +12,7 @@ var sass =require('gulp-sass');
 
 
 var path ={
-    'html':"./templates/**/",
+    'html':"./templates/**/**",
     'css':"./static/src/css/",
     'js':"./static/src/js/",
     'images':"./static/src/images/",

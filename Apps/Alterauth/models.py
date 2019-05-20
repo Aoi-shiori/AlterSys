@@ -3,15 +3,15 @@ from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUse
 from  shortuuidfield import ShortUUIDField
 from django.db import models
 
-class  UsermManager(BaseUserManager):
-    def _create_user(self,mobilephone,username ,password, **kwargs):
+class  UserManager(BaseUserManager):
+    def _create_user(self, mobilephone,username ,password, **kwargs):
         if not mobilephone:
             raise ValueError("请传入手机号码！")
         if not username:
             raise ValueError('请传入用户名！')
         if not password:
             raise ValueError('请传入密码')
-        user = self.model(mobilephone=mobilephone, username=username, **kwargs)
+        user = self.model(MobilePhone=mobilephone, username=username, **kwargs)
         user.set_password(password)
         user.save()
         return user
@@ -20,9 +20,9 @@ class  UsermManager(BaseUserManager):
         kwargs['is_superuser'] = False
         return self._create_user(mobilephone, username, password, **kwargs)
 
-    def create_superuser(self, mobilephone, username, password, **kwargs):
+    def create_superuser(self,MobilePhone, username, password, **kwargs):
         kwargs['is_superuser'] = True
-        return self._create_user(mobilephone, username, password, **kwargs)
+        return self._create_user(MobilePhone, username, password, **kwargs)
 
 
 
@@ -34,7 +34,7 @@ class User(AbstractBaseUser,PermissionsMixin):
         #所以需要一个第三方包，pip install django-shortuuidfield
         uid = ShortUUIDField(primary_key=True) #用户唯一ID#
         email = models.EmailField(unique=True) #唯一的unique true#
-        password = models.CharField(max_length=200)#密码#
+        # password = models.CharField(max_length=200)#密码#
         MobilePhone = models.CharField(max_length=11,unique=True)#手机号码#
         username = models.CharField(max_length=100)#用户名#
         name = models.CharField(max_length=50)#姓名#
@@ -46,9 +46,9 @@ class User(AbstractBaseUser,PermissionsMixin):
         USERNAME_FIELD = 'MobilePhone'
         #telphone,username,password
         REQUIRED_FIELDS = ['username']
-        EMAIL_FIELD = 'emil'
+        EMAIL_FIELD = 'email'
 
-        object = UsermManager()
+        object = UserManager()
         def get_full_name(self):
             return self.username
 

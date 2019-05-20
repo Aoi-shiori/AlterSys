@@ -5,6 +5,7 @@ from  django.views.decorators.http import require_POST
 from .froms import loginform
 from  django.http import JsonResponse
 from utils import resful
+from django.shortcuts import render
 #只接收post请求
 
 @require_POST
@@ -25,7 +26,7 @@ def login_view(request):
                 else:
                     #如果没有记住我，浏览器关闭后自动过期
                     request.session.set_expiry(0)
-                return resful.OK()
+                return resful.OK()and render(request,"index.html")
             else:
                 return resful.unauth(message="您的账号未授权！")
         else:
