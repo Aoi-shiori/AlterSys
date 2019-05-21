@@ -116,9 +116,6 @@
                 <li><a href="{% url 'management:index_manage' %}"><i class="fa fa-home"></i> 我的首页</a></li>
             </ul>
 
-
-
-
           <a href="#">
             <i class="fa fa-archive"></i> <span>变更管理</span>
             <span class="pull-right-container">
@@ -127,7 +124,7 @@
           </a>
           <ul class="treeview-menu">
             <li class="active"><a href="{% url 'management:Alter_manager' %}"><i class="fa fa-circle-o"></i> 变更管理</a></li>
-            <li><a href="index2.html"><i class="fa fa-circle-o"></i> 变更提交</a></li>
+            <li><a href="{% url 'management:Alter_add' %}"><i class="fa fa-circle-o"></i> 变更提交</a></li>
           </ul>
         </li>
         <li class="treeview">
@@ -196,22 +193,43 @@
 <!-- ./wrapper -->
 
 <!-- jQuery 3 -->
-<script src="{% static 'AdminLTE/bower_components/jquery/dist/jquery.min.js '%}"></script>
+<script src="{% static 'AdminLTE/bower_components/jquery/dist/jquery.min.js'%}"></script>
 <!-- jQuery UI 1.11.4 -->
-<script src="{% static 'AdminLTE/bower_components/jquery-ui/jquery-ui.min.js '%}"></script>
+<script src="{% static 'AdminLTE/bower_components/jquery-ui/jquery-ui.min.js'%}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button);
 </script>
 <!-- Bootstrap 3.3.7 -->
-<script src="{% static 'AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js '%}"></script>
+<script src="{% static 'AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js'%}"></script>
 <!-- Morris.js charts -->
 
 <!-- AdminLTE App -->
-<script src="{% static 'AdminLTE/dist/js/adminlte.min.js '%}"></script>
+<script src="{% static 'AdminLTE/dist/js/adminlte.min.js'%}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="{% static 'AdminLTE/dist/js/pages/dashboard.js '%}"></script>
+<script src="{% static 'AdminLTE/dist/js/pages/dashboard.js'%}"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="{% static 'AdminLTE/ist/js/demo.js '%}d"></script>
+<script src="{% static 'AdminLTE/dist/js/demo.js'%}"></script>
+<!-- DataTables -->
+<script src="{% static 'AdminLTE/bower_components/datatables.net/js/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'AdminLTE/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js'%}"></script>
+<!-- SlimScroll -->
+<script src="{% static 'AdminLTE/bower_components/jquery-slimscroll/jquery.slimscroll.min.js'%}"></script>
+<!-- FastClick -->
+<script src="{% static 'AdminLTE/bower_components/fastclick/lib/fastclick.js'%}"></script>
+<!-- page script -->
+<script>
+  $(function () {
+    {#$('#example1').DataTable()#}
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+  })
+</script>
 </body>
 </html>

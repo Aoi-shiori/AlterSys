@@ -1,0 +1,58 @@
+{% extends 'Alter_management/base.html' %}
+{% block content-header %}
+    <h1>变更提交</h1>
+{% endblock %}
+
+{% block title %}
+    变更提交
+{% endblock %}
+
+{% block content %}
+    <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">请输入变更内容！</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form role="form">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="AssociationTypes">关联类型</label>
+                  <input type="text" class="form-control" id="AssociationTypes" placeholder="请选择关联类型">
+                </div>
+                <div class="form-group">
+                  <label for="AssociatedNumber">关联编号</label>
+                  <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" id="AssociatedNumber" placeholder="请输入关联的任务需求编号">
+                </div>
+                  <div class="form-group">
+                  <label for="AssociatedNumber">数据库</label>
+                  <input type="text" oninput="this.value = this.value.replace(/[^\d|.]/g, '');" class="form-control" id="AssociatedNumber" placeholder="请输入关联的任务需求编号">
+                </div>
+                  <div class="form-group">
+                  <label for="Informant">填报人</label>
+                  <input type="text"  class="form-control" id="Informant" placeholder="请输入填报人">
+                </div>
+                  <div class="form-group">
+                      <label for="ChangeContent">变更内容</label>
+                      <input type="text"  class="form-control" id="ChangeContent" placeholder="请输入变更内容">
+                  </div>
+                <div class="form-group">
+                  <label for="image">File input</label>
+                  <input type="file" id="image">
+
+                  <p class="help-block">Example block-level help text here.</p>
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox"> Check me out
+                  </label>
+                </div>
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-info pull-right">提交变更</button>
+              </div>
+            </form>
+          </div>
+{% endblock %}

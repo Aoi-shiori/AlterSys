@@ -1,88 +1,71 @@
 {% extends 'Alter_management/base.html' %}
+{% block title %}变更管理{% endblock %}
 
-{% block title %}<h1>变更管理</h1>{% endblock %}
-
-{% block content-header %}变更管理{% endblock %}
+{% block content-header %}
+    <h1>变更管理</h1>
+{% endblock %}
 
 {% block content %}
-    <div class="box">
-<div class="box-header">
-<h3 class="box-title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">具有完整功能的数据表</font></font></h3>
-</div>
-<!-- /.box-header -->
-<div class="box-body">
-<div id="example1_wrapper" class="dataTables_wrapper form-inline dt-bootstrap"><div class="row"><div class="col-sm-6"><div class="dataTables_length" id="example1_length"><label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">节目 </font></font><select name="example1_length" aria-controls="example1" class="form-control input-sm"><option value="10"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">10</font></font></option><option value="25"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">25</font></font></option><option value="50"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">50</font></font></option><option value="100"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">100</font></font></option></select><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> 项</font></font></label></div></div><div class="col-sm-6"><div id="example1_filter" class="dataTables_filter"><label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">搜索：</font></font><input type="search" class="form-control input-sm" placeholder="" aria-controls="example1"></label></div></div></div><div class="row"><div class="col-sm-12"><table id="example1" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
-<thead>
-<tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="渲染引擎：激活以对列进行降序排序" style="width: 248px;"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">渲染引擎</font></font></th><th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="浏览器：激活以对列升序进行排序" style="width: 303px;"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">浏览器</font></font></th><th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="平台：激活以对列升序进行排序" style="width: 270px;"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">平台（S）</font></font></th><th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="引擎版本：激活以对列升序进行排序" style="width: 214px;"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">引擎版本</font></font></th><th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="CSS等级：激活以对列升序进行排序" style="width: 157px;"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CSS等级</font></font></th></tr>
-</thead>
-<tbody>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <button class="btn btn-info pull-right">添加</button>
+                    <button class="btn btn-success pull-right">审核</button>
 
-<tr role="row" class="odd">
-<td class="sorting_1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">其它浏览器</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">所有其他人</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">ü</font></font></td>
-</tr><tr role="row" class="even">
-<td class="sorting_1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">急板</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Opera 7.0</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">赢得95+ / OSX.1 +</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">一个</font></font></td>
-</tr><tr role="row" class="odd">
-<td class="sorting_1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">急板</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Opera 7.5</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">赢得95+ / OSX.2 +</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">一个</font></font></td>
-</tr><tr role="row" class="even">
-<td class="sorting_1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">急板</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Opera 8.0</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">赢得95+ / OSX.2 +</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">一个</font></font></td>
-</tr><tr role="row" class="odd">
-<td class="sorting_1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">急板</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Opera 8.5</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">赢得95+ / OSX.2 +</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">一个</font></font></td>
-</tr><tr role="row" class="even">
-<td class="sorting_1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">急板</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Opera 9.0</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">赢得95+ / OSX.3 +</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">一个</font></font></td>
-</tr><tr role="row" class="odd">
-<td class="sorting_1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">急板</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Opera 9.2</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">赢得88+ / OSX.3 +</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">一个</font></font></td>
-</tr><tr role="row" class="even">
-<td class="sorting_1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">急板</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Opera 9.5</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">赢得88+ / OSX.3 +</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">一个</font></font></td>
-</tr><tr role="row" class="odd">
-<td class="sorting_1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">急板</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Wii的Opera</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Wii游戏机</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">一个</font></font></td>
-</tr><tr role="row" class="even">
-<td class="sorting_1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">急板</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">诺基亚N800</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">N800</font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- </font></font></td>
-<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">一个</font></font></td>
-</tr></tbody>
-<tfoot>
-<tr><th rowspan="1" colspan="1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">渲染引擎</font></font></th><th rowspan="1" colspan="1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">浏览器</font></font></th><th rowspan="1" colspan="1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">平台（S）</font></font></th><th rowspan="1" colspan="1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">引擎版本</font></font></th><th rowspan="1" colspan="1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CSS等级</font></font></th></tr>
-</tfoot>
-</table></div></div><div class="row"><div class="col-sm-5"><div class="dataTables_info" id="example1_info" role="status" aria-live="polite"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">显示57个参赛作品中的31到40</font></font></div></div><div class="col-sm-7"><div class="dataTables_paginate paging_simple_numbers" id="example1_paginate"><ul class="pagination"><li class="paginate_button previous" id="example1_previous"><a href="#" aria-controls="example1" data-dt-idx="0" tabindex="0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">以前</font></font></a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="1" tabindex="0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">1</font></font></a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="2" tabindex="0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">2</font></font></a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="3" tabindex="0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">3</font></font></a></li><li class="paginate_button active"><a href="#" aria-controls="example1" data-dt-idx="4" tabindex="0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">4</font></font></a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="5" tabindex="0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">五</font></font></a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="6" tabindex="0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">6</font></font></a></li><li class="paginate_button next" id="example1_next"><a href="#" aria-controls="example1" data-dt-idx="7" tabindex="0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">下一个</font></font></a></li></ul></div></div></div></div>
-</div>
-<!-- /.box-body -->
-</div>
+                </div>
+                <div class="box body">
+                    <table class="table bordered">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>变更编号</th>
+                                <th>关联类型</th>
+                                <th>关联编号</th>
+                                <th>数据库</th>
+                                <th>变更内容</th>
+                                <th>填报人</th>
+                                <th>填报时间</th>
+                                <th>审核人</th>
+                                <th>审核状态</th>
+                                <th>审核内容</th>
+                                <th>审核时间</th>
+                                <th>编辑</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+{#                            {% for Alterd_data in Alterd_datas %}#}
+{##}
+{#                            {% endfor %}#}
+
+                                {% for Alterd_data in Alterd_datas %}
+                                    <td class ='序号'>{{ forloop.counter}}</td>
+                                    <td class ='00-变更编号'>{{ Alterd_data.AlterID }}</td>
+                                    <td class ='01-关联类型'>{{ Alterd_data.AlterType}}</td>
+                                    <td class ='02-关联编号'>{{ Alterd_data.AssociatedNumber}}</td>
+                                    <td class ='03-数据库'>{{ Alterd_data.Datebase}}</td>
+                                    <td class ='09-变更内容'>{{ Alterd_data.AlterContent}}</td>
+                                    <td class ='04-填报人'>{{ Alterd_data.Informant}}</td>
+                                    <td class ='05-填报时间'>{{ Alterd_data.FillTime}}</td>
+                                    <td class ='06-审核人'>{{ Alterd_data.Reviewer|default:''}}</td>
+                                    <td class ='07-审核状态'>{{ Alterd_data.ReviewStatus|default:''}}</td>
+                                    <td class ='08-审核内容'>{{ Alterd_data.ReviewContent|default:''}}</td>
+                                    <td class ='10-审核时间'>{{ Alterd_data.AuditTime}}</td>
+                                    <td>
+{#                                        <form action="{% url 'change_management:changemanagement_delete' %}"method="post">#}
+{#                                            <input type="hidden" name="ChangeID" value="{{ changemanagement.0 }}">#}
+                                                <button class="btn-warning btn-xs" value="编辑">编辑</button>
+                                                <button class="btn-danger btn-xs" value="删除">删除</button>
+{#                                        </form>#}
+
+                                    </td>
+
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
