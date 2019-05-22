@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Apps.Alterauth',
-    'Apps.Alter_management'
+    'Apps.Alter_management',
+    'Apps.Alter_execute',
 ]
 
 MIDDLEWARE = [

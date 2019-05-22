@@ -46,18 +46,16 @@
                                     <td class ='03-数据库'>{{ Alterd_data.Datebase}}</td>
                                     <td class ='09-变更内容'>{{ Alterd_data.AlterContent}}</td>
                                     <td class ='04-填报人'>{{ Alterd_data.Informant}}</td>
-                                    <td class ='05-填报时间'>{{ Alterd_data.FillTime}}</td>
+                                    <td class ='05-填报时间'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
                                     <td class ='06-审核人'>{{ Alterd_data.Reviewer|default:''}}</td>
                                     <td class ='07-审核状态'>{{ Alterd_data.ReviewStatus|default:''}}</td>
                                     <td class ='08-审核内容'>{{ Alterd_data.ReviewContent|default:''}}</td>
-                                    <td class ='10-审核时间'>{{ Alterd_data.AuditTime}}</td>
+                                    <td class ='10-审核时间'>{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
                                     <td>
-{#                                        <form action="{% url 'change_management:changemanagement_delete' %}"method="post">#}
-{#                                            <input type="hidden" name="ChangeID" value="{{ changemanagement.0 }}">#}
-                                                <button class="btn-warning btn-xs" value="编辑">编辑</button>
-                                                <button class="btn-danger btn-xs" value="删除">删除</button>
-{#                                        </form>#}
-
+                                        <form action="{% url 'change_management:changemanagement_delete' %}"method="post">
+                                                <button class="btn-warning btn-xs" name="editor">编辑</button>
+                                                <button class="btn-danger btn-xs" name="delete">删除</button>
+                                        </form>
                                     </td>
 
                                 {% endfor %}

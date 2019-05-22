@@ -8,11 +8,11 @@ class Alter_managment(models.Model):
         Datebase=models.CharField(max_length=50)#'数据库'#
         AlterContent=models.TextField #变更内容
         Informant=models.CharField(max_length=50)# '填报人',
-        FillTime=models.DateField(auto_now=True)#'填报时间'
+        FillTime=models.DateTimeField(auto_now=True)#'填报时间'
         Reviewer=models.CharField(max_length=50)# '审核人'
         ReviewStatus=models.CharField(max_length=2)#'审核状态',
         ReviewContent=models.CharField(max_length=255)#'审核内容',
-        AuditTime=models.DateField(auto_now=True)#'审核时间',
+        AuditTime=models.DateTimeField(auto_now=True)#'审核时间',
 
         class Meta:
             db_table='Alter_managment'

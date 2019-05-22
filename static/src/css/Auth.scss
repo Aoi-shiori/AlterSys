@@ -100,9 +100,10 @@ body{
           //所有表单组，各自向上间隔20个像素
           .form-group{
             //
-            margin-top: 10px;
+              margin-top: 20px;
             .input-group{
-              margin-top: 10px;
+                margin-top: 20px;
+                height: 40px;
 
               .rember-lable{
                   font-size: 10px;
@@ -120,41 +121,35 @@ body{
 
 
               .form-control{
-                      border: 1px solid blue;
-                      //文字上下左右填充10像素
-                      padding: 10px;
-                      width: 100%;
-                      box-sizing: border-box;
-                      height: 40px;
-                      //去除鼠标放上去后显示的边框线条
-                      outline: none;
-                      margin-top: 10px;
+                border: 1px solid blue;
+                //文字上下左右填充10像素
+                padding: 10px;
+                width: 100%;
+                box-sizing: border-box;
+                height: 40px;
+                //去除鼠标放上去后显示的边框线条
+                outline: none;
+
               }
 
               .short-input-group{
-                width: 200px;
-                float: left;
-
+                  width: 240px;
+                  float: left;
               }
               .input-group-addon{
                 float:right;
                 width: 100px;
-
                 .sms-captcha-btn{
                   float: right;
                   width: 100px;
-                  height: 100%;
+                  height: 40px;
                   border: 1px solid blue;
                   display: inline-block;
                   text-align: center;
                   line-height: 40px;
                   box-sizing: border-box;
-              }
+                }
 
-
-              }
-              .submit-btn{
-                margin-top: 10px;
               }
 
             }
