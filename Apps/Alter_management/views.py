@@ -6,7 +6,7 @@ from django.views.decorators.http import require_GET,require_POST
 from .forms import Alterform
 #导入Alter_manage的模型
 from Apps.Alter_management.models import Alter_managment
-#
+#导入我们重构的resful文件，用于返回结果代码和消息，详细可以看resful.py文件
 from utils import resful
 
 
