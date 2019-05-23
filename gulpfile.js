@@ -76,3 +76,5 @@ gulp.task("bs",function () {
 
 //创建一个默认的任务，通过gulp.parallel('bs','watch')并行运行
 gulp.task('server',gulp.series(gulp.parallel('bs','watch')));
+//创建一个默认的任务，监控文件改变并进行对应任务操作
+gulp.task('defult',gulp.series(gulp.parallel('watch')));

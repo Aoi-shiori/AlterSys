@@ -30,10 +30,11 @@
                                 <th>审核状态</th>
                                 <th>审核内容</th>
                                 <th>审核时间</th>
-                                <th>编辑</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="list">
 {#                            {% for Alterd_data in Alterd_datas %}#}
 {##}
 {#                            {% endfor %}#}
@@ -44,18 +45,18 @@
                                     <td class ='01-关联类型'>{{ Alterd_data.AlterType}}</td>
                                     <td class ='02-关联编号'>{{ Alterd_data.AssociatedNumber}}</td>
                                     <td class ='03-数据库'>{{ Alterd_data.Datebase}}</td>
-                                    <td class ='09-变更内容'>{{ Alterd_data.AlterContent}}</td>
+                                    <td class ='09-变更内容'>{{ Alterd_data.AlterContent|truncatechars:10}}</td>
                                     <td class ='04-填报人'>{{ Alterd_data.Informant}}</td>
                                     <td class ='05-填报时间'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
                                     <td class ='06-审核人'>{{ Alterd_data.Reviewer|default:''}}</td>
                                     <td class ='07-审核状态'>{{ Alterd_data.ReviewStatus|default:''}}</td>
-                                    <td class ='08-审核内容'>{{ Alterd_data.ReviewContent|default:''}}</td>
+                                    <td class ='08-审核内容'>{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
                                     <td class ='10-审核时间'>{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
+                                    <td><a href="">详情</a></td>
+{#                                        {% url '#' Alterd_ID=Alterd_data.AlterID %}#}
                                     <td>
-                                        <form action="{% url 'change_management:changemanagement_delete' %}"method="post">
-                                                <button class="btn-warning btn-xs" name="editor">编辑</button>
-                                                <button class="btn-danger btn-xs" name="delete">删除</button>
-                                        </form>
+                                        <button class="btn-warning btn-xs editor-btn" >编辑</button>
+                                        <button class="btn-danger btn-xs delete-btn" >删除</button>
                                     </td>
 
                                 {% endfor %}

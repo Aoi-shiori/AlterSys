@@ -1,3 +1,5 @@
+@import 'Alter.scss';
+@import "constarts";
 /*body背景颜色*/
 body{
   background: palevioletred;
@@ -10,25 +12,26 @@ body{
   top: 0;
   bottom:0;
   /*遮罩层颜色，R红G黄B蓝A透明度*/
-  background:rgba(255,255,255,0.3);
+  background:rgba(255,255,255,0.8);
    /*当其下副盒子超出就显示滚动条*/
   //overflow: scroll;*
   //当其下副盒子超出就显示Y轴滚动条
   overflow-y: scroll;
   //设置默认是隐藏的
   display: none;
+  z-index: 100;
 
   .auth-wapper{
     //定义一个变量
     $authwapperwidth:400px;
-    $authwapperheight:540px;
+    $authwapperheight:500px;
     //盒子四个角显示圆角，只有一个值就全部圆角，4个值分别4个角
     border-radius: 10px;
     width: $authwapperwidth;
     height:$authwapperheight;
     //background: snow;
      /*盒子上下左右边距40px*/
-    margin: 40px auto;
+    margin: 60px auto;
 
     .close-wapper{
       border-radius: 10px 10px 0 0;
@@ -100,10 +103,12 @@ body{
           //所有表单组，各自向上间隔20个像素
           .form-group{
             //
-              margin-top: 20px;
+              margin-top: 10px;
             .input-group{
-                margin-top: 20px;
-                height: 40px;
+                margin-top: 5px;
+                height: 30px;
+                width: 100%;
+                outline: none;
 
               .rember-lable{
                   font-size: 10px;
@@ -121,7 +126,7 @@ body{
 
 
               .form-control{
-                border: 1px solid blue;
+                border: 1px solid lightgrey;
                 //文字上下左右填充10像素
                 padding: 10px;
                 width: 100%;
@@ -139,6 +144,7 @@ body{
               .input-group-addon{
                 float:right;
                 width: 100px;
+                padding: 0;
                 .sms-captcha-btn{
                   float: right;
                   width: 100px;
