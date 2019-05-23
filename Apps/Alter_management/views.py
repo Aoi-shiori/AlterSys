@@ -48,7 +48,7 @@ def delete_Alter_manager(request):
         Alter_managment.objects.filter(AlterID=AlterID).delete()
         return resful.OK()
     except:
-        return resful.params_error(message="改变更不存在")
+        return resful.params_error(message="该变更不存在")
 
 @require_POST#只接受POST的请求
 def add_Alter_manager(request):#添加变更内容
@@ -64,7 +64,7 @@ def add_Alter_manager(request):#添加变更内容
         #判断变更内容在库中是否存在
         exists=Alter_managment.objects.filter(AlterContent=AlterContent).exists()
         if not exists:
-            Alter_managment.objects.create(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase,
+            Alter_managment.objects.create(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase,AlterContent=AlterContent,
                                            Informant=Informant)
             return resful.OK()
         else:
