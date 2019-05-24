@@ -40,19 +40,19 @@
 {#                            {% endfor %}#}
 
                                 {% for Alterd_data in Alterd_datas %}
-                                    <tr AlterID="{{ Alterd_data.AlterID }}",AlterID="{{ Alterd_data.AlterID }}",AlterType="{{ Alterd_data.AlterType }}",AssociatedNumber="{{ Alterd_data.AssociatedNumber }}",Datebase="{{ Alterd_data.Datebase }}",AlterContent="{{ Alterd_data.AlterContent }}",Informant="{{ Alterd_data.Informant }}">
+                                    <tr AlterID="{{ Alterd_data.AlterID }}"  AlterType="{{ Alterd_data.AlterType }}" AssociatedNumber="{{ Alterd_data.AssociatedNumber }}" Datebase="{{ Alterd_data.Datebase }}" AlterContent="{{ Alterd_data.AlterContent }}" Informant="{{ Alterd_data.Informant }}">
                                         <td class ='序号'>{{ forloop.counter}}</td>
-                                        <td class ='00-变更编号'>{{ Alterd_data.AlterID }}</td>
-                                        <td class ='01-关联类型'>{{ Alterd_data.AlterType}}</td>
-                                        <td class ='02-关联编号'>{{ Alterd_data.AssociatedNumber}}</td>
-                                        <td class ='03-数据库'>{{ Alterd_data.Datebase}}</td>
-                                        <td class ='09-变更内容'>{{ Alterd_data.AlterContent|truncatechars:10}}</td>
-                                        <td class ='04-填报人'>{{ Alterd_data.Informant}}</td>
-                                        <td class ='05-填报时间'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
-                                        <td class ='06-审核人'>{{ Alterd_data.Reviewer|default:''}}</td>
-                                        <td class ='07-审核状态'>{{ Alterd_data.ReviewStatus|default:''}}</td>
-                                        <td class ='08-审核内容'>{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
-                                        <td class ='10-审核时间'>{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
+                                        <td class ='变更编号 AlterID-td'>{{ Alterd_data.AlterID }}</td>
+                                        <td class ='关联类型 AlterType-td'>{{ Alterd_data.AlterType}}</td>
+                                        <td class ='关联编号 AssociatedNumber-td'>{{ Alterd_data.AssociatedNumber}}</td>
+                                        <td class ='数据库 Datebase-td'>{{ Alterd_data.Datebase}}</td>
+                                        <td class ='变更内容 AlterContent-td'>{{ Alterd_data.AlterContent|truncatechars:10}}</td>
+                                        <td class ='填报人 Informant-td'>{{ Alterd_data.Informant}}</td>
+                                        <td class ='填报时间 FillTime-td'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
+                                        <td class ='审核人 Reviewer-td'>{{ Alterd_data.Reviewer|default:''}}</td>
+                                        <td class ='审核状态 ReviewStatus-td'>{{ Alterd_data.ReviewStatus|default:''}}</td>
+                                        <td class ='审核内容 ReviewContent-td'>{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
+                                        <td class ='审核时间 AuditTime-td'>{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
                                         <td><a href="">详情</a></td>
     {#                                        {% url '#' Alterd_ID=Alterd_data.AlterID %}#}
                                         <td>
@@ -81,6 +81,7 @@
 {#                            <a href="javascript:void(0);" class="switch">立即注册</a>#}
                         </div>
                         <div class="form-group">
+
                             <div class="input-group">
                                 <input type="text" class="form-control" name="AlterType" placeholder="请输入变更类型">
                             </div>
@@ -101,45 +102,38 @@
                             </div>
                         </div>
                     </div>
-{#                    <div class="signup-group Auth-group">#}
-{#                        <div class="top-group">#}
-{#                            <span class="title">请注册</span>#}
+                    <div class="signup-group Auth-group">
+                        <div class="top-group">
+                            <span class="title">编辑</span>
 {#                            <a href="javascript:void(0);" class="switch">立即登录</a>#}
-{#                        </div>#}
-{#                        <div class="form-group">#}
-{#                            <div class="input-group">#}
-{#                                <input type="text" class="form-control" name="MobilePhone" placeholder="请输入手机号码">#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <input type="text" class="form-control" name="username" placeholder="请输入用户名">#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <div class="short-input-group">#}
-{#                                    <input type="text" class="form-control" name="img-captcha" placeholder="图形验证码">#}
-{#                                </div>#}
-{#                                <div class="input-group-addon">#}
-{#                                    <img src="" alt="">#}
-{#                                </div>#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <input type="text" class="form-control" name="password1" placeholder="密码">#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <input type="text" class="form-control" name="password2" placeholder="确认密码">#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <div class="short-input-group">#}
-{#                                    <input type="text" class="form-control" name="sms-captcha" placeholder="短信验证码">#}
-{#                                </div>#}
-{#                                <div class="input-group-addon">#}
-{#                                    <span class="sms-captcha-btn">发送验证码</span>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <input type="submit" class="submit-btn" value="立即注册" >#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <lable>变更id</lable>
+                                <input type="text" class="form-control" name="AlterID" id="ID-AlterID" readonly >
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="AlterType" id="ID-AlterType"  >
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="AssociatedNumber" id="ID-AssociatedNumber" >
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="Datebase" id="ID-Datebase">
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="AlterContent" id="ID-AlterContent">
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="Informant" id="ID-Informant">
+                            </div>
+                            <div class="input-group btn-group btn-group-lg">
+{#                                <input type="submit" class="submit-btn" value="提交" >#}
+                                <button class="btn btn-info    revise-btn">修改</button>
+                                <button class="btn btn-primary  pull-right cancle-btn">取消</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>

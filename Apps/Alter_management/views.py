@@ -27,20 +27,21 @@ def Alter_manager_view (request):
         }
         return render(request,"Alter_management/Alter.html",context=context)
 
+@require_POST
 def edit_Alter_manager(request):
     form =EditAlterform(request.POST)
     if form.is_valid():
-        AlterID=form.cleaned_data.get("prekey")#变更ID
+        AlterID=form.cleaned_data.get("AlterID")#变更ID
         AlterType = form.cleaned_data.get("AlterType")  # '关联类型'#
         AssociatedNumber =form.cleaned_data.get("AssociatedNumber")  # '关联编号'#
         Datebase = form.cleaned_data.get("Datebase")  # '数据库'#
         AlterContent =form.cleaned_data.get("AlterContent")  # 变更内容
         Informant = form.cleaned_data.get("Informant")  # '填报人',
-        try:
-            Alter_managment.objects.filter(AlterID=AlterID).update(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase, AlterContent=AlterContent, Informant=Informant)
-            return resful.OK()
-        except:
-            return resful.params_error(message=form.get_error())
+        Alter_managment.objects.filter(AlterID=AlterID).update(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase, AlterContent=AlterContent, Informant=Informant)
+        return resful.OK()
+    else:
+        return resful.params_error(message=form.get_error())
+
 @require_POST
 def delete_Alter_manager(request):
     AlterID=request.POST.get("AlterID")
@@ -68,7 +69,10 @@ def add_Alter_manager(request):#添加变更内容
                                            Informant=Informant)
             return resful.OK()
         else:
-            return resful.params_error(message="该变更交内容已经存在")
+
+            return resful.params_error(message="该变更内容已经存在!")
+    else:
+        return resful.params_error(message="验证不通过")
 
 
 
