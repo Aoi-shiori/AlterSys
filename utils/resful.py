@@ -9,9 +9,8 @@ class Httpcode(object):
 
 
 #{"code":400,"message":"","date":""}
-
-def result(code=Httpcode.ok,message="",data=None ,kwargs=None):
-    json_dict = {"cade":code,"message":message,"data":data }
+def result(code=Httpcode.ok,message="",data=None,kwargs=None):
+    json_dict = {"code":code,"message":message,"data":data }
     if kwargs and isinstance(kwargs,dict) and kwargs.keys():
         json_dict.update(kwargs)
     return JsonResponse(json_dict)

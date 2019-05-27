@@ -47,9 +47,10 @@ function Auth() {
 Auth.prototype.run=function () {
         var self=this;
         self.listenshowhideEvent();
-        self.listenSwitchEvent();
+        // self.listenSwitchEvent();
         self.listenSigninEvent();
         self.listenreviseEvent();
+        self.listenDeleteEvent();
 
 };
 
@@ -71,7 +72,6 @@ Auth.prototype.listenshowhideEvent=
         //将找到的元素定义
         var addBtn=$('.add-btn');
         var editorBtn =$('.editor-btn');
-        var deleteBtn =$('.delete-btn');
         var closeBtn =$('.close-btn');
         var reviseBtn =$('.revise-btn');
         var cancleBtn = $('.cancle-btn');
@@ -99,7 +99,7 @@ Auth.prototype.listenshowhideEvent=
             // var AlterContent=tr.td($('.AlterContent-td'));
             // var Informant=tr.td($('.Informant-td'));
             // var FillTime=tr.td($('.FillTime-td'));
-            console.log(AlterID);
+
             $("#ID-AlterID").val(AlterID);
             $("#ID-AlterType").val(AlterType);
             $("#ID-AssociatedNumber").val(AssociatedNumber);
@@ -113,9 +113,6 @@ Auth.prototype.listenshowhideEvent=
 
         });
 
-        deleteBtn.click(function () {
-            self.showEvent();
-        });
         addBtn.click(function () {
              self.showEvent();
              self.scollwapper.css({'left':'0'});
@@ -154,24 +151,24 @@ Auth.prototype.listenshowhideEvent=
 //     });
 // };
 
-
+//监听修改事件
 Auth.prototype.listenreviseEvent=function(){
-        var self = this;
         var signupGroup = $('.signup-group');
-        var AlterIDinput = signupGroup.find("input[name='AlterID']");
-        var AlterTypephoneInput = signupGroup.find("input[name='AlterType']");
-        var AssociatedNumberInput = signupGroup.find("input[name='AssociatedNumber']");
-        var DatebaseInput = signupGroup.find("input[name='Datebase']");
-        var AlterContentInput = signupGroup.find("input[name='AlterContent']");
-        var InformantInput = signupGroup.find("input[name='Informant']");
+
+        var NEWAlterIDinput = signupGroup.find("input[name='AlterID']");
+        var NEWAlterTypeInput = signupGroup.find("input[name='AlterType']");
+        var NEWAssociatedNumberInput = signupGroup.find("input[name='AssociatedNumber']");
+        var NEWDatebaseInput = signupGroup.find("input[name='Datebase']");
+        var NEWAlterContentInput = signupGroup.find("input[name='AlterContent']");
+        var NEWInformantInput = signupGroup.find("input[name='Informant']");
         var reviseBtn = signupGroup.find(".revise-btn");
     reviseBtn.click(function () {
-        var AlterID =AlterIDinput.val();
-        var AlterType = AlterTypephoneInput.val();
-        var AssociatedNumber = AssociatedNumberInput.val();
-        var Datebase = DatebaseInput.val();
-        var AlterContent = AlterContentInput.val();
-        var Informant = InformantInput.val();
+        var AlterID =NEWAlterIDinput.val();
+        var AlterType = NEWAlterTypeInput.val();
+        var AssociatedNumber = NEWAssociatedNumberInput.val();
+        var Datebase = NEWDatebaseInput.val();
+        var AlterContent = NEWAlterContentInput.val();
+        var Informant = NEWInformantInput.val();
 
          xfzajax.post({
             'url': '/alter/edit_Alter_manager/',
@@ -184,16 +181,17 @@ Auth.prototype.listenreviseEvent=function(){
                 'Informant': Informant,
             },
             'success': function (result) {
-                if(result['code'] === 200){
-                    xfzalert.alertSuccess('恭喜！新闻发表成功！',function () {
-                        window.location.reload();
-                    });
+                if(result["code"] === 200){
+                    window.messageBox.show("修改成功");
+                    setTimeout("window.location.reload()","500");
+
+                    // xfzalert.alertSuccess("恭喜！新闻发表成功!",function () {
+                    //     window.location.reload();
+                    // });
                 }
             }
         });
     });
-
-
 };
 
 
@@ -225,14 +223,46 @@ Auth.prototype.listenSigninEvent = function () {
             },
              'success': function (result) {
                 if(result['code'] === 200){
-                    xfzalert.alertSuccess('恭喜！新闻发表成功！',function () {
-                        window.location.reload();
-                    });
+                     window.messageBox.show("添加成功");
+                    setTimeout("window.location.reload()","300");
+                    // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
+                    //     window.location.reload();
+                    // });
                 }
             }
         });
     });
 };
+
+
+//监听删除事件
+Auth.prototype.listenDeleteEvent = function () {
+    var DeleteBTN = $('.delete-btn');
+
+    DeleteBTN.click(function () {
+        var currentBtn =  $(this);
+        var tr = currentBtn.parent().parent();
+        var AlterID =tr.attr('AlterID');
+        xfzajax.post({
+            'url': '/alter/delete_Alter_manager/',
+            'data': {
+                'AlterID': AlterID,
+            },
+             'success': function (result) {
+                if(result['code'] === 200){
+                     window.messageBox.show("删除成功");
+                    setTimeout("window.location.reload()","300");
+                    // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
+                    //     window.location.reload();
+                    // });
+                }
+            }
+        });
+
+
+    });
+};
+
 
 
 

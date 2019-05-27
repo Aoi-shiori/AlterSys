@@ -13,4 +13,5 @@ urlpatterns = [
     #添加变更数据
     path('add_Alter_manager/', views.add_Alter_manager,name='add_Alter_manager'),
     path('edit_Alter_manager/',views.edit_Alter_manager,name='edit_Alter_manager'),
+    path('delete_Alter_manager/',views.delete_Alter_manager,name='delete_Alter_manager')
 ]
