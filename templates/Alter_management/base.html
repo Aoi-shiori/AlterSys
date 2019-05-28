@@ -43,7 +43,7 @@
   <script src="{% static 'js/Alteralert.min.js'%}"></script>
   <script src="{% static 'js/message.min.js'%}"></script>
   <script src="{% static 'js/Alterajax.min.js'%}"></script>
-  <script src="{% static 'js/Alter.min.js' %}"></script>
+
 
 
 
@@ -187,6 +187,9 @@
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
+      {% block footer %}
+      
+      {% endblock %}
     <div class="pull-right hidden-xs">
       <b>版本</b> 1.0
     </div>

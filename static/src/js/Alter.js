@@ -39,7 +39,7 @@ function Auth() {
         //函数当中的this代表的都是函数本身，所以定义一个self避免出现冲突
         var self =this;
         //将盒子mask-wapper定义成为一个属性
-        self.maskwapper=$('.mask-wapper');
+        self.maskwapper=$('.mask-wapper-add');
         self.scollwapper =$('.scoll-wapper');
 }
 
@@ -51,6 +51,7 @@ Auth.prototype.run=function () {
         self.listenSigninEvent();
         self.listenreviseEvent();
         self.listenDeleteEvent();
+        self.listenDataPiker();
 
 };
 
@@ -79,7 +80,7 @@ Auth.prototype.listenshowhideEvent=
         editorBtn.click(function () {
             self.showEvent();
             //不设置设置动画效果，直接将left的值设置为-400像素,用于显示编辑页面
-            self.scollwapper.css({'left':'-400px'});
+            self.scollwapper.css({'left':'-500px'});
 
             var currentbtn =$(this);
             //获取到编辑按钮标签的父级元素tr标签
@@ -122,7 +123,7 @@ Auth.prototype.listenshowhideEvent=
         });
         reviseBtn.click(function () {
 
-        })
+        });
         cancleBtn.click(function () {
             self.hideEvent()
         })
@@ -153,15 +154,15 @@ Auth.prototype.listenshowhideEvent=
 
 //监听修改事件
 Auth.prototype.listenreviseEvent=function(){
-        var signupGroup = $('.signup-group');
+        var revisegroup = $('.revise-group');
 
-        var NEWAlterIDinput = signupGroup.find("input[name='AlterID']");
-        var NEWAlterTypeInput = signupGroup.find("input[name='AlterType']");
-        var NEWAssociatedNumberInput = signupGroup.find("input[name='AssociatedNumber']");
-        var NEWDatebaseInput = signupGroup.find("input[name='Datebase']");
-        var NEWAlterContentInput = signupGroup.find("input[name='AlterContent']");
-        var NEWInformantInput = signupGroup.find("input[name='Informant']");
-        var reviseBtn = signupGroup.find(".revise-btn");
+        var NEWAlterIDinput = revisegroup.find("input[name='AlterID']");
+        var NEWAlterTypeInput = revisegroup.find("input[name='AlterType']");
+        var NEWAssociatedNumberInput = revisegroup.find("input[name='AssociatedNumber']");
+        var NEWDatebaseInput = revisegroup.find("input[name='Datebase']");
+        var NEWAlterContentInput = revisegroup.find("textarea[name='AlterContent']");
+        var NEWInformantInput = revisegroup.find("input[name='Informant']");
+        var reviseBtn = revisegroup.find(".revise-btn");
     reviseBtn.click(function () {
         var AlterID =NEWAlterIDinput.val();
         var AlterType = NEWAlterTypeInput.val();
@@ -198,13 +199,13 @@ Auth.prototype.listenreviseEvent=function(){
 //监听添加事件
 Auth.prototype.listenSigninEvent = function () {
     var self = this;
-    var signinGroup = $('.signin-group');
-    var AlterTypepInput = signinGroup.find("input[name='AlterType']");
-    var AssociatedNumberInput = signinGroup.find("input[name='AssociatedNumber']");
-    var DatebaseInput = signinGroup.find("input[name='Datebase']");
-    var AlterContentInput = signinGroup.find("input[name='AlterContent']");
-    var InformantInput = signinGroup.find("input[name='Informant']");
-    var submitBtn = signinGroup.find(".submit-btn");
+    var Addgroup = $('.Add-group');
+    var AlterTypepInput = Addgroup.find("input[name='AlterType']");
+    var AssociatedNumberInput = Addgroup.find("input[name='AssociatedNumber']");
+    var DatebaseInput = Addgroup.find("input[name='Datebase']");
+    var AlterContentInput = Addgroup.find("textarea[name='AlterContent']");
+    var InformantInput = Addgroup.find("input[name='Informant']");
+    var submitBtn = Addgroup.find(".submit-btn");
     submitBtn.click(function () {
         var AlterType = AlterTypepInput.val();
         var AssociatedNumber = AssociatedNumberInput.val();
@@ -265,11 +266,32 @@ Auth.prototype.listenDeleteEvent = function () {
 
 
 
+//监听时间控件
+Auth.prototype.listenDataPiker=function(){
+    var startPicker =$('#startpicker');
+    var endPicker =$('#endpicker');
+    var todayDate = new Date();
+    var todayStr = todayDate.getFullYear() + '/' + (todayDate.getMonth()+1) + '/' + todayDate.getDate();
+    var options = {
+        'showButtonPanel': true,
+        'format': 'yyyy/mm/dd',
+        'startDate': '2017/6/1',
+        'endDate': todayStr,
+        'language': 'zh-CN',
+        'todayBtn': 'linked',
+        'todayHighlight': true,
+        'clearBtn': true,
+        'autoclose': true
+    };
+    startPicker.datepicker(options);
+    endPicker.datepicker(options);
+};
+
 
 
 
 $(function () {
-        //让页面完成加载，然后才能找到需要的元素
+        //让页面完成加载，然后才能找到需要的元素.
         var auth = new Auth();
         auth.run();
 });

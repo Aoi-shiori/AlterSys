@@ -4,3 +4,198 @@ tr{
 th{
        text-align: center;
 }
+
+.left-group{
+  margin-left: 10px;
+}
+
+
+
+/*遮罩层 固定定位，跟浏览器保持同样大小，盒子跟浏览器所有边距都是0*/
+.mask-wapper-add{
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom:0;
+  /*遮罩层颜色，R红G黄B蓝A透明度*/
+  background:rgba(255,255,255,0.8);
+   /*当其下副盒子超出就显示滚动条*/
+  //overflow: scroll;*
+  //当其下副盒子超出就显示Y轴滚动条
+  overflow-y: scroll;
+  //设置默认是隐藏的
+  display: none;
+  //z-index: 1;
+
+  .auth-wapper{
+    //定义一个变量
+    $authwapperwidth:500px;
+    $authwapperheight:580px;
+    //盒子四个角显示圆角，只有一个值就全部圆角，4个值分别4个角
+    border-radius: 10px;
+    width: $authwapperwidth;
+    height:$authwapperheight;
+    //background: snow;
+     /*盒子上下左右边距40px*/
+    margin: 60px auto;
+
+    .close-wapper{
+      border-radius: 10px 10px 0 0;
+      width: 100%;
+      height: 40px;
+      background: #0084ff;
+      .close-btn{
+        //让其拥有行的属性
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        float: right;
+        margin-top: 10px;
+        //鼠标放上去显示成小手
+        cursor: pointer;
+
+
+      }
+    }
+
+    .auth-inner-wapper{
+      width: 100%;
+      height:$authwapperheight - 40px;
+      //background: palevioletred;
+      position: relative;
+      //.auth-scoll-wapper{超出的的进行隐藏
+      overflow: hidden;
+
+      .scoll-wapper{
+        width: $authwapperwidth * 2;
+        //height: 100%;
+        position:absolute;
+        top: 0;
+        left:0;
+        background:#fff;
+
+        .Auth-group{
+            width:$authwapperwidth;
+            height: 100%;
+            //在盒子上下左右填充10px
+            padding: 10px;
+            //假如您需要并排放置两个带边框的框，可通过将 box-sizing 设置为 "border-box"。这可令浏览器呈现出带有指定宽度和高度的框，并把边框和内边距放入框中。
+            box-sizing: border-box;
+
+          //这些是signin。signin的公用属性，所以在写它们公用的盒子下
+          .top-group{
+            width: 100%;
+            height: 33px;
+            //盒子下边框样式，线条和其颜色
+            border-bottom:1px solid darkseagreen;
+
+            //请登录标签
+            .title{
+              float: left;
+              color: black;
+              //设置当前登录标签的边框的线条颜色
+              border-bottom: 3px solid blue;
+              //设置行高
+              line-height: 33px;
+            }
+
+            //立即注册标签
+            .switch{
+              float: right;
+              color: blue;
+            }
+          }
+
+          //所有表单组，各自向上间隔20个像素
+          .form-group{
+            //
+              margin-top: 10px;
+
+            .content-group{
+                 margin-top: 5px;
+                //height: 50px;
+                width: 100%;
+              textarea{
+                width: 100%;
+              }
+
+            }
+
+            .input-group{
+                margin-top: 5px;
+                height: 25px;
+                width: 100%;
+                outline: none;
+
+
+              .rember-lable{
+                  font-size: 10px;
+              }
+
+
+              .submit-btn{
+                width: 100%;
+                height: 40px;
+                color: white;
+                font-size: 10px;
+                background: blue;
+                border: none;
+                cursor: pointer;
+              }
+
+
+              .form-control{
+                border: 1px solid lightgrey;
+                //文字上下左右填充10像素
+                padding: 10px;
+                width: 100%;
+                //box-sizing: border-box;
+                height: 30px;
+                //去除鼠标放上去后显示的边框线条
+                outline: none;
+
+              }
+
+              .short-input-group{
+                  width: 240px;
+                  float: left;
+              }
+              .input-group-addon{
+                float:right;
+                width: 100px;
+                padding: 0;
+                .sms-captcha-btn{
+                  float: right;
+                  width: 100px;
+                  height: 40px;
+                  border: 1px solid blue;
+                  display: inline-block;
+                  text-align: center;
+                  line-height: 40px;
+                  box-sizing: border-box;
+                }
+
+              }
+
+            }
+          }
+        }
+
+        .Add-group{
+          float: left;
+          background: white;
+
+        }
+        .revise-group{
+          float: left;
+          background: white;
+        }
+
+      }
+
+    }
+
+  }
+
+}

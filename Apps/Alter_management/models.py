@@ -6,7 +6,7 @@ class Alter_managment(models.Model):
         AlterType=models.CharField(max_length=100)#'关联类型BUG'#
         AssociatedNumber=models.CharField(max_length=50)#'关联编号'#
         Datebase=models.CharField(max_length=50)#'数据库'#
-        AlterContent=models.CharField(max_length=255) #变更内容
+        AlterContent=models.TextField(max_length=1000) #变更内容
         Informant=models.CharField(max_length=50)# '填报人',
         FillTime=models.DateTimeField(auto_now=True)#'填报时间'
         Reviewer=models.CharField(max_length=50,null=True)# '审核人'
