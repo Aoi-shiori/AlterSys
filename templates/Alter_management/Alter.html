@@ -3,6 +3,13 @@
 
 {% block content-header %}
     <h1>变更管理</h1>
+    <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css'%}">
+    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js' %}"></script>
+    <script src="{% static 'js/Alter.min.js' %}"></script>
+{#    <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">#}
+{#    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>#}
+{#    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js' %}"></script>#}
 {% endblock %}
 
 {% block content %}
@@ -10,6 +17,33 @@
         <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-header">
+                    <form action="" class="form-inline">
+                        <div class="form-group">
+                            <label for="">时间:</label>
+{#                                <input type="date" class="form-control" min="2019-01-01" max="2099-01-01"  placeholder="开始"/>#}
+                            <input type="text" class="form-control" name="start" id="startpicker" placeholder="开始" readonly>
+                            <span>-</span>
+                            <input type="text" class="form-control" name="end" id="endpicker" placeholder="结束" readonly>
+                        </div>
+                        <div class="form-group left-group">
+                            <label for="">查询条件:</label>
+                            <input type="text" class="form-control" name="cxtj" placeholder="请输入查询条件">
+                        </div>
+                        <div class="form-group left-group">
+                            <label for="">审核状态:</label>
+                            <select name="审核状态" id="" class="form-control">
+                                <option value="0">全部数据</option>
+                                <option value="1">未审核</option>
+                                <option value="2">已审核</option>
+                            </select>
+                        </div>
+                        <div class="form-group left-group">
+                             <button class="btn btn-primary ">查询</button>
+                        </div>
+                        <div class="form-group left-group">
+                            <a href="{% url 'management:Alter_manager' %}">清空</a>
+                        </div>
+                    </form>
                     <button class="btn btn-info pull-right add-btn">添加</button>
                     <button class="btn btn-success pull-right">审核</button>
 
@@ -19,7 +53,7 @@
                         <thead>
                             <tr>
                                 <th>序号</th>
-                                <th>变更编号</th>
+                                <th>ID</th>
                                 <th>关联类型</th>
                                 <th>关联编号</th>
                                 <th>数据库</th>
@@ -30,8 +64,7 @@
                                 <th>审核状态</th>
                                 <th>审核内容</th>
                                 <th>审核时间</th>
-                                <th></th>
-                                <th></th>
+                                <th>操作</th>
                             </tr>
                         </thead>
                         <tbody class="list">
@@ -46,15 +79,13 @@
                                         <td class ='关联类型 AlterType-td'>{{ Alterd_data.AlterType}}</td>
                                         <td class ='关联编号 AssociatedNumber-td'>{{ Alterd_data.AssociatedNumber}}</td>
                                         <td class ='数据库 Datebase-td'>{{ Alterd_data.Datebase}}</td>
-                                        <td class ='变更内容 AlterContent-td'>{{ Alterd_data.AlterContent|truncatechars:10}}</td>
+                                        <td class ='变更内容 AlterContent-td'><a target="_blank" href="{% url 'management:Alter_deatil' AlterID=Alterd_data.AlterID %} ">{{ Alterd_data.AlterContent|truncatechars:20}}</a></td>
                                         <td class ='填报人 Informant-td'>{{ Alterd_data.Informant}}</td>
                                         <td class ='填报时间 FillTime-td'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
                                         <td class ='审核人 Reviewer-td'>{{ Alterd_data.Reviewer|default:''}}</td>
                                         <td class ='审核状态 ReviewStatus-td'>{{ Alterd_data.ReviewStatus|default:''}}</td>
                                         <td class ='审核内容 ReviewContent-td'>{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
                                         <td class ='审核时间 AuditTime-td'>{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
-                                        <td><a href="">详情</a></td>
-    {#                                        {% url '#' Alterd_ID=Alterd_data.AlterID %}#}
                                         <td>
                                             <button class="btn-warning btn-xs editor-btn" >编辑</button>
                                             <button class="btn-danger btn-xs delete-btn" >删除</button>
@@ -66,16 +97,59 @@
                 </div>
             </div>
         </div>
+        <div class="box-footer">
+            <p class="pull-left">第{{ current_page }}/总共{{ num_pages }}页</p>
+            <ul class="pagination pull-right">
+                {#上一页#}
+                {% if page_obj.has_previous %}
+                    <li><a href="?p={{ page_obj.previous_page_number }}{{ url_query }}">上一页</a></li>
+                {% else %}
+                    <li class="disabled"><a href="javascript:void(0);">上一页</a></li>
+                {% endif %}
+
+                {# 是否需要出现三个点 #}
+                {% if left_has_more %}
+                    <li><a href="?p=1">1</a></li>
+                    <li><a href="javascript:void(0);">...</a></li>
+                {% endif %}
+
+                {# 左边的页码 #}
+                {% for left_page in left_pages %}
+                    <li><a href="?p={{ left_page }}{{ url_query }}">{{ left_page }}</a></li>
+                {% endfor %}
+
+                {# 当前的页面 #}
+                <li class="active"><a href="?p={{ current_page }}{{ url_query }}">{{ current_page }}</a></li>
+
+                {# 右边的页码 #}
+                {% for right_page in right_pages %}
+                    <li><a href="?p={{ right_page }}{{ url_query }}">{{ right_page }}</a></li>
+                {% endfor %}
+
+                {# 用来控制右边三个点 #}
+                {% if right_has_more %}
+                    <li><a href="javascript:void(0);">...</a></li>
+                    <li><a href="?p={{ num_pages }}{{ url_query }}">{{ num_pages }}</a></li>
+                {% endif %}
+
+                {#下一页#}
+                {% if page_obj.has_next %}
+                    <li><a href="?p={{ page_obj.next_page_number }}{{ url_query }}">下一页</a></li>
+                {% else %}
+                    <li class="disabled"><a href="javascript:void(0);">下一页</a></li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
 <!-- 模态对话框，用于点击后弹出使用 -->
-<div class="mask-wapper">
+<div class="mask-wapper-add">
         <div class="auth-wapper">
             <div class="close-wapper">
                 <span class="close-btn icon-icon-test iconfont"></span>
             </div>
             <div class="auth-inner-wapper">
                 <div class="scoll-wapper">
-                    <div class="signin-group Auth-group">
+                    <div class="Add-group Auth-group">
                         <div class="top-group">
                             <span class="title">请输入变更内容</span>
 {#                            <a href="javascript:void(0);" class="switch">立即注册</a>#}
@@ -83,48 +157,60 @@
                         <div class="form-group">
 
                             <div class="input-group">
+                                 <label for="AlterType">变更类型:</label>
                                 <input type="text" class="form-control" name="AlterType" placeholder="请输入变更类型">
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="AssociatedNumber" placeholder="请输入关联的禅道任务">
+                                 <label for="AssociatedNumber">关联编号:</label>
+                                <input type="text" class="form-control required" name="AssociatedNumber" placeholder="请输入关联的禅道任务">
                             </div>
                             <div class="input-group">
+                                 <label for="Datebase">数据库:</label>
                                 <input type="text" class="form-control" name="Datebase" placeholder="请输入对应数据库">
                             </div>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="AlterContent" placeholder="请输入变更内容">
+                            <div class="  content-group">
+                                 <label for="AlterContent">变更内容:</label>
+{#                                <input type="text" class="form-control" name="AlterContent" placeholder="请输入变更内容">#}
+                                <textarea name="AlterContent" id="AlterContent"  rows="5" maxlength="1000" required placeholder="请输入变更内容"></textarea>
                             </div>
                             <div class="input-group">
+                                <label for="Informant">提交人:</label>
                                 <input type="text" class="form-control" name="Informant" placeholder="变更提交者">
                             </div>
                             <div class="input-group">
-                                <input type="button" class="submit-btn" value="立即提交">
+                                <input type="button" class="submit-btn" value="提交">
                             </div>
                         </div>
                     </div>
-                    <div class="signup-group Auth-group">
+                    <div class="revise-group Auth-group">
                         <div class="top-group">
-                            <span class="title">编辑</span>
+                            <span class="title">内容编辑</span>
 {#                            <a href="javascript:void(0);" class="switch">立即登录</a>#}
                         </div>
                         <div class="form-group">
                             <div class="input-group">
-                                <lable>变更id</lable>
+                                <label for="AlterID">变更ID:</label>
                                 <input type="text" class="form-control" name="AlterID" id="ID-AlterID" readonly >
                             </div>
                             <div class="input-group">
+                                <label for="AlterType">关联类型:</label>
                                 <input type="text" class="form-control" name="AlterType" id="ID-AlterType"  >
                             </div>
                             <div class="input-group">
+                                <label for="AssociatedNumber">关联编号:</label>
                                 <input type="text" class="form-control" name="AssociatedNumber" id="ID-AssociatedNumber" >
                             </div>
                             <div class="input-group">
+                                 <label for="Datebase">数据库:</label>
                                 <input type="text" class="form-control" name="Datebase" id="ID-Datebase">
                             </div>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="AlterContent" id="ID-AlterContent">
+                            <div class="content-group">
+                                <label for="AlterContent">变更内容:</label>
+{#                                <input type="text" class="form-control" name="AlterContent" id="ID-AlterContent">#}
+                                <textarea name="AlterContent" id="ID-AlterContent"  rows="5" required ></textarea>
                             </div>
                             <div class="input-group">
+                                <label for="Informant">提交人:</label>
                                 <input type="text" class="form-control" name="Informant" id="ID-Informant">
                             </div>
                             <div class="input-group btn-group btn-group-lg">
@@ -140,3 +226,4 @@
         </div>
     </div>
 {% endblock %}
+
