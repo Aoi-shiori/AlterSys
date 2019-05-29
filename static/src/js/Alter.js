@@ -52,6 +52,8 @@ Auth.prototype.run=function () {
         self.listenreviseEvent();
         self.listenDeleteEvent();
         self.listenDataPiker();
+        self.listenselectnow();
+        self.listenReviewBtn();
 
 };
 
@@ -76,6 +78,7 @@ Auth.prototype.listenshowhideEvent=
         var closeBtn =$('.close-btn');
         var reviseBtn =$('.revise-btn');
         var cancleBtn = $('.cancle-btn');
+        var Reviewbtn=$('.Review-btn');
         //点击事件，点击就显示
         editorBtn.click(function () {
             self.showEvent();
@@ -126,7 +129,11 @@ Auth.prototype.listenshowhideEvent=
         });
         cancleBtn.click(function () {
             self.hideEvent()
-        })
+        });
+        Reviewbtn.click(function () {
+            //显示审核页面
+            self.showEvent()
+        });
 
 
 };
@@ -286,6 +293,34 @@ Auth.prototype.listenDataPiker=function(){
     startPicker.datepicker(options);
     endPicker.datepicker(options);
 };
+
+
+//监控点击选中事件，选中后变色，colour属性在css中定义
+Auth.prototype.listenselectnow=function(){
+    var clicknow =$('.click');
+    clicknow.click(function () {
+        var current =$(this);
+        //给当前元素的父级元素添加class属性，siblings结果如果其它同级中有colour属性，就去除其colour属性
+        current.parent().addClass('colour').siblings('tr.colour').removeClass('colour');
+
+    })
+
+};
+
+// //监控审核按钮点击事件
+// Auth.prototype.listenReviewBtn=function(){
+//     var reviewBtn =$('.Review-btn');
+//     reviewBtn.click(function () {
+//         var current =$(this);
+//
+//
+//     })
+//
+// };
+
+
+
+
 
 
 

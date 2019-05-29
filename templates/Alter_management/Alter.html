@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css'%}">
     <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
     <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js' %}"></script>
-    <script src="{% static 'js/Alter.min.js' %}"></script>
+    <script src="{% static 'js/Alter.min.js'%}"></script>
 {#    <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">#}
 {#    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>#}
 {#    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js' %}"></script>#}
@@ -17,24 +17,51 @@
         <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-header">
-                    <form action="" class="form-inline">
+                    <form action=""  method="get" class="form-inline">
                         <div class="form-group">
                             <label for="">时间:</label>
-{#                                <input type="date" class="form-control" min="2019-01-01" max="2099-01-01"  placeholder="开始"/>#}
-                            <input type="text" class="form-control" name="start" id="startpicker" placeholder="开始" readonly>
+                            {% if start %}
+                                <input type="text" class="form-control" name="start" id="startpicker" placeholder="开始" readonly value="{{ start }}">
+                            {% else %}
+                                <input type="text" class="form-control" name="start" id="startpicker" placeholder="开始" readonly>
+{#                                   <input type="date" class="form-control" min="2019-01-01" max="2099-01-01"  placeholder="开始"/>#}
+                            {% endif %}
+
                             <span>-</span>
-                            <input type="text" class="form-control" name="end" id="endpicker" placeholder="结束" readonly>
+                            {% if end %}
+                                <input type="text" class="form-control" name="end" id="endpicker" placeholder="结束" readonly value="{{ end }}">
+                            {% else %}
+                                <input type="text" class="form-control" name="end" id="endpicker" placeholder="结束" readonly>
+                            {% endif %}
                         </div>
                         <div class="form-group left-group">
                             <label for="">查询条件:</label>
-                            <input type="text" class="form-control" name="cxtj" placeholder="请输入查询条件">
+                            {% if cxtj %}
+                                 <input type="text" class="form-control" name="cxtj" placeholder="请输入查询条件" value="{{ cxtj }}">
+                            {% else %}
+                                <input type="text" class="form-control" name="cxtj" placeholder="请输入查询条件"">
+                            {% endif %}
                         </div>
                         <div class="form-group left-group">
                             <label for="">审核状态:</label>
-                            <select name="审核状态" id="" class="form-control">
-                                <option value="0">全部数据</option>
-                                <option value="1">未审核</option>
-                                <option value="2">已审核</option>
+                            <select name="ReviewStatus" id="ReviewStatus" class="form-control">
+                                {% if reviewStatus == 0 %}
+                                    <option value="0" selected>全部数据</option>
+                                {% else %}
+                                    <option value="0">全部数据</option>
+                                {% endif %}
+
+                                {% if reviewStatus == 1 %}
+                                    <option value="1" selected>未审核</option>
+                                {% else %}
+                                    <option value="1">未审核</option>
+                                {% endif %}
+
+                                {% if reviewStatus == 2 %}
+                                    <option value="2" selected>已审核</option>
+                                {% else %}
+                                    <option value="2">已审核</option>
+                                {% endif %}
                             </select>
                         </div>
                         <div class="form-group left-group">
@@ -45,7 +72,7 @@
                         </div>
                     </form>
                     <button class="btn btn-info pull-right add-btn">添加</button>
-                    <button class="btn btn-success pull-right">审核</button>
+                    <button class="btn btn-success pull-right Review-btn">审核</button>
 
                 </div>
                 <div class="box body">
@@ -73,7 +100,7 @@
 {#                            {% endfor %}#}
 
                                 {% for Alterd_data in Alterd_datas %}
-                                    <tr AlterID="{{ Alterd_data.AlterID }}"  AlterType="{{ Alterd_data.AlterType }}" AssociatedNumber="{{ Alterd_data.AssociatedNumber }}" Datebase="{{ Alterd_data.Datebase }}" AlterContent="{{ Alterd_data.AlterContent }}" Informant="{{ Alterd_data.Informant }}">
+                                    <tr AlterID="{{ Alterd_data.AlterID }}"  AlterType="{{ Alterd_data.AlterType }}" AssociatedNumber="{{ Alterd_data.AssociatedNumber }}" Datebase="{{ Alterd_data.Datebase }}" AlterContent="{{ Alterd_data.AlterContent }}" Informant="{{ Alterd_data.Informant }}" >
                                         <td class ='序号'>{{ forloop.counter}}</td>
                                         <td class ='变更编号 AlterID-td'>{{ Alterd_data.AlterID }}</td>
                                         <td class ='关联类型 AlterType-td'>{{ Alterd_data.AlterType}}</td>
@@ -85,7 +112,7 @@
                                         <td class ='审核人 Reviewer-td'>{{ Alterd_data.Reviewer|default:''}}</td>
                                         <td class ='审核状态 ReviewStatus-td'>{{ Alterd_data.ReviewStatus|default:''}}</td>
                                         <td class ='审核内容 ReviewContent-td'>{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
-                                        <td class ='审核时间 AuditTime-td'>{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
+                                        <td class ='审核时间 AuditTime-td click ' >{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
                                         <td>
                                             <button class="btn-warning btn-xs editor-btn" >编辑</button>
                                             <button class="btn-danger btn-xs delete-btn" >删除</button>

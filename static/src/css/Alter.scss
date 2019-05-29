@@ -9,7 +9,9 @@ th{
   margin-left: 10px;
 }
 
-
+.colour{
+   background: aqua;
+}
 
 /*遮罩层 固定定位，跟浏览器保持同样大小，盒子跟浏览器所有边距都是0*/
 .mask-wapper-add{
@@ -44,6 +46,7 @@ th{
       border-radius: 10px 10px 0 0;
       width: 100%;
       height: 40px;
+
       background: #0084ff;
       .close-btn{
         //让其拥有行的属性
