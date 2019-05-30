@@ -34,17 +34,20 @@
 
 
 
-//构造函数Auth
-function Auth() {
+//构造函数Alter
+function Alter() {
         //函数当中的this代表的都是函数本身，所以定义一个self避免出现冲突
         var self =this;
         //将盒子mask-wapper定义成为一个属性
         self.maskwapper=$('.mask-wapper-add');
         self.scollwapper =$('.scoll-wapper');
+        //获得Renview的盒子
+        self.maskwapper_Review=$('.mask-wapper-Review');
+
 }
 
-//auth类的入口,运行
-Auth.prototype.run=function () {
+//Alter类的入口,运行
+Alter.prototype.run=function () {
         var self=this;
         self.listenshowhideEvent();
         // self.listenSwitchEvent();
@@ -53,23 +56,31 @@ Auth.prototype.run=function () {
         self.listenDeleteEvent();
         self.listenDataPiker();
         self.listenselectnow();
-        self.listenReviewBtn();
+        self.listenReviewEvent();
 
 };
 
 //用于显示事件
-Auth.prototype.showEvent=function () {
+Alter.prototype.showEvent=function () {
         var self =this;
         self.maskwapper.show();
 };
 
-//用于隐藏事件
-Auth.prototype.hideEvent=function () {
-        var self =this;
-        self.maskwapper.hide();
+Alter.prototype.showReviewEvent=function(){
+        var self=this;
+        self.maskwapper_Review.show();
 };
 
-Auth.prototype.listenshowhideEvent=
+//用于隐藏事件
+Alter.prototype.hideEvent=function () {
+        var self =this;
+        self.maskwapper.hide();
+        self.maskwapper_Review.hide();
+};
+
+
+
+Alter.prototype.listenshowhideEvent=
     function(){
         var self = this;
         //将找到的元素定义
@@ -128,12 +139,12 @@ Auth.prototype.listenshowhideEvent=
 
         });
         cancleBtn.click(function () {
-            self.hideEvent()
+            self.hideEvent();
         });
-        Reviewbtn.click(function () {
-            //显示审核页面
-            self.showEvent()
-        });
+        // Reviewbtn.click(function () {
+        //     //显示审核页面
+        //     self.showReviewEvent();
+        // });
 
 
 };
@@ -160,7 +171,7 @@ Auth.prototype.listenshowhideEvent=
 // };
 
 //监听修改事件
-Auth.prototype.listenreviseEvent=function(){
+Alter.prototype.listenreviseEvent=function(){
         var revisegroup = $('.revise-group');
 
         var NEWAlterIDinput = revisegroup.find("input[name='AlterID']");
@@ -204,7 +215,7 @@ Auth.prototype.listenreviseEvent=function(){
 
 
 //监听添加事件
-Auth.prototype.listenSigninEvent = function () {
+Alter.prototype.listenSigninEvent = function () {
     var self = this;
     var Addgroup = $('.Add-group');
     var AlterTypepInput = Addgroup.find("input[name='AlterType']");
@@ -244,7 +255,7 @@ Auth.prototype.listenSigninEvent = function () {
 
 
 //监听删除事件
-Auth.prototype.listenDeleteEvent = function () {
+Alter.prototype.listenDeleteEvent = function () {
     var DeleteBTN = $('.delete-btn');
 
     DeleteBTN.click(function () {
@@ -274,7 +285,7 @@ Auth.prototype.listenDeleteEvent = function () {
 
 
 //监听时间控件
-Auth.prototype.listenDataPiker=function(){
+Alter.prototype.listenDataPiker=function(){
     var startPicker =$('#startpicker');
     var endPicker =$('#endpicker');
     var todayDate = new Date();
@@ -295,31 +306,38 @@ Auth.prototype.listenDataPiker=function(){
 };
 
 
-//监控点击选中事件，选中后变色，colour属性在css中定义
-Auth.prototype.listenselectnow=function(){
-    var clicknow =$('.click');
-    clicknow.click(function () {
-        var current =$(this);
-        //给当前元素的父级元素添加class属性，siblings结果如果其它同级中有colour属性，就去除其colour属性
-        current.parent().addClass('colour').siblings('tr.colour').removeClass('colour');
-
-    })
-
+// 监控审核按钮点击事件
+Alter.prototype.listenReviewEvent=function(){
+    var self =this;
+    var reviewBtn =$('.Review-btn');
+    var selectnow =$('.tr-line');
+    reviewBtn.click(function () {
+        if (selectnow.find("input[type='checkbox']").prop("checked")==true){
+                self.showReviewEvent();
+                console.log()
+        }
+        else{
+                alert("一个没有选中");
+        }
+    });
 };
 
-// //监控审核按钮点击事件
-// Auth.prototype.listenReviewBtn=function(){
-//     var reviewBtn =$('.Review-btn');
-//     reviewBtn.click(function () {
-//         var current =$(this);
-//
-//
-//     })
-//
-// };
 
+//监控点击选中事件，选中后变色，colour属性在css中定义
+Alter.prototype.listenselectnow=function(){
+    //var clicknow =$('.click');
+    var selectnow =$('.tr-line');
+    selectnow.click(function () {
+        var current =$(this);
+        //给当前元素的父级元素添加class属性，siblings结果如果其它同级中有colour属性，就去除其colour属性
+        //current.parent().addClass('colour').siblings('tr.colour').removeClass('colour');
+        current.addClass('colour').siblings('tr.colour').removeClass('colour');
+        ckbox=current.children().children();
+        selectnow.find("input[type='checkbox']").prop("checked", false);
+        ckbox.prop('checked',true);
 
-
+    });
+};
 
 
 
@@ -327,6 +345,6 @@ Auth.prototype.listenselectnow=function(){
 
 $(function () {
         //让页面完成加载，然后才能找到需要的元素.
-        var auth = new Auth();
-        auth.run();
+        var alter = new Alter();
+        alter.run();
 });
