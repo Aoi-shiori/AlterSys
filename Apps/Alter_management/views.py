@@ -3,7 +3,7 @@ from django.views.generic import View
 #导入只接受GET请求和POST请求的装饰器
 from django.views.decorators.http import require_GET,require_POST
 #导入form验证用的表单
-from .forms import Alterform,EditAlterform
+from .forms import Alterform,EditAlterform,Reviewform
 #导入Alter_manage的模型
 from Apps.Alter_management.models import Alter_managment
 #导入我们重构的resful文件，用于返回结果代码和消息，详细可以看resful.py文件
@@ -189,6 +189,22 @@ def add_Alter_manager(request):#添加变更内容
             return resful.params_error(message="该变更内容已经存在!")
     else:
         return resful.params_error(message="验证不通过")
+
+#变更审核
+@require_POST
+def Review_Alter_manager(request):#变更审核用
+    form =Reviewform(request.POST)
+    if form.is_valid():
+        AlterID = form.cleaned_data.get('AlterID')
+        ReviewStatus = form.cleaned_data.get('ReviewStatus')  # '审核状态',
+        ReviewContent = form.cleaned_data.get('ReviewContent')  # '审核内容',
+        Reviewer = form.cleaned_data.get('Reviewer')
+        Alter_managment.objects.filter(AlterID=AlterID).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=Reviewer)
+        return resful.OK()
+    else:
+       return resful.params_error(message=form.get_error())
+
+
 
 
 

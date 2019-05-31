@@ -15,5 +15,6 @@ urlpatterns = [
     path('edit_Alter_manager/',views.edit_Alter_manager,name='edit_Alter_manager'),
     path('delete_Alter_manager/',views.delete_Alter_manager,name='delete_Alter_manager'),
     path('Alter_deatil/<AlterID>',views.Alter_detail,name='Alter_deatil'),
+    path('Review_Alter_manager/',views.Review_Alter_manager,name="Review_Alter_manager")
 
 ]

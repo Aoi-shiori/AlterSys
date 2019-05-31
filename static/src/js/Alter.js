@@ -57,6 +57,7 @@ Alter.prototype.run=function () {
         self.listenDataPiker();
         self.listenselectnow();
         self.listenReviewEvent();
+        self.listenReviewSbumitEvent();
 
 };
 
@@ -306,17 +307,35 @@ Alter.prototype.listenDataPiker=function(){
 };
 
 
+//用于获取当前选中checkbox
+getchecked=function () {
+    var checkArry = document.getElementsByName("se");
+    for (var i = 0; i < checkArry.length; i++) {
+        if(checkArry[i].checked == true) {
+            return checkArry[i];
+        }
+    }
+};
+
 // 监控审核按钮点击事件
 Alter.prototype.listenReviewEvent=function(){
     var self =this;
     var reviewBtn =$('.Review-btn');
-    var selectnow =$('.tr-line');
     reviewBtn.click(function () {
-        if (selectnow.find("input[type='checkbox']").prop("checked")==true){
-                self.showReviewEvent();
-                console.log()
+        var checkednow = getchecked();
+        if(checkednow){
+            //获取被选中元素父类的父类的
+            var val = checkednow.parentElement.parentElement.getAttribute("alterid"); //$(r).parent().attr("alterid");
+            //var val = r.parentElement.getAttribute("变更编号 AlterID-td"); //$(r).parent().attr("alterid");
+
+            alert(val);
+            self.showReviewEvent();
         }
-        else{
+        // if (selectnow.find("input[type='checkbox']").prop("checked")==true){
+        //         self.showReviewEvent();
+        //         console.log(selectnow.find("input[type='checkbox']").prop('checked')==true);
+        // }
+        else {
                 alert("一个没有选中");
         }
     });
@@ -326,6 +345,8 @@ Alter.prototype.listenReviewEvent=function(){
 //监控点击选中事件，选中后变色，colour属性在css中定义
 Alter.prototype.listenselectnow=function(){
     //var clicknow =$('.click');
+    var boxfooter =$('.box-footer');
+    var boxheader =$('.box-header');
     var selectnow =$('.tr-line');
     selectnow.click(function () {
         var current =$(this);
@@ -335,9 +356,63 @@ Alter.prototype.listenselectnow=function(){
         ckbox=current.children().children();
         selectnow.find("input[type='checkbox']").prop("checked", false);
         ckbox.prop('checked',true);
+    });
+    //点击空白区域取消变色和勾选
+    // boxfooter.click(function () {
+    //     selectnow.addClass('colour').siblings('tr.colour').removeClass('colour');
+    //     selectnow.find("input[type='checkbox']").prop("checked", false);
+    // });
+    //
+    // boxheader.click(function () {
+    //     selectnow.addClass('colour').siblings('tr.colour').removeClass('colour');
+    //     selectnow.find("input[type='checkbox']").prop("checked", false);
+    // });
+};
+
+
+
+Alter.prototype.listenReviewSbumitEvent=function(){
+    var self =this;
+    var Reviewgroup = $('.Review-group');
+    var ReviewsubBtn=$('.Reviewsub-btn');
+    var ReviewContenInput = Reviewgroup.find("textarea[name='ReviewContent']");
+    var ReviewerInput = Reviewgroup.find("input[name='Reviewer']");
+    //var SbumitreviewBtn = Reviewgroup.find("input[name='Review-btn']");
+
+
+    ReviewsubBtn.click(function () {
+        var Reviewstatus=$("input:radio[name='Reviewstatus']:checked").val();
+        var AlterID = getchecked().parentElement.parentElement.getAttribute("alterid");
+        var ReviewContent=ReviewContenInput.val();
+        var Reviewer =ReviewerInput.val();
+        alert(AlterID);
+        alert(Reviewstatus);
+        alert(ReviewContent);
+        alert(Reviewer);
+        xfzajax.post( {
+            'url':'/alter/Review_Alter_manager/',
+            'data':{
+                'AlterID':AlterID,
+                'ReviewStatus':Reviewstatus,
+                'ReviewContent':ReviewContent,
+                'Reviewer':Reviewer,
+            },
+            'success': function (result) {
+                if(result['code'] === 200){
+                    window.messageBox.show("审核成功");
+                    setTimeout("window.location.reload()","300");
+                    // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
+                    //     window.location.reload();
+                    // });
+                }
+            }
+        });
 
     });
+
 };
+
+
 
 
 

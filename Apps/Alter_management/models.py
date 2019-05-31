@@ -11,7 +11,7 @@ class Alter_managment(models.Model):
         FillTime=models.DateTimeField(auto_now=True)#'填报时间'
         Reviewer=models.CharField(max_length=50,null=True)# '审核人'
         ReviewStatus=models.CharField(max_length=2,null=True,default=1)#'审核状态',
-        ReviewContent=models.CharField(max_length=255,null=True)#'审核内容',
+        ReviewContent=models.TextField(max_length=1000,null=True)#'审核内容',
         AuditTime=models.DateTimeField(null=True)#'审核时间',
 
         class Meta:

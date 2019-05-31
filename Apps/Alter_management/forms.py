@@ -26,3 +26,8 @@ class EditAlterform(forms.Form,FormMixin):
         # class Meta:
         #         model=Alter_managment
         #         exclude={'AlterType','AssociatedNumber','Datebase','AlterContent','Informant'}
+class Reviewform(forms.Form,FormMixin):
+        AlterID = forms.IntegerField(error_messages={"required": "必须传入变更id！"})
+        ReviewStatus = forms.CharField(max_length=2)  # '审核状态',
+        ReviewContent = forms.CharField(widget=forms.Textarea)  # '审核内容',
+        Reviewer = forms.CharField(max_length=50)  # '审核人'
