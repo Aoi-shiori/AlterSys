@@ -110,13 +110,13 @@
 
       <!-- search form -->
       <form action="#" method="get" class="sidebar-form">
-        <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="搜索...">
-          <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </span>
-        </div>
+{#        <div class="input-group">#}
+{#          <input type="text" name="q" class="form-control" placeholder="搜索...">#}
+{#          <span class="input-group-btn">#}
+{#                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>#}
+{#                </button>#}
+{#              </span>#}
+{#        </div>#}
       </form>
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
@@ -134,8 +134,9 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li class="active"><a href="{% url 'management:Alter_manager' %}"><i class="fa fa-pencil-square-o"></i> 变更管理</a></li>
+            <li ><a href="{% url 'management:Alter_manager' %}"><i class="fa fa-pencil-square-o"></i> 变更管理</a></li>
             <li><a href="{% url 'management:Alter_add' %}"><i class="fa fa-circle-o"></i> 变更提交</a></li>
+            <li class="active"><a href="{% url 'Execute:Alter_execute' %}"><i class="fa fa-circle-o"></i> 变更执行</a></li>
           </ul>
         </li>
         <li class="treeview">

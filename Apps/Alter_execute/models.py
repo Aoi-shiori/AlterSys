@@ -7,6 +7,6 @@ class Alter_execute(models.Model):
     Hospital=models.CharField(max_length=25)
     Executor=models.CharField(max_length=50)
     ExecutionTime=models.DateTimeField(auto_now=True)
-    ExecutionResult=models.CharField(max_length=255)
+    ExecutionResult=models.TextField(max_length=500)
     class Meta:
         db_table = 'Alter_execute'
