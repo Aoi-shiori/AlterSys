@@ -112,11 +112,25 @@
                                         <td class ='填报人 Informant-td'>{{ Alterd_data.Informant}}</td>
                                         <td class ='填报时间 FillTime-td'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
                                         <td class ='审核人 Reviewer-td'>{{ Alterd_data.Reviewer|default:''}}</td>
-                                        <td class ='审核状态 ReviewStatus-td'>{{ Alterd_data.ReviewStatus|default:''}}</td>
+{#                                        <td class ='审核状态 ReviewStatus-td'>{{ Alterd_data.ReviewStatus|default:''}}</td>#}
+                                        {% if Alterd_data.ReviewStatus == '1' %}
+                                                <td class ='审核状态 ReviewStatus-td'>已审核</td>
+                                        {% elif Alterd_data.ReviewStatus == '2'  %}
+
+                                             <td class ='审核状态 ReviewStatus-td'>待修改</td>
+                                        {% else%}
+                                             <td class ='审核状态 ReviewStatus-td'>未审核</td>
+                                        {% endif %}
+
                                         <td class ='审核内容 ReviewContent-td'>{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
                                         <td class ='审核时间 AuditTime-td  ' >{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
                                         <td>
-                                            <button class="btn-warning btn-xs editor-btn" >编辑</button>
+                                            {% if  Alterd_data.ReviewStatus == '1'%}
+                                                 <button class=" btn-xs editor-btn" style="background: grey" disabled="disabled">编辑</button>
+                                            {% else %}
+                                                 <button class="btn-warning btn-xs editor-btn" >编辑</button>
+                                            {% endif %}
+
                                             <button class="btn-danger btn-xs delete-btn" >删除</button>
                                         </td>
                                     </tr>

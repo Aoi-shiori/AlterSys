@@ -151,7 +151,7 @@ def edit_Alter_manager(request):#变更内容编辑用
         Datebase = form.cleaned_data.get("Datebase")  # '数据库'#
         AlterContent =form.cleaned_data.get("AlterContent")  # 变更内容
         Informant = form.cleaned_data.get("Informant")  # '填报人',
-        Alter_managment.objects.filter(AlterID=AlterID).update(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase, AlterContent=AlterContent, Informant=Informant)
+        Alter_managment.objects.filter(AlterID=AlterID).update(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase, AlterContent=AlterContent, Informant=Informant,FillTime=datetime.now())
         return resful.OK()
     else:
         return resful.params_error(message=form.get_error())
@@ -199,7 +199,7 @@ def Review_Alter_manager(request):#变更审核用
         ReviewStatus = form.cleaned_data.get('ReviewStatus')  # '审核状态',
         ReviewContent = form.cleaned_data.get('ReviewContent')  # '审核内容',
         Reviewer = form.cleaned_data.get('Reviewer')
-        Alter_managment.objects.filter(AlterID=AlterID).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=Reviewer)
+        Alter_managment.objects.filter(AlterID=AlterID).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=Reviewer,AuditTime=datetime.now())
         return resful.OK()
     else:
        return resful.params_error(message=form.get_error())

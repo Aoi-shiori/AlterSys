@@ -4,7 +4,7 @@ from django.views.generic import View
 #导入只接受GET请求和POST请求的装饰器
 from django.views.decorators.http import require_POST,require_GET
 #导入form验证用的表单
-from .forms import Executeform,updateExecuteForm
+from .forms import Executeform,execute_ExecuteForm
 #导入Alter_execute的模型
 from Apps.Alter_execute.models import Alter_execute
 #导入我们重构的resful文件，用于返回结果代码和消息，详细可以看resful.py文件
@@ -134,15 +134,29 @@ def add_Alter_Execute(request):
         return resful.params_error(message="表单数据验证不通过！")
 
 
-def update_Alter_Execute(request):
-    form =updateExecuteForm(request.POST)
+def execute_Alter_Execute(request):
+    form =execute_ExecuteForm(request.POST)
     if form.is_valid():
         executeID=form.cleaned_data.get('executeID')
         AlterID = form.cleaned_data.get('AlterID')
         Hospital = form.cleaned_data.get('Hospital')
         Executor = form.cleaned_data.get('Executor')
         ExecutionResult = form.cleaned_data.get('ExecutionResult')
-        Alter_execute.objects.filter(executeID=executeID).update(AlterID=AlterID, Hospital=Hospital, Executor=Executor,ExecutionResult=ExecutionResult)
+        #获取字段的值
+        # AlterIDnow=Alter_execute.objects.values('AlterID').filter(executeID=executeID)
+        # if int(AlterID)>int(AlterIDnow):
+        Alter_execute.objects.filter(executeID=executeID).update(AlterID=AlterID, Hospital=Hospital, Executor=Executor,ExecutionResult=ExecutionResult,ExecutionTime=datetime.now())
         return resful.OK()
     else:
-        return resful.params_error(message="该变更执行不存在")
+        return resful.params_error(message="表单验证不通过！")
+
+
+#删除变更执行数据
+@require_POST
+def delete_Alter_Execute(request):
+    executeID =request.POST.get("executeID")
+    try:
+        Alter_execute.objects.filter(executeID=executeID).delete()
+        return resful.OK()
+    except:
+        return resful.params_error(message="该变更执行数据不存在")

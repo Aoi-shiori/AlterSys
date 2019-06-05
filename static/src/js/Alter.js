@@ -330,6 +330,7 @@ Alter.prototype.listenReviewEvent=function(){
 
             alert(val);
             self.showReviewEvent();
+
         }
         // if (selectnow.find("input[type='checkbox']").prop("checked")==true){
         //         self.showReviewEvent();
@@ -370,7 +371,7 @@ Alter.prototype.listenselectnow=function(){
 };
 
 
-
+//审核提交
 Alter.prototype.listenReviewSbumitEvent=function(){
     var self =this;
     var Reviewgroup = $('.Review-group');
@@ -385,10 +386,10 @@ Alter.prototype.listenReviewSbumitEvent=function(){
         var AlterID = getchecked().parentElement.parentElement.getAttribute("alterid");
         var ReviewContent=ReviewContenInput.val();
         var Reviewer =ReviewerInput.val();
-        alert(AlterID);
-        alert(Reviewstatus);
-        alert(ReviewContent);
-        alert(Reviewer);
+        //alert(AlterID);
+        //alert(Reviewstatus);
+       // alert(ReviewContent);
+        //alert(Reviewer);
         xfzajax.post( {
             'url':'/alter/Review_Alter_manager/',
             'data':{

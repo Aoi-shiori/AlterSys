@@ -137,35 +137,31 @@ Execute.prototype.listenshowhideEvent=
 //监听修改事件
 Execute.prototype.listenreviseEvent=function(){
         var revisegroup = $('.revise-group');
-
-        var NEWAlterIDinput = revisegroup.find("input[name='AlterID']");
-        var NEWAlterTypeInput = revisegroup.find("input[name='AlterType']");
-        var NEWAssociatedNumberInput = revisegroup.find("input[name='AssociatedNumber']");
-        var NEWDatebaseInput = revisegroup.find("input[name='Datebase']");
-        var NEWAlterContentInput = revisegroup.find("textarea[name='AlterContent']");
-        var NEWInformantInput = revisegroup.find("input[name='Informant']");
+        var executeID_Input = revisegroup.find("input[name='executeID']");
+        var AlterID_Input = revisegroup.find("input[name='AlterID']");
+        var Hospital_Input = revisegroup.find("input[name='Hospital']");
+        var Executor_Input = revisegroup.find("input[name='Executor']");
+        var ExecutionResult_Input = revisegroup.find("textarea[name='ExecutionResult']");
         var reviseBtn = revisegroup.find(".revise-btn");
     reviseBtn.click(function () {
-        var AlterID =NEWAlterIDinput.val();
-        var AlterType = NEWAlterTypeInput.val();
-        var AssociatedNumber = NEWAssociatedNumberInput.val();
-        var Datebase = NEWDatebaseInput.val();
-        var AlterContent = NEWAlterContentInput.val();
-        var Informant = NEWInformantInput.val();
+        var executeID =executeID_Input.val();
+        var AlterID = AlterID_Input.val();
+        var Hospital = Hospital_Input.val();
+        var Executor = Executor_Input.val();
+        var ExecutionResult = ExecutionResult_Input.val();
 
          xfzajax.post({
-            'url': '/alter/edit_Alter_manager/',
+            'url': '/execute/execute_Alter_Execute/',
             'data': {
+                'executeID':executeID,
                 'AlterID':AlterID,
-                'AlterType': AlterType,
-                'AssociatedNumber': AssociatedNumber,
-                'Datebase': Datebase,
-                'AlterContent': AlterContent,
-                'Informant': Informant,
+                'Hospital': Hospital,
+                'Executor': Executor,
+                'ExecutionResult': ExecutionResult,
             },
             'success': function (result) {
                 if(result["code"] === 200){
-                    window.messageBox.show("修改成功");
+                    window.messageBox.show("执行成功");
                     setTimeout("window.location.reload()","500");
 
                     // xfzalert.alertSuccess("恭喜！新闻发表成功!",function () {
@@ -218,15 +214,15 @@ Execute.prototype.listenSigninEvent = function () {
 //监听删除事件
 Execute.prototype.listenDeleteEvent = function () {
     var DeleteBTN = $('.delete-btn');
-
     DeleteBTN.click(function () {
         var currentBtn =  $(this);
         var tr = currentBtn.parent().parent();
-        var AlterID =tr.attr('AlterID');
+        var executeID =tr.attr('executeID');
+        console.log(executeID);
         xfzajax.post({
-            'url': '/alter/delete_Alter_manager/',
+            'url': '/execute/delete_Alter_Execute/',
             'data': {
-                'AlterID': AlterID,
+                'executeID': executeID,
             },
              'success': function (result) {
                 if(result['code'] === 200){

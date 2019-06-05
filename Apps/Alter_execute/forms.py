@@ -7,8 +7,8 @@ class Executeform(forms.Form,FormMixin):
         Executor=forms.CharField(max_length=50)
         ExecutionResult=forms.CharField(widget=forms.Textarea)
 
-class updateExecuteForm(forms.Form,FormMixin):
-        executeID=forms.IntegerField(required=True)
+class execute_ExecuteForm(forms.Form,FormMixin):
+        executeID=forms.IntegerField(error_messages={"required":"必须传入执行id！"})
         AlterID =forms.CharField(max_length=50)
         Hospital=forms.CharField(max_length=25)
         Executor=forms.CharField(max_length=50)
