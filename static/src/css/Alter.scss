@@ -33,9 +33,9 @@ th{
   .auth-wapper{
     //定义一个变量
     $authwapperwidth:500px;
-    $authwapperheight:580px;
+    $authwapperheight:520px;
     //盒子四个角显示圆角，只有一个值就全部圆角，4个值分别4个角
-    border-radius: 10px;
+    //border-radius: 10px;
     width: $authwapperwidth;
     height:$authwapperheight;
     //background: snow;
@@ -69,6 +69,7 @@ th{
       position: relative;
       //.auth-scoll-wapper{超出的的进行隐藏
       overflow: hidden;
+      background: rgba(255,255,255,0.1);
 
       .scoll-wapper{
         width: $authwapperwidth * 2;

@@ -19,6 +19,8 @@ from django.db.models import Q
 #用于拼接url
 from urllib import parse
 
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 # Create your views here.
 
@@ -39,6 +41,7 @@ def index_manage(request):
 
 
 #新变更管理页面
+#@staff_member_required(login_url='login')
 class Alter_manager_newview(View):#变更管理页面，返回数据
     def get(self,request):
         #request.GET.get获取出来的数据都是字符串类型
@@ -150,8 +153,8 @@ def edit_Alter_manager(request):#变更内容编辑用
         AssociatedNumber =form.cleaned_data.get("AssociatedNumber")  # '关联编号'#
         Datebase = form.cleaned_data.get("Datebase")  # '数据库'#
         AlterContent =form.cleaned_data.get("AlterContent")  # 变更内容
-        Informant = form.cleaned_data.get("Informant")  # '填报人',
-        Alter_managment.objects.filter(AlterID=AlterID).update(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase, AlterContent=AlterContent, Informant=Informant,FillTime=datetime.now())
+        Alter_managment.objects.filter(AlterID=AlterID).update(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase, AlterContent=AlterContent, Informant=request.user.name
+,FillTime=datetime.now())
         return resful.OK()
     else:
         return resful.params_error(message=form.get_error())
@@ -176,13 +179,12 @@ def add_Alter_manager(request):#添加变更内容
         AssociatedNumber = form.cleaned_data.get('AssociatedNumber')
         Datebase = form.cleaned_data.get('Datebase')
         AlterContent=form.cleaned_data.get('AlterContent')
-        Informant=form.cleaned_data.get('Informant')
 
         #判断变更内容在库中是否存在
         exists=Alter_managment.objects.filter(AlterContent=AlterContent).exists()
         if not exists:
             Alter_managment.objects.create(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase,AlterContent=AlterContent,
-                                           Informant=Informant)
+                                           Informant=request.user.name)
             return resful.OK()
         else:
 
@@ -198,8 +200,7 @@ def Review_Alter_manager(request):#变更审核用
         AlterID = form.cleaned_data.get('AlterID')
         ReviewStatus = form.cleaned_data.get('ReviewStatus')  # '审核状态',
         ReviewContent = form.cleaned_data.get('ReviewContent')  # '审核内容',
-        Reviewer = form.cleaned_data.get('Reviewer')
-        Alter_managment.objects.filter(AlterID=AlterID).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=Reviewer,AuditTime=datetime.now())
+        Alter_managment.objects.filter(AlterID=AlterID).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=request.user.name,AuditTime=datetime.now())
         return resful.OK()
     else:
        return resful.params_error(message=form.get_error())

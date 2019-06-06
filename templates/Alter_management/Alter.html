@@ -72,7 +72,11 @@
                         </div>
                     </form>
                     <button class="btn btn-info pull-right add-btn">添加</button>
-                    <button class="btn btn-success pull-right Review-btn">审核</button>
+                    {% if user.Permissions == '0' or user.Permissions == '1' or user.is_superuser %}
+                        <button class="btn btn-success pull-right Review-btn">审核</button>
+                    {% else %}
+
+                    {% endif %}
 
                 </div>
                 <div class="box body">
@@ -217,10 +221,6 @@
                                 <textarea name="AlterContent" id="AlterContent"  rows="5" maxlength="1000" required placeholder="请输入变更内容"></textarea>
                             </div>
                             <div class="input-group">
-                                <label for="Informant">提交人:</label>
-                                <input type="text" class="form-control" name="Informant" placeholder="变更提交者">
-                            </div>
-                            <div class="input-group">
                                 <input type="button" class="submit-btn" value="提交">
                             </div>
                         </div>
@@ -251,10 +251,6 @@
                                 <label for="AlterContent">变更内容:</label>
 {#                                <input type="text" class="form-control" name="AlterContent" id="ID-AlterContent">#}
                                 <textarea name="AlterContent" id="ID-AlterContent"  rows="5" required ></textarea>
-                            </div>
-                            <div class="input-group">
-                                <label for="Informant">提交人:</label>
-                                <input type="text" class="form-control" name="Informant" id="ID-Informant">
                             </div>
                             <div class="input-group btn-group btn-group-lg">
 {#                                <input type="submit" class="submit-btn" value="提交" >#}
@@ -292,10 +288,6 @@
                                  <label for="ReviewContent">审核内容:</label>
 {#                                <input type="text" class="form-control" name="AlterContent" placeholder="请输入变更内容">#}
                                 <textarea name="ReviewContent" id="ReviewContent"  rows="5" maxlength="1000" required placeholder="请输入审核内容"></textarea>
-                            </div>
-                            <div class="input-group">
-                                <label for="Reviewer">审核人:</label>
-                                <input type="text" class="form-control" name="Reviewer" placeholder="审核人">
                             </div>
                             <div class="input-group">
 {#                                <input type="button" class="btn btn-success btn-sm submitReview-btn review1123" name="Review-btn" value="审核提交">#}

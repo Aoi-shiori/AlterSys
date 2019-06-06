@@ -122,11 +122,11 @@ def add_Alter_Execute(request):
     if form.is_valid():
         AlterID =form.cleaned_data.get('AlterID')
         Hospital = form.cleaned_data.get('Hospital')
-        Executor = form.cleaned_data.get('Executor')
+        #Executor = form.cleaned_data.get('Executor')
         ExecutionResult =form.cleaned_data.get('ExecutionResult')
         exists =Alter_execute.objects.filter(Hospital=Hospital).exists()
         if not exists:
-            Alter_execute.objects.create(AlterID=AlterID,Hospital=Hospital,Executor=Executor,ExecutionResult=ExecutionResult)
+            Alter_execute.objects.create(AlterID=AlterID,Hospital=Hospital,Executor=request.user.name,ExecutionResult=ExecutionResult)
             return resful.OK()
         else:
             return resful.params_error(message="该执行记录已经存在！")
@@ -140,12 +140,11 @@ def execute_Alter_Execute(request):
         executeID=form.cleaned_data.get('executeID')
         AlterID = form.cleaned_data.get('AlterID')
         Hospital = form.cleaned_data.get('Hospital')
-        Executor = form.cleaned_data.get('Executor')
         ExecutionResult = form.cleaned_data.get('ExecutionResult')
         #获取字段的值
         # AlterIDnow=Alter_execute.objects.values('AlterID').filter(executeID=executeID)
         # if int(AlterID)>int(AlterIDnow):
-        Alter_execute.objects.filter(executeID=executeID).update(AlterID=AlterID, Hospital=Hospital, Executor=Executor,ExecutionResult=ExecutionResult,ExecutionTime=datetime.now())
+        Alter_execute.objects.filter(executeID=executeID).update(AlterID=AlterID, Hospital=Hospital, Executor=request.user.name,ExecutionResult=ExecutionResult,ExecutionTime=datetime.now())
         return resful.OK()
     else:
         return resful.params_error(message="表单验证不通过！")

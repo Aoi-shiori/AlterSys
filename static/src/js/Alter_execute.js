@@ -140,14 +140,12 @@ Execute.prototype.listenreviseEvent=function(){
         var executeID_Input = revisegroup.find("input[name='executeID']");
         var AlterID_Input = revisegroup.find("input[name='AlterID']");
         var Hospital_Input = revisegroup.find("input[name='Hospital']");
-        var Executor_Input = revisegroup.find("input[name='Executor']");
         var ExecutionResult_Input = revisegroup.find("textarea[name='ExecutionResult']");
         var reviseBtn = revisegroup.find(".revise-btn");
     reviseBtn.click(function () {
         var executeID =executeID_Input.val();
         var AlterID = AlterID_Input.val();
         var Hospital = Hospital_Input.val();
-        var Executor = Executor_Input.val();
         var ExecutionResult = ExecutionResult_Input.val();
 
          xfzajax.post({
@@ -156,7 +154,6 @@ Execute.prototype.listenreviseEvent=function(){
                 'executeID':executeID,
                 'AlterID':AlterID,
                 'Hospital': Hospital,
-                'Executor': Executor,
                 'ExecutionResult': ExecutionResult,
             },
             'success': function (result) {
@@ -181,13 +178,11 @@ Execute.prototype.listenSigninEvent = function () {
     var AlterIDInput = Addgroup.find("input[name='AlterID']");
     var HospitalInput = Addgroup.find("input[name='Hospital']");
     var ExecutionResultInput = Addgroup.find("textarea[name='ExecutionResult']");
-    var ExecutorInput = Addgroup.find("input[name='Executor']");
     var submitBtn = Addgroup.find(".submit-btn");
     submitBtn.click(function () {
         var AlterID = AlterIDInput.val();
         var Hospital = HospitalInput.val();
         var ExecutionResult = ExecutionResultInput.val();
-        var Executor = ExecutorInput.val();
 
          xfzajax.post({
             'url': '/execute/add_Alter_Execute/',
@@ -195,7 +190,6 @@ Execute.prototype.listenSigninEvent = function () {
                 'AlterID': AlterID,
                 'Hospital': Hospital,
                 'ExecutionResult': ExecutionResult,
-                'Executor': Executor,
             },
              'success': function (result) {
                 if(result['code'] === 200){

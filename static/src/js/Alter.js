@@ -180,7 +180,6 @@ Alter.prototype.listenreviseEvent=function(){
         var NEWAssociatedNumberInput = revisegroup.find("input[name='AssociatedNumber']");
         var NEWDatebaseInput = revisegroup.find("input[name='Datebase']");
         var NEWAlterContentInput = revisegroup.find("textarea[name='AlterContent']");
-        var NEWInformantInput = revisegroup.find("input[name='Informant']");
         var reviseBtn = revisegroup.find(".revise-btn");
     reviseBtn.click(function () {
         var AlterID =NEWAlterIDinput.val();
@@ -188,7 +187,7 @@ Alter.prototype.listenreviseEvent=function(){
         var AssociatedNumber = NEWAssociatedNumberInput.val();
         var Datebase = NEWDatebaseInput.val();
         var AlterContent = NEWAlterContentInput.val();
-        var Informant = NEWInformantInput.val();
+
 
          xfzajax.post({
             'url': '/alter/edit_Alter_manager/',
@@ -198,7 +197,6 @@ Alter.prototype.listenreviseEvent=function(){
                 'AssociatedNumber': AssociatedNumber,
                 'Datebase': Datebase,
                 'AlterContent': AlterContent,
-                'Informant': Informant,
             },
             'success': function (result) {
                 if(result["code"] === 200){
@@ -223,14 +221,12 @@ Alter.prototype.listenSigninEvent = function () {
     var AssociatedNumberInput = Addgroup.find("input[name='AssociatedNumber']");
     var DatebaseInput = Addgroup.find("input[name='Datebase']");
     var AlterContentInput = Addgroup.find("textarea[name='AlterContent']");
-    var InformantInput = Addgroup.find("input[name='Informant']");
     var submitBtn = Addgroup.find(".submit-btn");
     submitBtn.click(function () {
         var AlterType = AlterTypepInput.val();
         var AssociatedNumber = AssociatedNumberInput.val();
         var Datebase = DatebaseInput.val();
         var AlterContent = AlterContentInput.val();
-        var Informant = InformantInput.val();
 
          xfzajax.post({
             'url': '/alter/add_Alter_manager/',
@@ -239,7 +235,6 @@ Alter.prototype.listenSigninEvent = function () {
                 'AssociatedNumber': AssociatedNumber,
                 'Datebase': Datebase,
                 'AlterContent': AlterContent,
-                'Informant': Informant,
             },
              'success': function (result) {
                 if(result['code'] === 200){
@@ -377,7 +372,7 @@ Alter.prototype.listenReviewSbumitEvent=function(){
     var Reviewgroup = $('.Review-group');
     var ReviewsubBtn=$('.Reviewsub-btn');
     var ReviewContenInput = Reviewgroup.find("textarea[name='ReviewContent']");
-    var ReviewerInput = Reviewgroup.find("input[name='Reviewer']");
+
     //var SbumitreviewBtn = Reviewgroup.find("input[name='Review-btn']");
 
 
@@ -385,7 +380,6 @@ Alter.prototype.listenReviewSbumitEvent=function(){
         var Reviewstatus=$("input:radio[name='Reviewstatus']:checked").val();
         var AlterID = getchecked().parentElement.parentElement.getAttribute("alterid");
         var ReviewContent=ReviewContenInput.val();
-        var Reviewer =ReviewerInput.val();
         //alert(AlterID);
         //alert(Reviewstatus);
        // alert(ReviewContent);
@@ -396,7 +390,6 @@ Alter.prototype.listenReviewSbumitEvent=function(){
                 'AlterID':AlterID,
                 'ReviewStatus':Reviewstatus,
                 'ReviewContent':ReviewContent,
-                'Reviewer':Reviewer,
             },
             'success': function (result) {
                 if(result['code'] === 200){
