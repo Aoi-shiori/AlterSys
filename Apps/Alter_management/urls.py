@@ -1,7 +1,7 @@
 #encoding:utf-8
 from django.urls import path
 from . import views
-app_name ='mangement'
+app_name ='management'
 
 urlpatterns = [
     path('',views.login,name ='index'),
