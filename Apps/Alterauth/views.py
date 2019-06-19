@@ -6,6 +6,7 @@ from .froms import loginform
 from  django.http import JsonResponse
 from utils import resful
 from django.shortcuts import render,redirect,reverse
+from Apps.Alterauth.models import User
 #只接收post请求
 
 @require_POST
@@ -44,3 +45,13 @@ def logout_view(request):
     logout(request)
     return redirect(reverse('management:login'))
     pass
+
+
+#员工授权管理
+def staff_view(request):
+    #staffs=User.objects.all()
+    staffs = User.object.all()
+    context={
+        'staffs':staffs
+    }
+    return  render(request,"Alter_management/staffs.html",context=context)
