@@ -16,9 +16,9 @@ class  UserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_user(self, mobilephone, username, password, **kwargs):
+    def create_user(self, MobilePhone, username, password, **kwargs):
         kwargs['is_superuser'] = False
-        return self._create_user(mobilephone, username, password, **kwargs)
+        return self._create_user(MobilePhone, username, password, **kwargs)
 
     def create_superuser(self,MobilePhone, username, password, **kwargs):
         kwargs['is_superuser'] = True
@@ -40,10 +40,9 @@ class User(AbstractBaseUser,PermissionsMixin):
         username = models.CharField(max_length=100)#用户名#
         name = models.CharField(max_length=50)#姓名#
         Department = models.CharField(max_length=100)#所在部门#
-        Permissions = models.CharField(max_length=2)#用户权限0，管理员、1审核者，2提交者，3执行者#
+        Permissions = models.BooleanField(default=False)#用户权限0，管理员、1审核者，2提交者，3执行者#
         RegistrationTime = models.DateTimeField(auto_now_add=True)#注册时间#
         Cancellation = models.BooleanField(default=True)#是否有效#
-
         USERNAME_FIELD = 'MobilePhone'
         #telphone,username,password
         REQUIRED_FIELDS = ['username']

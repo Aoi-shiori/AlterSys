@@ -48,6 +48,7 @@ Auth.prototype.run=function () {
         var self=this;
         self.listenshowhideEvent();
         self.listenSwitchEvent();
+        self.listenAddStaffEvent();
 
 };
 
@@ -104,6 +105,50 @@ Auth.prototype.listenSwitchEvent=
     });
 };
 
+
+
+Auth.prototype.listenAddStaffEvent= function(){
+    var addstaffbtn = $('#addstaff-btn');
+    addstaffbtn.click(function () {
+        event.preventDefault();
+        var MobilePhone = $('#MobilePhone1').val();
+        var username = $('#username').val();
+        var email = $('#email').val();
+        var name = $('#name').val();
+        var Department = $('#Department').val();
+        var password1 = $('#password1').val();
+        var password2 = $('#password2').val();
+        var Permissions = $('#Permissions option:selected' ).text();
+        var groups = $('#groups:checked').val();
+        xfzajax.post({
+                'url':'/account/add_staff/',
+                'data':{
+                    'MobilePhone':MobilePhone,
+                    'username':username,
+                    'email':email,
+                    'name':name,
+                    'Department':Department,
+                    'password1':password1,
+                    'password2':password2,
+                    'Permissions':Permissions,
+                    'groups':groups,
+                },
+                'success':function (result) {
+                    if (result['code']===200){
+                        window.messageBox.showSuccess('添加成功！');
+                    } else {
+                        window.messageBox.showError('服务有问题！');
+                    }
+                },
+                'fail':function (error) {
+                    window.messageBox.showError('服务器内部错误！');
+                }
+        });
+
+    });
+
+
+};
 
 
 $(function () {

@@ -13,25 +13,27 @@
         <div class="col-md-12">
             <div class="box">
                 <div class="box-header">
-                    <button class="btn btn-primary pull-right">添加员工</button>
+                    <a href="{% url 'Alterauth:add_staff' %}" class="btn btn-primary pull-right">添加员工</a>
                 </div>
                 <div class="box body">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
+                              <th>序号</th>
                               <th>用户名</th>
                               <th>姓名</th>
                               <th>手机号码</th>
                               <th>所属分组</th>
+                              <th>部门</th>
+                              <th>审核权限</th>
+                              <th>是否有效</th>
                               <th>操作</th>
-                              <th>88</th>
-                              <th>889</th>
-                              <th>990</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for staff in staffs %}
                             <tr>
+                              <td>{{ forloop.counter }}</td>
                               <td>{{ staff.username }}</td>
                               <td>{{ staff.name }}</td>
                               <td>{{ staff.MobilePhone }}</td>
@@ -44,6 +46,18 @@
                                     {% endfor %}
                                 {% endif %}
                               </td>
+                              <td>{{ staff.Department }}</td>
+                              {% if staff.Permissions == True %}
+                                  <td><input type="checkbox"  checked disabled="True"></td>
+                              {% else %}
+                                   <td><input type="checkbox" disabled="True"></td>
+                              {% endif %}
+
+                              {% if staff.Cancellation == True %}
+                                  <td><input type="checkbox"  checked disabled="True"></td>
+                              {% else %}
+                                   <td><input type="checkbox" disabled="True"></td>
+                              {% endif %}
                               <td>
                                   <button class="btn btn-info btn-xs">编辑</button>
                                   <button class="btn btn-danger btn-xs">删除</button>

@@ -72,7 +72,7 @@
                         </div>
                     </form>
                     <button class="btn btn-info pull-right add-btn">添加</button>
-                    {% if user.Permissions == '0' or user.Permissions == '1' or user.is_superuser %}
+                    {% if user.Permissions == True or user.is_superuser %}
                         <button class="btn btn-success pull-right Review-btn">审核</button>
                     {% else %}
 

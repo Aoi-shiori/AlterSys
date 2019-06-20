@@ -43,6 +43,7 @@
   <script src="{% static 'js/Alteralert.min.js'%}"></script>
   <script src="{% static 'js/message.min.js'%}"></script>
   <script src="{% static 'js/Alterajax.min.js'%}"></script>
+  <script src="{% static 'js/auth.min.js'%}"></script>
 
 
 
@@ -143,22 +144,21 @@
             <li class="active"><a href="{% url 'Execute:Alter_execute' %}"><i class="fa fa-circle-o"></i> 变更执行</a></li>
           </ul>
         </li>
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-users"></i>
-            <span>用户管理</span>
-            <span class="pull-right-container">
-              <span class="label label-primary pull-right"></span>
-                 <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
+        {% if user.is_superuser %}
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-users"></i>
+                <span>用户管理</span>
+                <span class="pull-right-container">
+                  <span class="label label-primary pull-right"></span>
+                     <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
             <li><a href="{% url 'Alterauth:staffs'%}"><i class="fa fa-circle-o"></i> 员工管理</a></li>
-            <li><a href="{% static 'AdminLTE/pages/layout/boxed.html '%}"><i class="fa fa-circle-o"></i> Boxed</a></li>
-            <li><a href="{% static 'AdminLTE/pages/layout/fixed.html '%}"><i class="fa fa-circle-o"></i> Fixed</a></li>
-            <li><a href="{% static 'AdminLTE/pages/layout/collapsed-sidebar.html '%}"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>
           </ul>
         </li>
+        {% endif %}
 
       </ul>
     </section>
