@@ -118,7 +118,8 @@ Auth.prototype.listenAddStaffEvent= function(){
         var Department = $('#Department').val();
         var password1 = $('#password1').val();
         var password2 = $('#password2').val();
-        var Permissions = $('#Permissions option:selected' ).text();
+        var Permissions = $('#Permissions').find("option:selected").val();
+alert(Permissions);
         var groups = $('#groups:checked').val();
         xfzajax.post({
                 'url':'/account/add_staff/',

@@ -19,19 +19,15 @@ class AddStaffForm(forms.Form,FormMixin):
     email = forms.EmailField()
     name = forms.CharField(max_length=50)  # 姓名#
     Department = forms.CharField(max_length=100)  # 所在部门#
-    Permissions = forms.BooleanField()  # 用户权限0，管理员、1审核者，2提交者，3执行者#
-    groups = forms.CharField(max_length=10)
+    Permissions = forms.CharField()# 审核权限
 
-    def clean(self):
-        clean_Data = super(AddStaffForm,self).clean()
-        password1 = clean_Data.get('password1')
-        password2 = clean_Data.get('password2')
-        MobilePhone = clean_Data.get('MobilePhone')
-        Permissions =clean_Data.get('Permissions')
-        groups=clean_Data.get('groups')
 
-        if password1 != password2:
-            raise forms.ValidationError('两次密码输入不一致！')
-        exists = User.object.filter(MobilePhone=MobilePhone).exists()
-        if exists:
-            raise forms.ValidationError('该手机号码已经注册！')
+    # def clean(self):
+    #     clean_Data = super(AddStaffForm,self).clean()
+    #     password1 = clean_Data.get('password1')
+    #     password2 = clean_Data.get('password2')
+    #     if password1 != password2:
+    #         raise forms.ValidationError('两次密码输入不一致！')
+    #     exists = User.object.filter(MobilePhone=MobilePhone).exists()
+    #     if exists:
+    #         raise forms.ValidationError('该手机号码已经注册！')

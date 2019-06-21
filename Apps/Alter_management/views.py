@@ -18,7 +18,8 @@ from django.utils.timezone import make_aware
 from django.db.models import Q
 #用于拼接url
 from urllib import parse
-
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.views.decorators import staff_member_required
 
 
@@ -145,6 +146,7 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
 
 
 @require_POST
+@method_decorator(permission_required(perm='alter_managment.change_alter_managment',login_url='/'),name="dispatch")
 def edit_Alter_manager(request):#变更内容编辑用
     form =EditAlterform(request.POST)
     if form.is_valid():

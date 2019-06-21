@@ -9,6 +9,8 @@ from django.shortcuts import render,redirect,reverse
 from Apps.Alterauth.models import User
 from django.views.generic import View
 from django.contrib.auth.models import Group
+from Apps.Alterauth.decorators import Alter_login_required,Alter_superuser_required
+from django.utils.decorators import method_decorator
 
 
 
@@ -51,7 +53,8 @@ def logout_view(request):
     pass
 
 
-#员工授权管理
+#员工授权管理,加了装饰器，未授权则跳转登陆页面
+@Alter_login_required
 def staff_view(request):
     #staffs=User.objects.all()
     staffs = User.object.all()
@@ -60,7 +63,8 @@ def staff_view(request):
     }
     return  render(request,"Alter_management/staffs.html",context=context)
 
-#添加员工
+#添加员工,类视图需要借助其他工具才能使用装饰器,导入method_decorator
+@method_decorator(Alter_superuser_required,name='dispatch')
 class AddStaff_view(View):
     def get(self,request):
         groups = Group.objects.all()
@@ -82,10 +86,10 @@ class AddStaff_view(View):
             #User.object.create_user(MobilePhone=MobilePhone, username=username, password=password1, email=email,
                                             #name=name, Department=Department, Permissions=Permissions)
             user=User.object.create_user(MobilePhone=MobilePhone,username=username,password=password1,email=email,name=name,Department=Department,Permissions=Permissions)
-            groups_ids=form.cleaned_data.get('groups')
-            groups= Group.objects.filter(pk__in=groups_ids)
-            user.groups.set(groups)
-            user.save()
+            # groups_ids=request.POST.getlist('groups[]')
+            # groups= Group.objects.filter(pk__in=groups_ids)
+            # user.groups.set(groups)
+            # user.save()
             return resful.OK()
             #return redirect(reverse('Alterauth:add_staff'))
         else:
