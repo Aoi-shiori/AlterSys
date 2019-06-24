@@ -146,7 +146,7 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
 
 
 @require_POST
-@method_decorator(permission_required(perm='alter_managment.change_alter_managment',login_url='/'),name="dispatch")
+#@method_decorator(permission_required(perm='alter_managment.change_alter_managment',login_url='/'),name="dispatch")
 def edit_Alter_manager(request):#变更内容编辑用
     form =EditAlterform(request.POST)
     if form.is_valid():
@@ -156,7 +156,7 @@ def edit_Alter_manager(request):#变更内容编辑用
         Datebase = form.cleaned_data.get("Datebase")  # '数据库'#
         AlterContent =form.cleaned_data.get("AlterContent")  # 变更内容
         Alter_managment.objects.filter(AlterID=AlterID).update(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase, AlterContent=AlterContent, Informant=request.user.name
-,FillTime=datetime.now())
+,FillTime=datetime.now(),ReviewStatus='0')
         return resful.OK()
     else:
         return resful.params_error(message=form.get_error())

@@ -22,7 +22,7 @@ class  UserManager(BaseUserManager):
 
     def create_superuser(self,MobilePhone, username, password, **kwargs):
         kwargs['is_superuser'] = True
-        kwargs['Permissions'] = '0'
+        kwargs['Permissions'] = True
         return self._create_user(MobilePhone, username, password, **kwargs)
 
 
