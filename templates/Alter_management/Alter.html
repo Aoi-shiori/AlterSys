@@ -71,6 +71,7 @@
                             <a href="{% url 'management:Alter_manager' %}">清空</a>
                         </div>
                     </form>
+                    <a href="{% url 'management:export_alter_manager' %}"><button class="btn btn-info pull-right">导出</button></a>
                     <button class="btn btn-info pull-right add-btn">添加</button>
                     {% if user.Permissions == True or user.is_superuser %}
                         <button class="btn btn-success pull-right Review-btn">审核</button>

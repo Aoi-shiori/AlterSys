@@ -49,6 +49,7 @@ Auth.prototype.run=function () {
         self.listenshowhideEvent();
         self.listenSwitchEvent();
         self.listenAddStaffEvent();
+        self.listenCancellationEvent();
 
 };
 
@@ -150,6 +151,39 @@ alert(Permissions);
 
 
 };
+
+
+//监听注销事件
+Auth.prototype.listenCancellationEvent = function () {
+    var CancellationBtn = $('.Cancellation_btn');
+
+    CancellationBtn.click(function () {
+        var currentBtn =  $(this);
+        var tr = currentBtn.parent().parent();
+        var uid =tr.attr('uid');
+        var Cancellation=tr.attr('Cancellation');
+        xfzajax.post({
+            'url': '/account/Cancellation/',
+            'data': {
+                'uid': uid,
+                'Cancellation':Cancellation,
+            },
+             'success': function (result) {
+                if(result['code'] === 200){
+                     window.messageBox.show("操作成功");
+                    setTimeout("window.location.reload()","300");
+                    // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
+                    //     window.location.reload();
+                    // });
+                }
+            }
+        });
+
+
+    });
+};
+
+
 
 
 $(function () {

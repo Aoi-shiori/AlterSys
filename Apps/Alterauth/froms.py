@@ -10,7 +10,6 @@ class loginform(forms.Form,FormMixin):
     remember = forms.IntegerField(required=False)
 
 
-
 class AddStaffForm(forms.Form,FormMixin):
     MobilePhone = forms.CharField(max_length=11)
     username = forms.CharField(max_length=100)  # 用户名#

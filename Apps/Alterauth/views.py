@@ -3,7 +3,7 @@
 from django.contrib.auth import login,logout,authenticate
 from  django.views.decorators.http import require_POST
 from .froms import loginform,AddStaffForm
-from  django.http import JsonResponse
+from  django.http import JsonResponse,HttpResponse
 from utils import resful
 from django.shortcuts import render,redirect,reverse
 from Apps.Alterauth.models import User
@@ -94,3 +94,13 @@ class AddStaff_view(View):
             #return redirect(reverse('Alterauth:add_staff'))
         else:
             return resful.params_error(message=form.get_error())
+
+def Cancellation(request):
+        uid=request.POST.get('uid').replace(',','') #传过来的uid后面带了个逗号，进行去除
+        Cancellation=request.POST.get('Cancellation')
+        if Cancellation == 'True':
+            User.object.filter(uid=uid).update(Cancellation=False)
+            return resful.OK()
+        else:
+            User.object.filter(uid=uid).update(Cancellation=True)
+            return resful.OK()

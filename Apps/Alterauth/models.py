@@ -42,7 +42,7 @@ class User(AbstractBaseUser,PermissionsMixin):
         Department = models.CharField(max_length=100)#所在部门#
         Permissions = models.BooleanField(default=False)#用户权限0，管理员、1审核者，2提交者，3执行者#
         RegistrationTime = models.DateTimeField(auto_now_add=True)#注册时间#
-        Cancellation = models.BooleanField(default=True)#是否有效#
+        Cancellation = models.BooleanField(default=False)#注销状态#
         USERNAME_FIELD = 'MobilePhone'
         #telphone,username,password
         REQUIRED_FIELDS = ['username']

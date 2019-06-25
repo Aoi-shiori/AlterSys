@@ -40,7 +40,11 @@ INSTALLED_APPS = [
     'Apps.Alterauth',
     'Apps.Alter_management',
     'Apps.Alter_execute',
+    'import_export',
 ]
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -143,3 +147,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static", "dist")]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')

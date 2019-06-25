@@ -22,8 +22,11 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.views.decorators import staff_member_required
 
+from django.http import HttpResponse
+from .admin import Alter_managment_resources
 
 # Create your views here.
+
 
 def login(request):
     return render(request,'Alter_management/login.html')
@@ -223,3 +226,14 @@ def Alter_detail(request,AlterID):#变更详情页面
 class Alter_add_view(View):#旧的变更提交页面
     def get(self,request):
         return render(request,"Alter_management/Alter_add.html")
+
+
+
+#导出数据
+def export(request):
+    alter_managment_resources = Alter_managment_resources()
+    queryset = Alter_managment.objects.filter(ReviewStatus='1')
+    dataset = alter_managment_resources.export(queryset)
+    response = HttpResponse(dataset.csv, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="Alter.csv"'
+    return response
