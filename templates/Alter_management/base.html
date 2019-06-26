@@ -32,6 +32,7 @@
   <link rel="stylesheet" href="{% static 'css/Alter.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/Auth.min.css' %}">
   <link rel="stylesheet" href="//at.alicdn.com/t/font_1198943_967bnm3vg6t.css">
+  <link rel="stylesheet" href="{% static '/sweetalert2/dist/sweetalert2.min.css' %}">
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -44,7 +45,13 @@
   <script src="{% static 'js/message.min.js'%}"></script>
   <script src="{% static 'js/Alterajax.min.js'%}"></script>
   <script src="{% static 'js/auth.min.js'%}"></script>
+  <script src="{% static '/sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
+  <script src="{% static '/sweetalert2/dist/sweetalert2.min.js' %}"></script>
+  <script src="{% static 'js/auth.min.js'%}"></script>
 
+
+  <!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browse/dist/sweetalert2.min.jsr and Android browser support -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 
 
 

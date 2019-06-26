@@ -32,8 +32,6 @@
 
 
 
-
-
 //构造函数Alter
 function Alter() {
         //函数当中的this代表的都是函数本身，所以定义一个self避免出现冲突
@@ -188,27 +186,56 @@ Alter.prototype.listenreviseEvent=function(){
         var Datebase = NEWDatebaseInput.val();
         var AlterContent = NEWAlterContentInput.val();
 
+        Swal.fire({
+            //position: 'top-end',
+            type: 'question',
+            title: '确认修改吗？',
+            showConfirmButton: true,
+            //timer: 1500,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false
 
-         xfzajax.post({
-            'url': '/alter/edit_Alter_manager/',
-            'data': {
-                'AlterID':AlterID,
-                'AlterType': AlterType,
-                'AssociatedNumber': AssociatedNumber,
-                'Datebase': Datebase,
-                'AlterContent': AlterContent,
-            },
-            'success': function (result) {
-                if(result["code"] === 200){
-                    window.messageBox.show("修改成功");
-                    setTimeout("window.location.reload()","500");
+        }).then(function (result) {
+            if(result.value){
+                Swal.fire(
+                    '已修改！',
+                    '修改成功。',
+                    'success'
+                ).then(function () {
+                    xfzajax.post({
+                        'url': '/alter/edit_Alter_manager/',
+                        'data': {
+                            'AlterID':AlterID,
+                            'AlterType': AlterType,
+                            'AssociatedNumber': AssociatedNumber,
+                            'Datebase': Datebase,
+                            'AlterContent': AlterContent,
+                        },
+                        'success':function (result) {
+                            if (result['code']===200){
+                                window.location.reload();
+                            } else {
+                                window.messageBox.showError(result['message']);
+                            }
+                        },
 
-                    // xfzalert.alertSuccess("恭喜！新闻发表成功!",function () {
-                    //     window.location.reload();
-                    // });
+                    });
+                })
+            }else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire(
+                        '已取消！',
+                        '你的数据是安全的:)',
+                        'error'
+                    )
                 }
-            }
-        });
+            })
+
     });
 };
 
@@ -243,6 +270,8 @@ Alter.prototype.listenSigninEvent = function () {
                     // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
                     //     window.location.reload();
                     // });
+
+
                 }
             }
         });
@@ -258,21 +287,78 @@ Alter.prototype.listenDeleteEvent = function () {
         var currentBtn =  $(this);
         var tr = currentBtn.parent().parent();
         var AlterID =tr.attr('AlterID');
-        xfzajax.post({
-            'url': '/alter/delete_Alter_manager/',
-            'data': {
-                'AlterID': AlterID,
-            },
-             'success': function (result) {
-                if(result['code'] === 200){
-                     window.messageBox.show("删除成功");
-                    setTimeout("window.location.reload()","300");
-                    // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
-                    //     window.location.reload();
-                    // });
+
+                Swal.fire({
+            //position: 'top-end',
+            type: 'waring',
+            title: '确认删除吗？',
+            showConfirmButton: true,
+            //timer: 1500,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false
+
+        }).then(function (result) {
+            if(result.value){
+                Swal.fire(
+                    '已删除！',
+                    '删除成功。',
+                    'success'
+                ).then(function () {
+                    xfzajax.post({
+                        'url': '/alter/delete_Alter_manager/',
+                        'data': {
+                            'AlterID':AlterID,
+                        },
+                        'success':function (result) {
+                            if (result['code']===200){
+                                //window.location.reload();
+                                window.messageBox.showSuccess(result['message']);
+                            } else {
+                                window.messageBox.showError(result['message']);
+                            }
+                        },
+
+                    });
+                })
+            }else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire(
+                        '已取消！',
+                        '你的数据是安全的:)',
+                        'error'
+                    )
                 }
-            }
-        });
+            })
+
+
+
+
+
+
+
+
+
+
+        // xfzajax.post({
+        //     'url': '/alter/delete_Alter_manager/',
+        //     'data': {
+        //         'AlterID': AlterID,
+        //     },
+        //      'success': function (result) {
+        //         if(result['code'] === 200){
+        //              window.messageBox.show("删除成功");
+        //             setTimeout("window.location.reload()","300");
+        //             // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
+        //             //     window.location.reload();
+        //             // });
+        //         }
+        //     }
+        // });
 
 
     });
@@ -417,3 +503,5 @@ $(function () {
         var alter = new Alter();
         alter.run();
 });
+
+
