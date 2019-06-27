@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,reverse
 from django.views.generic import View
 #导入只接受GET请求和POST请求的装饰器
 from django.views.decorators.http import require_GET,require_POST
@@ -24,7 +24,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 from django.http import HttpResponse
 from .admin import Alter_managment_resources
-
+from Apps.Alterauth.decorators import Alter_login_required
 # Create your views here.
 
 
@@ -46,6 +46,7 @@ def index_manage(request):
 
 #新变更管理页面
 #@staff_member_required(login_url='login')
+@method_decorator(Alter_login_required,name='dispatch')
 class Alter_manager_newview(View):#变更管理页面，返回数据
     def get(self,request):
         #request.GET.get获取出来的数据都是字符串类型
@@ -80,10 +81,11 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
         if reviewStatus:#审核状态判断
             Alterd_datas =Alterd_datas.filter(ReviewStatus=reviewStatus)
 
-
         paginator = Paginator(Alterd_datas, 2)  # 分页用，表示每2条数据分一页
-        page_obj= paginator.page(page)#获取总页数
+        if paginator.num_pages < page:
+            page= paginator.num_pages
 
+        page_obj= paginator.page(page)#获取总页数
         context_date =self.get_pagination_data(paginator,page_obj)#调用分页函数获取到页码
         context = {
             'Alterd_datas': page_obj.object_list,
@@ -149,6 +151,7 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
 
 
 @require_POST
+@Alter_login_required
 #@method_decorator(permission_required(perm='alter_managment.change_alter_managment',login_url='/'),name="dispatch")
 def edit_Alter_manager(request):#变更内容编辑用
     form =EditAlterform(request.POST)
@@ -165,6 +168,7 @@ def edit_Alter_manager(request):#变更内容编辑用
         return resful.params_error(message=form.get_error())
 
 @require_POST
+@Alter_login_required
 def delete_Alter_manager(request):#变更内容删除用
     AlterID=request.POST.get("AlterID")
     try:
@@ -176,6 +180,7 @@ def delete_Alter_manager(request):#变更内容删除用
 
 
 @require_POST#只接受POST的请求
+@Alter_login_required
 def add_Alter_manager(request):#添加变更内容
     form = Alterform(request.POST)
     #如果验证成功
@@ -195,10 +200,13 @@ def add_Alter_manager(request):#添加变更内容
 
             return resful.params_error(message="该变更内容已经存在!")
     else:
-        return resful.params_error(message="验证不通过")
+        error = form.get_error()
+        print(error)
+        return resful.params_error(message=form.get_error())
 
 #变更审核
 @require_POST
+@Alter_login_required
 def Review_Alter_manager(request):#变更审核用
     form =Reviewform(request.POST)
     if form.is_valid():
@@ -213,7 +221,7 @@ def Review_Alter_manager(request):#变更审核用
 
 
 
-
+@Alter_login_required
 def Alter_detail(request,AlterID):#变更详情页面
         Alterdeatil =Alter_managment.objects.get(AlterID=AlterID)
         context={
@@ -230,6 +238,7 @@ class Alter_add_view(View):#旧的变更提交页面
 
 
 #导出数据
+@Alter_login_required
 def export(request):
     alter_managment_resources = Alter_managment_resources()
     queryset = Alter_managment.objects.filter(ReviewStatus='1')

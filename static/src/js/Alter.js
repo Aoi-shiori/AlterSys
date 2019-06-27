@@ -203,11 +203,12 @@ Alter.prototype.listenreviseEvent=function(){
 
         }).then(function (result) {
             if(result.value){
-                Swal.fire(
-                    '已修改！',
-                    '修改成功。',
-                    'success'
-                ).then(function () {
+                Swal.fire({
+                    tiele:'已提交！',
+                    text:'提交成功。',
+                    type:'success',
+                    timer: 1000
+                    }).then(function () {
                     xfzajax.post({
                         'url': '/alter/edit_Alter_manager/',
                         'data': {
@@ -216,12 +217,20 @@ Alter.prototype.listenreviseEvent=function(){
                             'AssociatedNumber': AssociatedNumber,
                             'Datebase': Datebase,
                             'AlterContent': AlterContent,
+
                         },
                         'success':function (result) {
                             if (result['code']===200){
-                                window.location.reload();
-                            } else {
-                                window.messageBox.showError(result['message']);
+                                Swal.fire({
+                                    title:'已修改',
+                                    text:'修改成功',
+                                    type:'success',
+                                    timer:1000
+                                }).then(function () {
+                                     window.location.reload();
+                                })
+
+
                             }
                         },
 
@@ -265,13 +274,20 @@ Alter.prototype.listenSigninEvent = function () {
             },
              'success': function (result) {
                 if(result['code'] === 200){
-                     window.messageBox.show("添加成功");
-                    setTimeout("window.location.reload()","300");
+                     //window.messageBox.show("添加成功");
+                     swal.fire(
+                         '添加成功',
+                         '已经成功添加',
+                         'success'
+                         ).then(function () {
+                          setTimeout("window.location.reload()","300")
+                     })
+
+
+                    //setTimeout("window.location.reload()","300");
                     // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
                     //     window.location.reload();
                     // });
-
-
                 }
             }
         });
@@ -288,10 +304,12 @@ Alter.prototype.listenDeleteEvent = function () {
         var tr = currentBtn.parent().parent();
         var AlterID =tr.attr('AlterID');
 
-                Swal.fire({
+        Swal.fire({
             //position: 'top-end',
-            type: 'waring',
+            type: 'warning',
             title: '确认删除吗？',
+            text: "数据删除后不能恢复哦!",
+            showLoaderOnConfirm:true,
             showConfirmButton: true,
             //timer: 1500,
             showCancelButton: true,
@@ -317,8 +335,8 @@ Alter.prototype.listenDeleteEvent = function () {
                         },
                         'success':function (result) {
                             if (result['code']===200){
-                                //window.location.reload();
-                                window.messageBox.showSuccess(result['message']);
+                                window.location.reload();
+                                //window.messageBox.showSuccess(result['message']);
                             } else {
                                 window.messageBox.showError(result['message']);
                             }
@@ -409,7 +427,7 @@ Alter.prototype.listenReviewEvent=function(){
             var val = checkednow.parentElement.parentElement.getAttribute("alterid"); //$(r).parent().attr("alterid");
             //var val = r.parentElement.getAttribute("变更编号 AlterID-td"); //$(r).parent().attr("alterid");
 
-            alert(val);
+            //alert(val);
             self.showReviewEvent();
 
         }
@@ -479,8 +497,15 @@ Alter.prototype.listenReviewSbumitEvent=function(){
             },
             'success': function (result) {
                 if(result['code'] === 200){
-                    window.messageBox.show("审核成功");
-                    setTimeout("window.location.reload()","300");
+                    //window.messageBox.show("审核成功");
+                    Swal.fire(
+                        '审核成功',
+                        '审核提交成功啦',
+                        'success'
+                    ).then(function () {
+                        window.location.reload()
+                    })
+                    //setTimeout("window.location.reload()","300")
                     // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
                     //     window.location.reload();
                     // });
