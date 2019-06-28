@@ -13,6 +13,19 @@ class Alter_managment(models.Model):
         ReviewStatus=models.CharField(max_length=2,null=True,default='0')#'审核状态',
         ReviewContent=models.TextField(max_length=1000,null=True)#'审核内容',
         AuditTime=models.DateTimeField(null=True)#'审核时间',
+        Expstatus=models.BooleanField()#导出状态，已经导出过置为true
+
 
         class Meta:
-            db_table='Alter_managment'
+            db_table='alt_managment'#变更表
+
+#数据库名称
+class DBname(models.Model):
+        Datebase=models.CharField(max_length=50)#数据库名称
+        class Meta:
+                db_table='alt_db'
+#变更类型
+class AltType(models.Model):
+        AltType=models.CharField(max_length=50)
+        class Meta:
+                db_table='alt_type'

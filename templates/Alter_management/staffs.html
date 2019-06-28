@@ -32,7 +32,7 @@
                         </thead>
                         <tbody>
                         {% for staff in staffs %}
-                            <tr uid ={{ staff.uid }},  Cancellation={{staff.Cancellation }}>
+                            <tr id ={{ staff.id }},  Cancellation={{staff.Cancellation }}>
                               <td>{{ forloop.counter }}</td>
                               <td>{{ staff.username }}</td>
                               <td>{{ staff.name }}</td>

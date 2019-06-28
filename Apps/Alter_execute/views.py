@@ -131,7 +131,7 @@ def add_Alter_Execute(request):
         else:
             return resful.params_error(message="该执行记录已经存在！")
     else:
-        return resful.params_error(message="表单数据验证不通过！")
+        return resful.params_error(message=form.get_error())
 
 
 def execute_Alter_Execute(request):

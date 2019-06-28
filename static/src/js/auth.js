@@ -160,12 +160,12 @@ Auth.prototype.listenCancellationEvent = function () {
     CancellationBtn.click(function () {
         var currentBtn =  $(this);
         var tr = currentBtn.parent().parent();
-        var uid =tr.attr('uid');
+        var id =tr.attr('id');
         var Cancellation=tr.attr('Cancellation');
         xfzajax.post({
             'url': '/account/Cancellation/',
             'data': {
-                'uid': uid,
+                'id': id,
                 'Cancellation':Cancellation,
             },
              'success': function (result) {

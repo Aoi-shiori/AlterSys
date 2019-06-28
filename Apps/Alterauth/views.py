@@ -21,9 +21,9 @@ def login_view(request):
     #如果验证成功
     if form.is_valid():
         MobilePhone = form.cleaned_data.get('MobilePhone')
-        password = form.cleaned_data.get('password')
+        Password = form.cleaned_data.get('password')
         remember = form.cleaned_data.get('remember')
-        user = authenticate(request, username=MobilePhone, password=password)
+        user = authenticate(request, Username=MobilePhone, Password=Password)
         if user:
             if user.is_active:
                 login(request,user)
@@ -85,7 +85,7 @@ class AddStaff_view(View):
             Permissions =form.cleaned_data.get('Permissions')
             #User.object.create_user(MobilePhone=MobilePhone, username=username, password=password1, email=email,
                                             #name=name, Department=Department, Permissions=Permissions)
-            user=User.object.create_user(MobilePhone=MobilePhone,username=username,password=password1,email=email,name=name,Department=Department,Permissions=Permissions)
+            user=User.object.create_user(MobilePhone=MobilePhone,Username=username,Password=password1,Email=email,Name=name,Department=Department,Permissions=Permissions)
             groups_ids=request.POST.getlist('groups[]')
             groups= Group.objects.filter(pk__in=groups_ids)
             user.groups.set(groups)
@@ -96,11 +96,11 @@ class AddStaff_view(View):
             return resful.params_error(message=form.get_error())
 
 def Cancellation(request):
-        uid=request.POST.get('uid').replace(',','') #传过来的uid后面带了个逗号，进行去除
+        uid=request.POST.get('id').replace(',','') #传过来的uid后面带了个逗号，进行去除
         Cancellation=request.POST.get('Cancellation')
         if Cancellation == 'True':
-            User.object.filter(uid=uid).update(Cancellation=False)
+            User.object.filter(id=id).update(Cancellation=False)
             return resful.OK()
         else:
-            User.object.filter(uid=uid).update(Cancellation=True)
+            User.object.filter(id=id).update(Cancellation=True)
             return resful.OK()
