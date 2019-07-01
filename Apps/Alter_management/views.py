@@ -156,7 +156,7 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
 def edit_Alter_manager(request):#变更内容编辑用
     form =EditAlterform(request.POST)
     if form.is_valid():
-        AlterID=form.cleaned_data.get("AlterID")#变更ID
+        AlterID=form.cleaned_data.get("id")#变更ID
         AlterType = form.cleaned_data.get("AlterType")  # '关联类型'#
         AssociatedNumber =form.cleaned_data.get("AssociatedNumber")  # '关联编号'#
         Datebase = form.cleaned_data.get("Datebase")  # '数据库'#
@@ -170,7 +170,7 @@ def edit_Alter_manager(request):#变更内容编辑用
 @require_POST
 @Alter_login_required
 def delete_Alter_manager(request):#变更内容删除用
-    AlterID=request.POST.get("AlterID")
+    AlterID=request.POST.get("id")
     try:
         Alter_managment.objects.filter(AlterID=AlterID).delete()
         return resful.OK()
@@ -210,10 +210,10 @@ def add_Alter_manager(request):#添加变更内容
 def Review_Alter_manager(request):#变更审核用
     form =Reviewform(request.POST)
     if form.is_valid():
-        AlterID = form.cleaned_data.get('AlterID')
+        id = form.cleaned_data.get('id')
         ReviewStatus = form.cleaned_data.get('ReviewStatus')  # '审核状态',
         ReviewContent = form.cleaned_data.get('ReviewContent')  # '审核内容',
-        Alter_managment.objects.filter(AlterID=AlterID).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=request.user.name,AuditTime=datetime.now())
+        Alter_managment.objects.filter(id=id).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=request.user.name,AuditTime=datetime.now())
         return resful.OK()
     else:
        return resful.params_error(message=form.get_error())
@@ -222,8 +222,8 @@ def Review_Alter_manager(request):#变更审核用
 
 
 @Alter_login_required
-def Alter_detail(request,AlterID):#变更详情页面
-        Alterdeatil =Alter_managment.objects.get(AlterID=AlterID)
+def Alter_detail(request,id):#变更详情页面
+        Alterdeatil =Alter_managment.objects.get(id=id)
         context={
 
             'Alterdeatil':Alterdeatil

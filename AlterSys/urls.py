@@ -22,4 +22,5 @@ urlpatterns = [
     path('alter/', include('Apps.Alter_management.urls',namespace='management')),
     path('account/', include("Apps.Alterauth.urls",namespace="Alterauth")),
     path('execute/',include("Apps.Alter_execute.urls",namespace='Execute')),
+    path('Dict/',include('Apps.Alter_Dict.urls',namespace='Dict')),
 ]

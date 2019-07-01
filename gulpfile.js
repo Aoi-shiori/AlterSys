@@ -26,7 +26,7 @@ gulp.task('html',function () {
     return  gulp.src(path.html+'*.html')
         .pipe(bs.stream())
 
-})
+});
 
 // 定义一个处理css文件改动的任务
 gulp.task("css",function () {
@@ -55,7 +55,7 @@ gulp.task('images',function () {
         .pipe(cache(imagemin()))
         .pipe(gulp.dest(path.images_dist ))
         .pipe(bs.stream())
-})
+});
 
 
 //定义一个监听文件修改的任务

@@ -4,26 +4,26 @@ from  shortuuidfield import ShortUUIDField
 from django.db import models
 
 class  UserManager(BaseUserManager):
-    def _create_user(self, mobilephone,username ,password, **kwargs):
-        if not mobilephone:
+    def _create_user(self, MobilePhone,Username ,password, **kwargs):
+        if not MobilePhone:
             raise ValueError("请传入手机号码！")
-        if not username:
+        if not Username:
             raise ValueError('请传入用户名！')
         if not password:
             raise ValueError('请传入密码')
-        user = self.model(MobilePhone=mobilephone, username=username, **kwargs)
+        user = self.model(MobilePhone=MobilePhone, Username=Username, **kwargs)
         user.set_password(password)
         user.save()
         return user
 
-    def create_user(self, MobilePhone, username, password, **kwargs):
+    def create_user(self, MobilePhone, Username, password, **kwargs):
         kwargs['is_superuser'] = False
-        return self._create_user(MobilePhone, username, password, **kwargs)
+        return self._create_user(MobilePhone, Username, password, **kwargs)
 
-    def create_superuser(self,MobilePhone, username, password, **kwargs):
+    def create_superuser(self,MobilePhone, Username, password, **kwargs):
         kwargs['is_superuser'] = True
         kwargs['Permissions'] = True
-        return self._create_user(MobilePhone, username, password, **kwargs)
+        return self._create_user(MobilePhone, Username, password, **kwargs)
 
 
 
@@ -51,10 +51,10 @@ class User(AbstractBaseUser,PermissionsMixin):
 
         object = UserManager()
         def get_full_name(self):
-            return self.username
+            return self.Username
 
         def get_short_name(self):
-            return self.username
+            return self.Username
 
         class Meta:
             db_table = 'alt_user'

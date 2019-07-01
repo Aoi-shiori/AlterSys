@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Alter_managment(models.Model):
-        AlterID= models.AutoField(primary_key=True)#变更ID
+        id= models.AutoField(primary_key=True)#变更ID
         AlterType=models.CharField(max_length=100)#'关联类型BUG'#
         AssociatedNumber=models.CharField(max_length=50)#'关联编号'#
         Datebase=models.CharField(max_length=50)#'数据库'#
@@ -19,13 +19,3 @@ class Alter_managment(models.Model):
         class Meta:
             db_table='alt_managment'#变更表
 
-#数据库名称
-class DBname(models.Model):
-        Datebase=models.CharField(max_length=50)#数据库名称
-        class Meta:
-                db_table='alt_db'
-#变更类型
-class AltType(models.Model):
-        AltType=models.CharField(max_length=50)
-        class Meta:
-                db_table='alt_type'

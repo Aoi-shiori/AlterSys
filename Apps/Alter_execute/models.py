@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Alter_execute(models.Model):
-    executeID = models.AutoField(primary_key=True)#执行ID
+    id = models.AutoField(primary_key=True)#执行ID
     AlterID =models.CharField(max_length=50)#变更id
     Hospital=models.CharField(max_length=25)#医院
     Executor=models.CharField(max_length=50)#执行人

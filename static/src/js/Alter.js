@@ -99,8 +99,8 @@ Alter.prototype.listenshowhideEvent=
             //获取到编辑按钮标签的父级元素tr标签
             tr=currentbtn.parent().parent();
             //通过找到到tr标签，通过attr获取元素
-            //绑定id到tr标签，然后获取var  AlterID =tr.attr('AlterID');
-            var  AlterID =tr.attr('AlterID');
+            //绑定id到tr标签，然后获取var  id =tr.attr('id');
+            var  AlterID =tr.attr('id');
             var  AlterType =tr.attr('AlterType');
             var  AssociatedNumber =tr.attr('AssociatedNumber');
             var  Datebase =tr.attr('Datebase');
@@ -114,7 +114,7 @@ Alter.prototype.listenshowhideEvent=
             // var Informant=tr.td($('.Informant-td'));
             // var FillTime=tr.td($('.FillTime-td'));
 
-            $("#ID-AlterID").val(AlterID);
+            $("#ID-id").val(AlterID);
             $("#ID-AlterType").val(AlterType);
             $("#ID-AssociatedNumber").val(AssociatedNumber);
             $("#ID-Datebase").val(Datebase);
@@ -212,7 +212,7 @@ Alter.prototype.listenreviseEvent=function(){
                     xfzajax.post({
                         'url': '/alter/edit_Alter_manager/',
                         'data': {
-                            'AlterID':AlterID,
+                            'id':AlterID,
                             'AlterType': AlterType,
                             'AssociatedNumber': AssociatedNumber,
                             'Datebase': Datebase,
@@ -302,7 +302,7 @@ Alter.prototype.listenDeleteEvent = function () {
     DeleteBTN.click(function () {
         var currentBtn =  $(this);
         var tr = currentBtn.parent().parent();
-        var AlterID =tr.attr('AlterID');
+        var id =tr.attr('id');
 
         Swal.fire({
             //position: 'top-end',
@@ -331,7 +331,7 @@ Alter.prototype.listenDeleteEvent = function () {
                     xfzajax.post({
                         'url': '/alter/delete_Alter_manager/',
                         'data': {
-                            'AlterID':AlterID,
+                            'id':id,
                         },
                         'success':function (result) {
                             if (result['code']===200){
@@ -365,7 +365,7 @@ Alter.prototype.listenDeleteEvent = function () {
         // xfzajax.post({
         //     'url': '/alter/delete_Alter_manager/',
         //     'data': {
-        //         'AlterID': AlterID,
+        //         'id': id,
         //     },
         //      'success': function (result) {
         //         if(result['code'] === 200){
@@ -425,7 +425,7 @@ Alter.prototype.listenReviewEvent=function(){
         if(checkednow){
             //获取被选中元素父类的父类的
             var val = checkednow.parentElement.parentElement.getAttribute("alterid"); //$(r).parent().attr("alterid");
-            //var val = r.parentElement.getAttribute("变更编号 AlterID-td"); //$(r).parent().attr("alterid");
+            //var val = r.parentElement.getAttribute("变更编号 id-td"); //$(r).parent().attr("alterid");
 
             //alert(val);
             self.showReviewEvent();
@@ -484,7 +484,7 @@ Alter.prototype.listenReviewSbumitEvent=function(){
         var Reviewstatus=$("input:radio[name='Reviewstatus']:checked").val();
         var AlterID = getchecked().parentElement.parentElement.getAttribute("alterid");
         var ReviewContent=ReviewContenInput.val();
-        //alert(AlterID);
+        //alert(id);
         //alert(Reviewstatus);
        // alert(ReviewContent);
         //alert(Reviewer);

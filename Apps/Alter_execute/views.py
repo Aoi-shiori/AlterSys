@@ -52,7 +52,7 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
         if cxtj:  # 查询条件判断
             # 多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
             Alterd_datas = Alterd_datas.filter(
-                Q(executeID__icontains=cxtj) | Q(AlterID__icontains=cxtj) | Q(Hospital__icontains=cxtj) | Q(
+                Q(id__icontains=cxtj) | Q(AlterID__icontains=cxtj) | Q(Hospital__icontains=cxtj) | Q(
                     Executor__icontains=cxtj) | Q(ExecutionResult__icontains=cxtj))
 
         if reviewStatus:  # 审核状态判断
@@ -120,7 +120,7 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
 def add_Alter_Execute(request):
     form = Executeform(request.POST)
     if form.is_valid():
-        AlterID =form.cleaned_data.get('AlterID')
+        AlterID =form.cleaned_data.get('id')
         Hospital = form.cleaned_data.get('Hospital')
         #Executor = form.cleaned_data.get('Executor')
         ExecutionResult =form.cleaned_data.get('ExecutionResult')
@@ -137,14 +137,14 @@ def add_Alter_Execute(request):
 def execute_Alter_Execute(request):
     form =execute_ExecuteForm(request.POST)
     if form.is_valid():
-        executeID=form.cleaned_data.get('executeID')
-        AlterID = form.cleaned_data.get('AlterID')
+        id=form.cleaned_data.get('id')
+        AlterID = form.cleaned_data.get('id')
         Hospital = form.cleaned_data.get('Hospital')
         ExecutionResult = form.cleaned_data.get('ExecutionResult')
         #获取字段的值
-        # AlterIDnow=Alter_execute.objects.values('AlterID').filter(executeID=executeID)
-        # if int(AlterID)>int(AlterIDnow):
-        Alter_execute.objects.filter(executeID=executeID).update(AlterID=AlterID, Hospital=Hospital, Executor=request.user.name,ExecutionResult=ExecutionResult,ExecutionTime=datetime.now())
+        # AlterIDnow=Alter_execute.objects.values('id').filter(executeID=executeID)
+        # if int(id)>int(AlterIDnow):
+        Alter_execute.objects.filter(id=id).update(AlterID=AlterID, Hospital=Hospital, Executor=request.user.name,ExecutionResult=ExecutionResult,ExecutionTime=datetime.now())
         return resful.OK()
     else:
         return resful.params_error(message="表单验证不通过！")
@@ -153,9 +153,9 @@ def execute_Alter_Execute(request):
 #删除变更执行数据
 @require_POST
 def delete_Alter_Execute(request):
-    executeID =request.POST.get("executeID")
+    id =request.POST.get("id")
     try:
-        Alter_execute.objects.filter(executeID=executeID).delete()
+        Alter_execute.objects.filter(id=id).delete()
         return resful.OK()
     except:
         return resful.params_error(message="该变更执行数据不存在")

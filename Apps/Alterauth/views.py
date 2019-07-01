@@ -23,7 +23,7 @@ def login_view(request):
         MobilePhone = form.cleaned_data.get('MobilePhone')
         Password = form.cleaned_data.get('password')
         remember = form.cleaned_data.get('remember')
-        user = authenticate(request, Username=MobilePhone, Password=Password)
+        user = authenticate(request, username=MobilePhone, password=Password)
         if user:
             if user.is_active:
                 login(request,user)

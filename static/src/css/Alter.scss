@@ -13,7 +13,7 @@ th{
    background: aqua;
 }
 
-/*遮罩层 固定定位，跟浏览器保持同样大小，盒子跟浏览器所有边距都是0*/
+/*遮罩层 固定定位，跟浏览器保持同样大小，盒子跟浏览器页面所有边距都是0*/
 .mask-wapper-add{
   position: fixed;
   left: 0;

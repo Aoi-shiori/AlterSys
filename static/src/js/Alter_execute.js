@@ -67,8 +67,8 @@ Execute.prototype.listenshowhideEvent=
             //获取到编辑按钮标签的父级元素tr标签
             tr=currentbtn.parent().parent();
             //通过找到到tr标签，通过attr获取元素
-            //绑定id到tr标签，然后获取var  AlterID =tr.attr('AlterID');
-            var  executeID =tr.attr('executeID');
+            //绑定id到tr标签，然后获取var  id =tr.attr('id');
+            var  id =tr.attr('id');
             var  AlterID =tr.attr('AlterID');
             var  Hospital =tr.attr('Hospital');
             var  ExecutionResult =tr.attr('ExecutionResult');
@@ -80,8 +80,8 @@ Execute.prototype.listenshowhideEvent=
             // var AlterContent=tr.td($('.AlterContent-td'));
             // var Informant=tr.td($('.Informant-td'));
             // var FillTime=tr.td($('.FillTime-td'));
-            $("#ID-executeID").val(executeID);
-            $("#ID-AlterID").val(AlterID);
+            $("#ID-executeID").val(id);
+            $("#ID-id").val(AlterID);
             $("#ID-Hospital").val(Hospital);
             $("#ID-ExecutionResult").val(ExecutionResult);
             $("#ID-Executor").val(Executor);
@@ -138,12 +138,12 @@ Execute.prototype.listenshowhideEvent=
 Execute.prototype.listenreviseEvent=function(){
         var revisegroup = $('.revise-group');
         var executeID_Input = revisegroup.find("input[name='executeID']");
-        var AlterID_Input = revisegroup.find("input[name='AlterID']");
+        var AlterID_Input = revisegroup.find("input[name='id']");
         var Hospital_Input = revisegroup.find("input[name='Hospital']");
         var ExecutionResult_Input = revisegroup.find("textarea[name='ExecutionResult']");
         var reviseBtn = revisegroup.find(".revise-btn");
     reviseBtn.click(function () {
-        var executeID =executeID_Input.val();
+        var id =executeID_Input.val();
         var AlterID = AlterID_Input.val();
         var Hospital = Hospital_Input.val();
         var ExecutionResult = ExecutionResult_Input.val();
@@ -151,7 +151,7 @@ Execute.prototype.listenreviseEvent=function(){
          xfzajax.post({
             'url': '/execute/execute_Alter_Execute/',
             'data': {
-                'executeID':executeID,
+                'id':id,
                 'AlterID':AlterID,
                 'Hospital': Hospital,
                 'ExecutionResult': ExecutionResult,
@@ -211,12 +211,12 @@ Execute.prototype.listenDeleteEvent = function () {
     DeleteBTN.click(function () {
         var currentBtn =  $(this);
         var tr = currentBtn.parent().parent();
-        var executeID =tr.attr('executeID');
+        var id =tr.attr('id');
         console.log(executeID);
         xfzajax.post({
             'url': '/execute/delete_Alter_Execute/',
             'data': {
-                'executeID': executeID,
+                'id': id,
             },
              'success': function (result) {
                 if(result['code'] === 200){
@@ -276,7 +276,7 @@ Execute.prototype.listenReviewEvent=function(){
         if(checkednow){
             //获取被选中元素父类的父类的
             var val = checkednow.parentElement.parentElement.getAttribute("alterid"); //$(r).parent().attr("alterid");
-            //var val = r.parentElement.getAttribute("变更编号 AlterID-td"); //$(r).parent().attr("alterid");
+            //var val = r.parentElement.getAttribute("变更编号 id-td"); //$(r).parent().attr("alterid");
 
             alert(val);
             self.showReviewEvent();

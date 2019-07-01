@@ -1,4 +1,4 @@
-{% extends 'Alter_management/base.html' %}
+{% extends 'Base/base.html' %}
 {% block title %}变更管理{% endblock %}
 
 {% block content-header %}
@@ -106,14 +106,14 @@
 {#                            {% endfor %}#}
 
                                 {% for Alterd_data in Alterd_datas %}
-                                    <tr class="tr-line click"   AlterID="{{ Alterd_data.AlterID }}"  AlterType="{{ Alterd_data.AlterType }}" AssociatedNumber="{{ Alterd_data.AssociatedNumber }}" Datebase="{{ Alterd_data.Datebase }}" AlterContent="{{ Alterd_data.AlterContent }}" Informant="{{ Alterd_data.Informant }}" >
+                                    <tr class="tr-line click"   id="{{ Alterd_data.id }}"  AlterType="{{ Alterd_data.AlterType }}" AssociatedNumber="{{ Alterd_data.AssociatedNumber }}" Datebase="{{ Alterd_data.Datebase }}" AlterContent="{{ Alterd_data.AlterContent }}" Informant="{{ Alterd_data.Informant }}" >
                                         <td><input name="se" type="checkbox" ></td>
                                         <td class ='序号'>{{ forloop.counter}}</td>
-                                        <td class ='变更编号 AlterID-td'>{{ Alterd_data.AlterID }}</td>
+                                        <td class ='变更编号 AlterID-td'>{{ Alterd_data.id }}</td>
                                         <td class ='关联类型 AlterType-td'>{{ Alterd_data.AlterType}}</td>
                                         <td class ='关联编号 AssociatedNumber-td'>{{ Alterd_data.AssociatedNumber}}</td>
                                         <td class ='数据库 Datebase-td'>{{ Alterd_data.Datebase}}</td>
-                                        <td class ='变更内容 AlterContent-td'><a target="_blank" href="{% url 'management:Alter_deatil' AlterID=Alterd_data.AlterID %} ">{{ Alterd_data.AlterContent|truncatechars:20}}</a></td>
+                                        <td class ='变更内容 AlterContent-td'><a target="_blank" href="{% url 'management:Alter_deatil' id=Alterd_data.id %} ">{{ Alterd_data.AlterContent|truncatechars:20}}</a></td>
                                         <td class ='填报人 Informant-td'>{{ Alterd_data.Informant}}</td>
                                         <td class ='填报时间 FillTime-td'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
                                         <td class ='审核人 Reviewer-td'>{{ Alterd_data.Reviewer|default:''}}</td>

@@ -1,4 +1,4 @@
-{% extends 'Alter_management/base.html' %}
+{% extends 'Base/base.html' %}
 
 {% block title %}
     变更执行管理
@@ -98,10 +98,10 @@
 {#                            {% endfor %}#}
 
                                 {% for Alterd_data in Alterd_datas %}
-                                    <tr class="tr-line click" executeID="{{ Alterd_data.executeID }}"  AlterID="{{ Alterd_data.AlterID }}"  Hospital="{{ Alterd_data.Hospital }}" ExecutionResult="{{ Alterd_data.ExecutionResult }}" Executor="{{ Alterd_data.Executor }}" ExecutionTime="{{ Alterd_data.ExecutionTime }}" >
+                                    <tr class="tr-line click" id="{{ Alterd_data.id }}"  AlterID="{{ Alterd_data.AlterID }}"  Hospital="{{ Alterd_data.Hospital }}" ExecutionResult="{{ Alterd_data.ExecutionResult }}" Executor="{{ Alterd_data.Executor }}" ExecutionTime="{{ Alterd_data.ExecutionTime }}" >
                                         <td><input name="se" type="checkbox"  ></td>
                                         <td  class ='序号' >{{ forloop.counter}}</td>
-                                        <td class ='执行ID executeID-td'>{{ Alterd_data.executeID }}</td>
+                                        <td class ='执行ID executeID-td'>{{ Alterd_data.id }}</td>
                                         <td class ='当前变更ID AlterID-td'>{{ Alterd_data.AlterID}}</td>
                                         <td class ='被执行的医院 Hospital-td'>{{ Alterd_data.Hospital}}</td>
                                         <td class ='执行人 Executor-td'>{{ Alterd_data.Executor|default:''}}</td>
