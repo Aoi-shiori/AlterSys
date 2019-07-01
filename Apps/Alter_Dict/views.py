@@ -9,9 +9,9 @@ from .forms import DB_Dict_Form,AltType_Dict_Form
 #数据库类型数据视图
 class DB_Dict_Views(View):
     def get(self,request):
-        Database =DBname.objects.all()
+        Databases = DBname.objects.all()
         context={
-            'Database':Database
+            'Databases':Databases
         }
         return render(request, 'Alter_Dictionaries/Dict_DB.html', context=context)
 

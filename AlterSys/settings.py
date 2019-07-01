@@ -25,7 +25,7 @@ SECRET_KEY = '^ttli)(o%wm@6jkx^g#uq2r%f9dnt=51*#)yyeqezy+snlxxlm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.154']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -88,21 +88,21 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alter_db',
         #家里的数据库配置
-        # 'USER': 'root',
-        # 'PASSWORD': '376419974',
-        # 'HOST': '127.0.0.1',
-        # 'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': '376419974',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
 
     #     #公司的数据库配置
     #     'USER': 'root',
     #     'PASSWORD': 'conlin',
     #     'HOST': '192.168.0.51',
     #     'PORT': '33066',
-        #本机数据库配置
-        'USER': 'root',
-        'PASSWORD': 'Conlin',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+    #     #公司电脑本机数据库配置
+    #     'USER': 'root',
+    #     'PASSWORD': 'Conlin',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '3306',
      }
 }
 
