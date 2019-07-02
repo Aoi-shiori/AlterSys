@@ -25,6 +25,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from .admin import Alter_managment_resources
 from Apps.Alterauth.decorators import Alter_login_required
+#导入数据库字典和变更类型字典
+from Apps.Alter_Dict.models import DBname,AltType
 # Create your views here.
 
 
@@ -58,8 +60,9 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
         #这个参数是只有没有传递参数的时候才会使用
         #如果传递了，但是是一个空的字符串，也不会使用，那么可以使用 ('ReviewStatus',0) or 0
         reviewStatus=int(request.GET.get('ReviewStatus',0)) #获取审核状态查询值,因为get到的都是字符串，转换成整形才能在页面中用数值对比
-
+        DatabaseType = int(request.GET.get('DatabaseType',0))
         Alterd_datas = Alter_managment.objects.all()#获取所有数据库的数据
+        Databases = DBname.objects.all()
 
         if start or end:#查询时间判断
             if start:
@@ -76,7 +79,10 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
 
         if cxtj:#查询条件判断
             #多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
-            Alterd_datas=Alterd_datas.filter(Q(AlterID__icontains=cxtj)|Q(AlterContent__icontains=cxtj)|Q(AlterType__icontains=cxtj)|Q(Datebase__icontains=cxtj)|Q(Informant__icontains=cxtj)|Q(AssociatedNumber__icontains=cxtj))
+            Alterd_datas=Alterd_datas.filter(Q(Database__icontains=cxtj)|Q(id__icontains=cxtj)|Q(AlterContent__icontains=cxtj)|Q(AlterType__icontains=cxtj)|Q(Informant__icontains=cxtj)|Q(AssociatedNumber__icontains=cxtj))
+
+        if DatabaseType:#数据库类型判断
+            Alterd_datas=Alterd_datas.filter(Database=DatabaseType)
 
         if reviewStatus:#审核状态判断
             Alterd_datas =Alterd_datas.filter(ReviewStatus=reviewStatus)
@@ -95,6 +101,8 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
             'end':end,
             'cxtj':cxtj,
             'reviewStatus':reviewStatus,
+            'DatabaseType':DatabaseType,
+            'Databases':Databases,
             'url_query': '&'+parse.urlencode({
                 'start': start or '',
                 'end':end or '',
@@ -156,12 +164,12 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
 def edit_Alter_manager(request):#变更内容编辑用
     form =EditAlterform(request.POST)
     if form.is_valid():
-        AlterID=form.cleaned_data.get("id")#变更ID
+        id=form.cleaned_data.get("id")#变更ID
         AlterType = form.cleaned_data.get("AlterType")  # '关联类型'#
         AssociatedNumber =form.cleaned_data.get("AssociatedNumber")  # '关联编号'#
-        Datebase = form.cleaned_data.get("Datebase")  # '数据库'#
+        Database = form.cleaned_data.get("Database")  # '数据库'#
         AlterContent =form.cleaned_data.get("AlterContent")  # 变更内容
-        Alter_managment.objects.filter(AlterID=AlterID).update(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase, AlterContent=AlterContent, Informant=request.user.name
+        Alter_managment.objects.filter(id=id).update(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Database=Database, AlterContent=AlterContent, Informant=request.user.Name
 ,FillTime=datetime.now(),ReviewStatus='0')
         return resful.OK()
     else:
@@ -170,39 +178,48 @@ def edit_Alter_manager(request):#变更内容编辑用
 @require_POST
 @Alter_login_required
 def delete_Alter_manager(request):#变更内容删除用
-    AlterID=request.POST.get("id")
+    id=request.POST.get("id")
     try:
-        Alter_managment.objects.filter(AlterID=AlterID).delete()
+        Alter_managment.objects.filter(id=id).delete()
         return resful.OK()
     except:
         return resful.params_error(message="该变更不存在")
 
 
 
-@require_POST#只接受POST的请求
-@Alter_login_required
-def add_Alter_manager(request):#添加变更内容
-    form = Alterform(request.POST)
-    #如果验证成功
-    if form.is_valid():
-        AlterType = form.cleaned_data.get('AlterType')
-        AssociatedNumber = form.cleaned_data.get('AssociatedNumber')
-        Datebase = form.cleaned_data.get('Datebase')
-        AlterContent=form.cleaned_data.get('AlterContent')
 
-        #判断变更内容在库中是否存在
-        exists=Alter_managment.objects.filter(AlterContent=AlterContent).exists()
-        if not exists:
-            Alter_managment.objects.create(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Datebase=Datebase,AlterContent=AlterContent,
-                                           Informant=request.user.name)
-            return resful.OK()
+
+class add_Alter_managerView(View):
+    def get(self,request):
+        Databases=DBname.objects.all()
+        context={
+            'Databases':Databases
+        }
+        return render(request,'Alter_management/Alter.html',context=context)
+
+    def post(self,request):#添加变更内容
+        form = Alterform(request.POST)
+        #如果验证成功
+        if form.is_valid():
+            AlterType = form.cleaned_data.get('AlterType')
+            AssociatedNumber = form.cleaned_data.get('AssociatedNumber')
+            Database_id = form.cleaned_data.get('Database')
+            Database= DBname.objects.get(pk=Database_id)
+            AlterContent=form.cleaned_data.get('AlterContent')
+
+            #判断变更内容在库中是否存在
+            exists=Alter_managment.objects.filter(AlterContent=AlterContent).exists()
+            if not exists:
+                Alter_managment.objects.create(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Database=Database,AlterContent=AlterContent,
+                                               Informant=request.user.Name)
+                return resful.OK()
+            else:
+
+                return resful.params_error(message="该变更内容已经存在!")
         else:
-
-            return resful.params_error(message="该变更内容已经存在!")
-    else:
-        error = form.get_error()
-        print(error)
-        return resful.params_error(message=form.get_error())
+            error = form.get_error()
+            print(error)
+            return resful.params_error(message=form.get_error())
 
 #变更审核
 @require_POST

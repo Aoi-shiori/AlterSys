@@ -100,10 +100,10 @@ Alter.prototype.listenshowhideEvent=
             tr=currentbtn.parent().parent();
             //通过找到到tr标签，通过attr获取元素
             //绑定id到tr标签，然后获取var  id =tr.attr('id');
-            var  AlterID =tr.attr('id');
+            var  id =tr.attr('id');
             var  AlterType =tr.attr('AlterType');
             var  AssociatedNumber =tr.attr('AssociatedNumber');
-            var  Datebase =tr.attr('Datebase');
+            var  Database =tr.attr('Database');
             var  AlterContent =tr.attr('AlterContent');
             var  Informant =tr.attr('Informant');
             var  FillTime =tr.attr('FillTime');
@@ -114,10 +114,10 @@ Alter.prototype.listenshowhideEvent=
             // var Informant=tr.td($('.Informant-td'));
             // var FillTime=tr.td($('.FillTime-td'));
 
-            $("#ID-id").val(AlterID);
+            $("#ID-id").val(id);
             $("#ID-AlterType").val(AlterType);
             $("#ID-AssociatedNumber").val(AssociatedNumber);
-            $("#ID-Datebase").val(Datebase);
+            $("#ID-Database").val(Database);
             $("#ID-AlterContent").val(AlterContent);
             $("#ID-Informant").val(Informant);
             $("#ID-FillTime").val(FillTime);
@@ -173,17 +173,17 @@ Alter.prototype.listenshowhideEvent=
 Alter.prototype.listenreviseEvent=function(){
         var revisegroup = $('.revise-group');
 
-        var NEWAlterIDinput = revisegroup.find("input[name='AlterID']");
+        var NEWidinput = revisegroup.find("input[name='AlterID']");
         var NEWAlterTypeInput = revisegroup.find("input[name='AlterType']");
         var NEWAssociatedNumberInput = revisegroup.find("input[name='AssociatedNumber']");
-        var NEWDatebaseInput = revisegroup.find("input[name='Datebase']");
+        var NEWDatabaseInput = revisegroup.find("select[name='Database']");
         var NEWAlterContentInput = revisegroup.find("textarea[name='AlterContent']");
         var reviseBtn = revisegroup.find(".revise-btn");
     reviseBtn.click(function () {
-        var AlterID =NEWAlterIDinput.val();
+        var id =NEWidinput.val();
         var AlterType = NEWAlterTypeInput.val();
         var AssociatedNumber = NEWAssociatedNumberInput.val();
-        var Datebase = NEWDatebaseInput.val();
+        var Database = NEWDatabaseInput.val();
         var AlterContent = NEWAlterContentInput.val();
 
         Swal.fire({
@@ -212,10 +212,10 @@ Alter.prototype.listenreviseEvent=function(){
                     xfzajax.post({
                         'url': '/alter/edit_Alter_manager/',
                         'data': {
-                            'id':AlterID,
+                            'id':id,
                             'AlterType': AlterType,
                             'AssociatedNumber': AssociatedNumber,
-                            'Datebase': Datebase,
+                            'Database': Database,
                             'AlterContent': AlterContent,
 
                         },
@@ -255,13 +255,13 @@ Alter.prototype.listenSigninEvent = function () {
     var Addgroup = $('.Add-group');
     var AlterTypepInput = Addgroup.find("input[name='AlterType']");
     var AssociatedNumberInput = Addgroup.find("input[name='AssociatedNumber']");
-    var DatebaseInput = Addgroup.find("input[name='Datebase']");
+    var DatabaseInput = Addgroup.find("select[name='Database']");
     var AlterContentInput = Addgroup.find("textarea[name='AlterContent']");
     var submitBtn = Addgroup.find(".submit-btn");
     submitBtn.click(function () {
         var AlterType = AlterTypepInput.val();
         var AssociatedNumber = AssociatedNumberInput.val();
-        var Datebase = DatebaseInput.val();
+        var Database = DatabaseInput.val();
         var AlterContent = AlterContentInput.val();
 
          xfzajax.post({
@@ -269,7 +269,7 @@ Alter.prototype.listenSigninEvent = function () {
             'data': {
                 'AlterType': AlterType,
                 'AssociatedNumber': AssociatedNumber,
-                'Datebase': Datebase,
+                'Database': Database,
                 'AlterContent': AlterContent,
             },
              'success': function (result) {

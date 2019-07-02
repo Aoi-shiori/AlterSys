@@ -43,12 +43,31 @@
                             {% endif %}
                         </div>
                         <div class="form-group left-group">
+                            <label for="">数据库:</label>
+                            <select name="DatabaseType" id="DatabaseType" class="form-control">
+                                {% if Database == 0 %}
+                                    <option value="0" selected>全部</option>
+                                {% else %}
+                                    <option value="0">全部</option>
+                                {% endif %}
+                                {% for Database in Databases %}
+                                    {% if DatabaseType %}
+                                        {{ Database.Pk }}={{ DatabaseType }}
+                                        <option value="{{ Database.pk }}" selected>{{ Database.Database }}</option>
+                                    {% else %}
+                                        <option value="{{ Database.pk }}">{{ Database.Database }}</option>
+                                    {% endif %}
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                        <div class="form-group left-group">
                             <label for="">审核状态:</label>
                             <select name="ReviewStatus" id="ReviewStatus" class="form-control">
                                 {% if reviewStatus == 0 %}
-                                    <option value="0" selected>全部数据</option>
+                                    <option value="0" selected>全部</option>
                                 {% else %}
-                                    <option value="0">全部数据</option>
+                                    <option value="0">全部</option>
                                 {% endif %}
 
                                 {% if reviewStatus == 1 %}
@@ -106,13 +125,13 @@
 {#                            {% endfor %}#}
 
                                 {% for Alterd_data in Alterd_datas %}
-                                    <tr class="tr-line click"   id="{{ Alterd_data.id }}"  AlterType="{{ Alterd_data.AlterType }}" AssociatedNumber="{{ Alterd_data.AssociatedNumber }}" Datebase="{{ Alterd_data.Datebase }}" AlterContent="{{ Alterd_data.AlterContent }}" Informant="{{ Alterd_data.Informant }}" >
+                                    <tr class="tr-line click"   id="{{ Alterd_data.id }}"  AlterType="{{ Alterd_data.AlterType }}" AssociatedNumber="{{ Alterd_data.AssociatedNumber }}" Database="{{ Alterd_data.Database.Database }}" AlterContent="{{ Alterd_data.AlterContent }}" Informant="{{ Alterd_data.Informant }}" >
                                         <td><input name="se" type="checkbox" ></td>
                                         <td class ='序号'>{{ forloop.counter}}</td>
                                         <td class ='变更编号 AlterID-td'>{{ Alterd_data.id }}</td>
                                         <td class ='关联类型 AlterType-td'>{{ Alterd_data.AlterType}}</td>
                                         <td class ='关联编号 AssociatedNumber-td'>{{ Alterd_data.AssociatedNumber}}</td>
-                                        <td class ='数据库 Datebase-td'>{{ Alterd_data.Datebase}}</td>
+                                        <td class ='数据库 Datebase-td'>{{ Alterd_data.Database.Database}}</td>
                                         <td class ='变更内容 AlterContent-td'><a target="_blank" href="{% url 'management:Alter_deatil' id=Alterd_data.id %} ">{{ Alterd_data.AlterContent|truncatechars:20}}</a></td>
                                         <td class ='填报人 Informant-td'>{{ Alterd_data.Informant}}</td>
                                         <td class ='填报时间 FillTime-td'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
@@ -214,7 +233,16 @@
                             </div>
                             <div class="input-group">
                                  <label for="Datebase">数据库:</label>
-                                <input type="text" class="form-control" name="Datebase" placeholder="请输入对应数据库">
+{#                                <input type="text" class="form-control" name="Datebase" placeholder="请输入对应数据库">#}
+                                    <select name="Database" id="Database-form" class="form-control" >
+                                        {% for Database in Databases %}
+                                            {% if Alterd_datas and Alterd_datas.Database_id == Database.pk %}
+                                                <option value="{{ Database.pk }}" selected>{{ Database.Database }}</option>
+                                            {% else %}
+                                                <option value="{{ Database.pk }}">{{ Database.Database }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
                             </div>
                             <div class="  content-group">
                                  <label for="AlterContent">变更内容:</label>
@@ -234,7 +262,7 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <label for="AlterID">变更ID:</label>
-                                <input type="text" class="form-control" name="AlterID" id="ID-AlterID" readonly >
+                                <input type="text" class="form-control" name="AlterID" id="ID-id" readonly >
                             </div>
                             <div class="input-group">
                                 <label for="AlterType">关联类型:</label>
@@ -246,7 +274,15 @@
                             </div>
                             <div class="input-group">
                                  <label for="Datebase">数据库:</label>
-                                <input type="text" class="form-control" name="Datebase" id="ID-Datebase">
+                                     <select name="Database" id="Database-form" class="form-control" >
+                                        {% for Database in Databases %}
+                                            {% if Alterd_datas and Alterd_datas.Database_id == Database.pk %}
+                                                <option value="{{ Database.pk }}" selected>{{ Database.Database }}</option>
+                                            {% else %}
+                                                <option value="{{ Database.pk }}">{{ Database.Database }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
                             </div>
                             <div class="content-group">
                                 <label for="AlterContent">变更内容:</label>
