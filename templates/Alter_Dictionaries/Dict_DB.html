@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block head %}
-      <script src="{% static 'js/AltType_Dict.min.js' %}"></script>
+      <script src="{% static 'js/DBType_Dict.min.js' %}"></script>
 {% endblock %}
 
 {% block content-header %}
@@ -30,11 +30,11 @@
                         </thead>
                         <tbody>
                         {% for Database in Databases    %}
-                            <tr id ={{ Database.id }} >
+                            <tr id ={{ Database.id }}  DBname="{{ Database.Database }}" >
                               <td>{{ forloop.counter }}</td>
                               <td>{{ Database.Database }}</td>
                               <td>
-                                  <button class="btn btn-info btn-xs">编辑</button>
+                                  <button class="btn btn-info btn-xs Edi_btn">编辑</button>
                                   <button class="btn btn-danger btn-xs Del_btn">删除</button>
                               </td>
                             </tr>

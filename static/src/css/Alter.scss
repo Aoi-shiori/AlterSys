@@ -13,6 +13,19 @@ th{
    background: aqua;
 }
 
+.box-header{
+    .form-group{
+      margin-bottom: 10px;
+    }
+    .Alt-BTN{
+      margin-right: 10px;
+    }
+    .export{
+      background: gold;
+      color: white;
+    }
+}
+
 /*遮罩层 固定定位，跟浏览器保持同样大小，盒子跟浏览器页面所有边距都是0*/
 .mask-wapper-add{
   position: fixed;

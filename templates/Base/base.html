@@ -20,9 +20,9 @@
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="{% static 'AdminLTE/dist/css/skins/_all-skins.min.css ' %}">
   <!-- Morris chart -->
-  <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/morris.js/morris.css' %}">
+{#  <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/morris.js/morris.css' %}">#}
   <!-- jvectormap -->
-  <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/jvectormap/jquery-jvectormap.css ' %}">
+{#  <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/jvectormap/jquery-jvectormap.css ' %}">#}
   <!-- Date Picker -->
 {#  <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css '%}">#}
 {#  <!-- Daterange picker -->#}
@@ -51,7 +51,7 @@
   {% block head %} {% endblock %}
 
   <!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browse/dist/sweetalert2.min.jsr and Android browser support -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
+{#  <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>#}
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -252,26 +252,13 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'AdminLTE/dist/js/demo.js' %}"></script>
 <!-- DataTables -->
-<script src="{% static 'AdminLTE/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'AdminLTE/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+{#<script src="{% static 'AdminLTE/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>#}
+{#<script src="{% static 'AdminLTE/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>#}
 <!-- SlimScroll -->
-<script src="{% static 'AdminLTE/bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+{#<script src="{% static 'AdminLTE/bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>#}
 <!-- FastClick -->
-<script src="{% static 'AdminLTE/bower_components/fastclick/lib/fastclick.js' %}"></script>
+{#<script src="{% static 'AdminLTE/bower_components/fastclick/lib/fastclick.js' %}"></script>#}
 <!-- page script -->
-<script>
-  $(function () {
-    {#$('#example1').DataTable()#}
-    $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false
-    })
-  })
-</script>
  <!-- 模态对话框，用于点击后弹出使用 -->
 {#<div class="mask-wapper">#}
 {#        <div class="auth-wapper">#}

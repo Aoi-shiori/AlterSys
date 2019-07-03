@@ -384,10 +384,10 @@ Alter.prototype.listenDeleteEvent = function () {
 
 
 
-//监听时间控件
+//监听时间控件点击
 Alter.prototype.listenDataPiker=function(){
-    var startPicker =$('#startpicker');
-    var endPicker =$('#endpicker');
+    var startPicker =$('#start-picker');
+    var endPicker =$('#end-picker');
     var todayDate = new Date();
     var todayStr = todayDate.getFullYear() + '/' + (todayDate.getMonth()+1) + '/' + todayDate.getDate();
     var options = {

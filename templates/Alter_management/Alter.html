@@ -1,15 +1,15 @@
 {% extends 'Base/base.html' %}
 {% block title %}变更管理{% endblock %}
-
-{% block content-header %}
-    <h1>变更管理</h1>
+{% block head %}
     <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css'%}">
     <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
     <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js' %}"></script>
+    <script src="{% static 'AdminLTE/bower_components/jquery-ui/ui/datepicker.js' %}"></script>
     <script src="{% static 'js/Alter.min.js'%}"></script>
-{#    <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">#}
-{#    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>#}
-{#    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js' %}"></script>#}
+{% endblock %}
+
+{% block content-header %}
+    <h1>变更管理</h1>
 {% endblock %}
 
 {% block content %}
@@ -21,17 +21,17 @@
                         <div class="form-group">
                             <label for="">时间:</label>
                             {% if start %}
-                                <input type="text" class="form-control" name="start" id="startpicker" placeholder="开始" readonly value="{{ start }}">
+                                <input type="text" class="form-control" name="start" id="start-picker" placeholder="开始" readonly value="{{ start }}">
                             {% else %}
-                                <input type="text" class="form-control" name="start" id="startpicker" placeholder="开始" readonly>
+                                <input type="text" class="form-control" name="start" id="start-picker" placeholder="开始" readonly>
 {#                                   <input type="date" class="form-control" min="2019-01-01" max="2099-01-01"  placeholder="开始"/>#}
                             {% endif %}
 
                             <span>-</span>
                             {% if end %}
-                                <input type="text" class="form-control" name="end" id="endpicker" placeholder="结束" readonly value="{{ end }}">
+                                <input type="text" class="form-control" name="end" id="end-picker" placeholder="结束" readonly value="{{ end }}">
                             {% else %}
-                                <input type="text" class="form-control" name="end" id="endpicker" placeholder="结束" readonly>
+                                <input type="text" class="form-control" name="end" id="end-picker" placeholder="结束" readonly>
                             {% endif %}
                         </div>
                         <div class="form-group left-group">
@@ -86,18 +86,20 @@
                         <div class="form-group left-group">
                              <button class="btn btn-primary ">查询</button>
                         </div>
-                        <div class="form-group left-group">
+                        <div class="form-group left-group ">
                             <a href="{% url 'management:Alter_manager' %}">清空</a>
                         </div>
+                        <div class="btn-groups">
+                            <a href="{% url 'management:export_alter_manager' %}">
+                                <button class="btn  pull-right export">导出</button></a>
+                                <button class="btn btn-info pull-right add-btn  Alt-BTN">添加</button>
+                            {% if user.Permissions == True or user.is_superuser %}
+                                <button class="btn btn-success pull-right Review-btn  Alt-BTN">审核</button>
+                            {% else %}
+
+                            {% endif %}
+                        </div>
                     </form>
-                    <a href="{% url 'management:export_alter_manager' %}"><button class="btn btn-info pull-right">导出</button></a>
-                    <button class="btn btn-info pull-right add-btn">添加</button>
-                    {% if user.Permissions == True or user.is_superuser %}
-                        <button class="btn btn-success pull-right Review-btn">审核</button>
-                    {% else %}
-
-                    {% endif %}
-
                 </div>
                 <div class="box body">
                     <table class="table bordered">
