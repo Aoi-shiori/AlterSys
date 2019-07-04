@@ -25,6 +25,7 @@
                             <tr>
                               <th>序号</th>
                               <th>数据库类型</th>
+                                <th>分类数量</th>
                               <th>操作</th>
                             </tr>
                         </thead>
@@ -33,6 +34,7 @@
                             <tr id ={{ Database.id }}  DBname="{{ Database.Database }}" >
                               <td>{{ forloop.counter }}</td>
                               <td>{{ Database.Database }}</td>
+                                <td>{{ Database.counts }}</td>
                               <td>
                                   <button class="btn btn-info btn-xs Edi_btn">编辑</button>
                                   <button class="btn btn-danger btn-xs Del_btn">删除</button>

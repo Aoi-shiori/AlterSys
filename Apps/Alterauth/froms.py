@@ -19,6 +19,7 @@ class AddStaffForm(forms.Form,FormMixin):
     name = forms.CharField(max_length=50)  # 姓名#
     Department = forms.CharField(max_length=100)  # 所在部门#
     Permissions = forms.CharField()# 审核权限
+    groups=forms.CharField()
 
 
     # def clean(self):

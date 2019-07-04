@@ -4,11 +4,16 @@ from django.views.decorators.http import require_POST,require_GET
 from utils import resful
 from Apps.Alter_Dict.models import AltType,DBname
 from .forms import DB_Dict_Form,AltType_Dict_Form
+from  Apps.Alter_management.models import Alter_managment
 # Create your views here.
 
 #数据库类型数据视图
 class DB_Dict_Views(View):
     def get(self,request):
+        for Databases in DBname.objects.all():
+            counts=Alter_managment.objects.filter(Database=Databases.pk).count()
+            DBname.objects.filter(pk=Databases.pk).update(counts=counts)
+
         Databases = DBname.objects.all()
         context={
             'Databases':Databases
@@ -51,15 +56,15 @@ class AltType_Dict_view(View):
     def get(self,request):
         alttype=AltType.objects.all()
         context={
-            'AltType':alttype
+            'AltTypes':alttype
         }
         return render(request, 'Alter_Dictionaries/Dict_AltType.html',context=context)
 
 #添加变更类型
 def Add_AltType_Dict(request):
-    altType=request.GET.get('AltType')
+    altType=request.POST.get('AltType')
     exists=AltType.objects.filter(AltType=altType).exists()
-    if not exists():
+    if not exists:
         AltType.objects.create(AltType=altType)
         return resful.OK()
     else:

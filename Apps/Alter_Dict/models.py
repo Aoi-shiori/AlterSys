@@ -4,6 +4,7 @@ from django.db import models
 #数据库类型字典
 class DBname(models.Model):
         Database=models.CharField(max_length=50)#数据库名称
+        counts = models.CharField(max_length=50,null=True)
         class Meta:
                 db_table='alt_db_dict'
 #变更类型字典

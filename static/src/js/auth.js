@@ -111,7 +111,7 @@ Auth.prototype.listenSwitchEvent=
 Auth.prototype.listenAddStaffEvent= function(){
     var addstaffbtn = $('#addstaff-btn');
     addstaffbtn.click(function () {
-        event.preventDefault();
+            event.preventDefault();
         var MobilePhone = $('#MobilePhone1').val();
         var username = $('#username').val();
         var email = $('#email').val();
@@ -120,8 +120,16 @@ Auth.prototype.listenAddStaffEvent= function(){
         var password1 = $('#password1').val();
         var password2 = $('#password2').val();
         var Permissions = $('#Permissions').find("option:selected").val();
-alert(Permissions);
-        var groups = $('#groups:checked').val();
+        alert(Permissions);
+        var groups = '';//$('#groups:checked').val();
+        var gs = $("input[name='groups']");
+        for (var i=0;i<gs.length;i++){
+            if(gs[i].checked==true){
+                groups+=(gs[i].value+",");
+            }
+        }
+        groups = groups.substring(0, groups.length - 1);
+        alert(groups);
         xfzajax.post({
                 'url':'/account/add_staff/',
                 'data':{

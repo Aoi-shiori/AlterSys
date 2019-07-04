@@ -1,9 +1,9 @@
 
-function AltTypeDict() {
+function DBTypeDict() {
 
 }
 
-AltTypeDict.prototype.run=function () {
+DBTypeDict.prototype.run=function () {
       var self =this;
       self.listenAddAltTypeEvent();
       self.listenEDITAltTypeEvent();
@@ -11,9 +11,10 @@ AltTypeDict.prototype.run=function () {
 
 };
 
-AltTypeDict.prototype.listenAddAltTypeEvent=function () {
+DBTypeDict.prototype.listenAddAltTypeEvent=function () {
     var AddBtn= $('.Add_Btn');
     AddBtn.click(function () {
+        event.preventDefault();//去除按钮本身的事件
             swal.fire({
               title: '请输入分类名称',
               input: 'text',
@@ -81,9 +82,10 @@ AltTypeDict.prototype.listenAddAltTypeEvent=function () {
 
 
 
-AltTypeDict.prototype.listenEDITAltTypeEvent=function () {
+DBTypeDict.prototype.listenEDITAltTypeEvent=function () {
     var EdiBtn= $('.Edi_btn');
     EdiBtn.click(function () {
+        event.preventDefault();//去除按钮本身的事件
         var current =$(this);
         var tr =current.parent().parent();
         var pk =tr.attr('id');
@@ -157,9 +159,10 @@ AltTypeDict.prototype.listenEDITAltTypeEvent=function () {
     })
 };
 
-AltTypeDict.prototype.listenDELAltTypeEvent=function(){
+DBTypeDict.prototype.listenDELAltTypeEvent=function(){
         var DelBTn = $('.Del_btn');
         DelBTn.click(function () {
+            event.preventDefault();//去除按钮本身的事件
             var current = $(this);
             var tr = current.parent().parent();
             var pk = tr.attr('id');
@@ -248,8 +251,8 @@ AltTypeDict.prototype.listenDELAltTypeEvent=function(){
 
 
 $(function () {
-    var AltType_Dict = new AltTypeDict();
-    AltType_Dict.run();
+    var DBType_Dict = new DBTypeDict();
+    DBType_Dict.run();
 });
 
 

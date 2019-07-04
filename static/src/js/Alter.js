@@ -128,6 +128,7 @@ Alter.prototype.listenshowhideEvent=
         });
 
         addBtn.click(function () {
+             event.preventDefault();
              self.showEvent();
              self.scollwapper.css({'left':'0'});
         });
@@ -174,14 +175,14 @@ Alter.prototype.listenreviseEvent=function(){
         var revisegroup = $('.revise-group');
 
         var NEWidinput = revisegroup.find("input[name='AlterID']");
-        var NEWAlterTypeInput = revisegroup.find("input[name='AlterType']");
+        var NEWAlterTypeInput = revisegroup.find("select[name='AltType']");
         var NEWAssociatedNumberInput = revisegroup.find("input[name='AssociatedNumber']");
         var NEWDatabaseInput = revisegroup.find("select[name='Database']");
         var NEWAlterContentInput = revisegroup.find("textarea[name='AlterContent']");
         var reviseBtn = revisegroup.find(".revise-btn");
     reviseBtn.click(function () {
         var id =NEWidinput.val();
-        var AlterType = NEWAlterTypeInput.val();
+        var AltType = NEWAlterTypeInput.val();
         var AssociatedNumber = NEWAssociatedNumberInput.val();
         var Database = NEWDatabaseInput.val();
         var AlterContent = NEWAlterContentInput.val();
@@ -213,7 +214,7 @@ Alter.prototype.listenreviseEvent=function(){
                         'url': '/alter/edit_Alter_manager/',
                         'data': {
                             'id':id,
-                            'AlterType': AlterType,
+                            'AltType': AltType,
                             'AssociatedNumber': AssociatedNumber,
                             'Database': Database,
                             'AlterContent': AlterContent,
@@ -253,13 +254,14 @@ Alter.prototype.listenreviseEvent=function(){
 Alter.prototype.listenSigninEvent = function () {
     var self = this;
     var Addgroup = $('.Add-group');
-    var AlterTypepInput = Addgroup.find("input[name='AlterType']");
+    var AlterTypepInput = Addgroup.find("select[name='AltType']");
     var AssociatedNumberInput = Addgroup.find("input[name='AssociatedNumber']");
     var DatabaseInput = Addgroup.find("select[name='Database']");
     var AlterContentInput = Addgroup.find("textarea[name='AlterContent']");
     var submitBtn = Addgroup.find(".submit-btn");
     submitBtn.click(function () {
-        var AlterType = AlterTypepInput.val();
+        event.preventDefault();
+        var AltType = AlterTypepInput.val();
         var AssociatedNumber = AssociatedNumberInput.val();
         var Database = DatabaseInput.val();
         var AlterContent = AlterContentInput.val();
@@ -267,7 +269,7 @@ Alter.prototype.listenSigninEvent = function () {
          xfzajax.post({
             'url': '/alter/add_Alter_manager/',
             'data': {
-                'AlterType': AlterType,
+                'AltType': AltType,
                 'AssociatedNumber': AssociatedNumber,
                 'Database': Database,
                 'AlterContent': AlterContent,
@@ -391,18 +393,34 @@ Alter.prototype.listenDataPiker=function(){
     var todayDate = new Date();
     var todayStr = todayDate.getFullYear() + '/' + (todayDate.getMonth()+1) + '/' + todayDate.getDate();
     var options = {
-        'showButtonPanel': true,
-        'format': 'yyyy/mm/dd',
-        'startDate': '2017/6/1',
+        'format': 'yyyy/mm/dd',//显示格式
+        'language':  "zh-CN",//显示中文
+        'formatDate':    'Y/m/d',
+        'minView': "month",  //最精确的时间选择视图。
+        //'defaultDate': '2017/6/1',//为空的时候默认日期
+        'validateOnBlur': true,//如果输入的值为空，则默认当前日期
         'endDate': todayStr,
-        'language': 'zh-CN',
-        'todayBtn': 'linked',
-        'todayHighlight': true,
-        'clearBtn': true,
-        'autoclose': true
+        'todayBtn': 'linked',//显示今日按钮
+        'todayHighlight': true,//高亮当前日期
+        'clearBtn': true,//清除按钮显示
+        'autoclose': true //选中自动关闭
+         // language: 'zh-CN',//显示中文
+         //
+         // format: 'yyyy-mm-dd',//显示格式
+         //
+         // minView: "month",//设置只显示到月份
+         //
+         // initialDate: new Date(),//初始化当前日期
+         //
+         // autoclose: true,//选中自动关闭
+         //
+         // todayBtn: true//显示今日按钮
     };
-    startPicker.datepicker(options);
-    endPicker.datepicker(options);
+    //startPicker.datetimepicker.dates=['zh-CN'];
+    //startPicker.datepicker(options);
+    startPicker.datetimepicker(options);
+    //startPicker.datepicker(options);
+    endPicker.datetimepicker(options);
 };
 
 
@@ -421,6 +439,7 @@ Alter.prototype.listenReviewEvent=function(){
     var self =this;
     var reviewBtn =$('.Review-btn');
     reviewBtn.click(function () {
+         event.preventDefault();//去除按钮本身的事件
         var checkednow = getchecked();
         if(checkednow){
             //获取被选中元素父类的父类的

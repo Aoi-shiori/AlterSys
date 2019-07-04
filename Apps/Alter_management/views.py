@@ -63,15 +63,16 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
         DatabaseType = int(request.GET.get('DatabaseType',0))
         Alterd_datas = Alter_managment.objects.all()#获取所有数据库的数据
         Databases = DBname.objects.all()
+        AltTypes=AltType.objects.all()
 
         if start or end:#查询时间判断
             if start:
-                start_time=datetime.strptime(start,'%m/%d/%Y')
+                start_time=datetime.strptime(start,'%Y/%m/%d')
             else:
-                start_time = datetime(year=2019,month=5,day=1)
+                start_time = datetime(year=2019,month=5,day=1)#如果是空的 就使用默认值
 
             if end:
-                end_time =datetime.strptime(end,'%m/%d/%Y')
+                end_time =datetime.strptime(end,'%Y/%m/%d')
             else:
                 end_time=datetime.today()
 
@@ -103,6 +104,7 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
             'reviewStatus':reviewStatus,
             'DatabaseType':DatabaseType,
             'Databases':Databases,
+            'AltTypes':AltTypes,
             'url_query': '&'+parse.urlencode({
                 'start': start or '',
                 'end':end or '',
@@ -165,11 +167,11 @@ def edit_Alter_manager(request):#变更内容编辑用
     form =EditAlterform(request.POST)
     if form.is_valid():
         id=form.cleaned_data.get("id")#变更ID
-        AlterType = form.cleaned_data.get("AlterType")  # '关联类型'#
+        AltType = form.cleaned_data.get("AltType")  # '关联类型'#
         AssociatedNumber =form.cleaned_data.get("AssociatedNumber")  # '关联编号'#
         Database = form.cleaned_data.get("Database")  # '数据库'#
         AlterContent =form.cleaned_data.get("AlterContent")  # 变更内容
-        Alter_managment.objects.filter(id=id).update(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Database=Database, AlterContent=AlterContent, Informant=request.user.Name
+        Alter_managment.objects.filter(id=id).update(AltType=AltType, AssociatedNumber=AssociatedNumber, Database=Database, AlterContent=AlterContent, Informant=request.user.Name
 ,FillTime=datetime.now(),ReviewStatus='0')
         return resful.OK()
     else:
@@ -201,7 +203,8 @@ class add_Alter_managerView(View):
         form = Alterform(request.POST)
         #如果验证成功
         if form.is_valid():
-            AlterType = form.cleaned_data.get('AlterType')
+            AltType_id=form.cleaned_data.get('AltType')
+            AltTypes = AltType.objects.get(pk=AltType_id)
             AssociatedNumber = form.cleaned_data.get('AssociatedNumber')
             Database_id = form.cleaned_data.get('Database')
             Database= DBname.objects.get(pk=Database_id)
@@ -210,7 +213,7 @@ class add_Alter_managerView(View):
             #判断变更内容在库中是否存在
             exists=Alter_managment.objects.filter(AlterContent=AlterContent).exists()
             if not exists:
-                Alter_managment.objects.create(AlterType=AlterType, AssociatedNumber=AssociatedNumber, Database=Database,AlterContent=AlterContent,
+                Alter_managment.objects.create(AltType=AltTypes, AssociatedNumber=AssociatedNumber, Database=Database,AlterContent=AlterContent,
                                                Informant=request.user.Name)
                 return resful.OK()
             else:

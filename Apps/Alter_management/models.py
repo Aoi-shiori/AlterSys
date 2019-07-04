@@ -4,7 +4,7 @@ from Apps.Alter_Dict.models import DBname,AltType
 # Create your models here.
 class Alter_managment(models.Model):
         id= models.AutoField(primary_key=True)#变更ID
-        AlterType=models.CharField(max_length=100)#'关联类型BUG'#
+        AltType=models.ForeignKey('Alter_Dict.AltType',on_delete=models.SET_NULL,null=True,db_column='AltType')#'关联类型BUG'#
         AssociatedNumber=models.CharField(max_length=50)#'关联编号'#
         Database=models.ForeignKey('Alter_Dict.DBname',on_delete=models.SET_NULL,null=True,db_column='Database')#'数据库'#
         AlterContent=models.TextField(max_length=1000) #变更内容

@@ -1,10 +1,16 @@
 {% extends 'Base/base.html' %}
 {% block title %}变更管理{% endblock %}
 {% block head %}
-    <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css'%}">
-    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
-    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css'%}">
+    <script src="{% static 'AdminLTE/bower_components/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'AdminLTE/bower_components/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
     <script src="{% static 'AdminLTE/bower_components/jquery-ui/ui/datepicker.js' %}"></script>
+{#    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">#}
+{#	<link href="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet">#}
+{#	<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>#}
+{#	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>#}
+{#	<script src="https://cdn.bootcss.com/moment.js/2.22.0/moment-with-locales.js"></script>#}
+{#	<script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>#}
     <script src="{% static 'js/Alter.min.js'%}"></script>
 {% endblock %}
 
@@ -23,13 +29,13 @@
                             {% if start %}
                                 <input type="text" class="form-control" name="start" id="start-picker" placeholder="开始" readonly value="{{ start }}">
                             {% else %}
-                                <input type="text" class="form-control" name="start" id="start-picker" placeholder="开始" readonly>
+                                <input type="text" class="form-control" name="start" id="start-picker" placeholder="开始" readonly >
 {#                                   <input type="date" class="form-control" min="2019-01-01" max="2099-01-01"  placeholder="开始"/>#}
                             {% endif %}
 
                             <span>-</span>
                             {% if end %}
-                                <input type="text" class="form-control" name="end" id="end-picker" placeholder="结束" readonly value="{{ end }}">
+                                <input type="text" class="form-control" name="end" id="end-picker" placeholder="结束"  readonly value="{{ end }}">
                             {% else %}
                                 <input type="text" class="form-control" name="end" id="end-picker" placeholder="结束" readonly>
                             {% endif %}
@@ -89,7 +95,7 @@
                         <div class="form-group left-group ">
                             <a href="{% url 'management:Alter_manager' %}">清空</a>
                         </div>
-                        <div class="btn-groups">
+
                             <a href="{% url 'management:export_alter_manager' %}">
                                 <button class="btn  pull-right export">导出</button></a>
                                 <button class="btn btn-info pull-right add-btn  Alt-BTN">添加</button>
@@ -98,7 +104,7 @@
                             {% else %}
 
                             {% endif %}
-                        </div>
+
                     </form>
                 </div>
                 <div class="box body">
@@ -131,7 +137,7 @@
                                         <td><input name="se" type="checkbox" ></td>
                                         <td class ='序号'>{{ forloop.counter}}</td>
                                         <td class ='变更编号 AlterID-td'>{{ Alterd_data.id }}</td>
-                                        <td class ='关联类型 AlterType-td'>{{ Alterd_data.AlterType}}</td>
+                                        <td class ='关联类型 AlterType-td'>{{ Alterd_data.AltType.AltType}}</td>
                                         <td class ='关联编号 AssociatedNumber-td'>{{ Alterd_data.AssociatedNumber}}</td>
                                         <td class ='数据库 Datebase-td'>{{ Alterd_data.Database.Database}}</td>
                                         <td class ='变更内容 AlterContent-td'><a target="_blank" href="{% url 'management:Alter_deatil' id=Alterd_data.id %} ">{{ Alterd_data.AlterContent|truncatechars:20}}</a></td>
@@ -227,7 +233,17 @@
 
                             <div class="input-group">
                                  <label for="AlterType">变更类型:</label>
-                                <input type="text" class="form-control" name="AlterType" placeholder="请输入变更类型">
+{#                                <input type="text" class="form-control" name="AlterType" placeholder="请输入变更类型">#}
+                                <select name="AltType" id="AlterType-form" class="form-control">
+                                    {% for AltType in AltTypes %}
+                                        {% if Alterd_datas and Alterd_datas.AltType_id == AltType.pk %}
+                                            <option value="{{ AltType.pk }}" selected>{{ AltType.AltType }}</option>
+                                        {% else %}
+                                            <option value="{{ AltType.pk }}">{{ AltType.AltType }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                </select>
                             </div>
                             <div class="input-group">
                                  <label for="AssociatedNumber">关联编号:</label>
@@ -267,8 +283,16 @@
                                 <input type="text" class="form-control" name="AlterID" id="ID-id" readonly >
                             </div>
                             <div class="input-group">
-                                <label for="AlterType">关联类型:</label>
-                                <input type="text" class="form-control" name="AlterType" id="ID-AlterType"  >
+                                <label for="AlterType">变更类型:</label>
+                                <select name="AltType" id="AlterType-form" class="form-control">
+                                    {% for AltType in AltTypes %}
+                                        {% if Alterd_datas and Alterd_datas.AltType_id == AltType.pk %}
+                                            <option value="{{ AltType.pk }}" selected>{{ AltType.AltType }}</option>
+                                        {% else %}
+                                            <option value="{{ AltType.pk }}">{{ AltType.AltType }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="input-group">
                                 <label for="AssociatedNumber">关联编号:</label>

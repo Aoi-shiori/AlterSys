@@ -13,7 +13,7 @@ class Command(BaseCommand):
             ContentType.objects.get_for_model(Alter_managment)
         }
         Review_editor_permissions=Permission.objects.filter(content_type__in=Review_editor_content_type)
-        Review_editor_Group=Group.objects.create(name="编辑审核")
+        Review_editor_Group=Group.objects.create(name="编辑组")
         Review_editor_Group.permissions.set(Review_editor_permissions)
         Review_editor_Group.save()
         self.stdout.write(self.style.SUCCESS("编辑审核组创建成功"))
@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
         #3、管理员组
         admin_permissions=Review_editor_permissions.union(execute_permissions)
-        adminGroup=Group.objects.create(name='管理员组')
+        adminGroup=Group.objects.create(name='管理组')
         adminGroup.permissions.set(admin_permissions)
         adminGroup.save()
         self.stdout.write(self.style.SUCCESS("管理员组创建成功"))

@@ -5,21 +5,21 @@ from Apps.Alter_management.models import Alter_managment
 #表单数据验证
 
 class Alterform(forms.Form,FormMixin):
-        AlterType = forms.CharField(max_length=100,error_messages={"required":'变更类型不能为空,请先维护变更类型字典'})  # '关联类型'#
+        AltType = forms.IntegerField(error_messages={"required":'变更类型不能为空,请先维护变更类型字典'})  # '关联类型'#
         AssociatedNumber = forms.CharField(max_length=50,error_messages={"required":'关联编号不能为空'})  # '关联编号'#
         Database = forms.IntegerField(error_messages={"required":'数据库不能为空，请先维护数据库类型字典'})  # '数据库'#
         #如果数据库中字段是textfield时，
         AlterContent = forms.CharField(widget=forms.Textarea,error_messages={"required":"变更内容不能为空"})  # 变更内容
         class Meta:
                 model=Alter_managment
-                exclude={'AlterType','AssociatedNumber','Database','AlterContent','Informant'}
+                exclude={'AltType','AssociatedNumber','Database','AlterContent','Informant'}
 
 
 class EditAlterform(forms.Form,FormMixin):
         id=forms.IntegerField(error_messages={"required":"必须传入变更id！"})
-        AlterType = forms.CharField(max_length=100,error_messages={"required":'变更类型不能为空,请先维护变更类型字典！'})  # '关联类型'#
+        AltType = forms.IntegerField(error_messages={"required":'变更类型不能为空,请先维护变更类型字典！'})  # '关联类型'#
         AssociatedNumber = forms.CharField(max_length=50,error_messages={"required":'关联编号不能为空'})  # '关联编号'#
-        Database = forms.CharField(max_length=50,error_messages={"required":'数据库不能为空，请先维护数据库类型字典'})  # '数据库'#
+        Database = forms.IntegerField(error_messages={"required":'数据库不能为空，请先维护数据库类型字典'})  # '数据库'#
         AlterContent = forms.CharField(widget=forms.Textarea,error_messages={"required":"变更内容不能为空"})  # 变更内容
 
         # class Meta:

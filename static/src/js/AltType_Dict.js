@@ -14,6 +14,7 @@ AltTypeDict.prototype.run=function () {
 AltTypeDict.prototype.listenAddAltTypeEvent=function () {
     var AddBtn= $('.Add_Btn');
     AddBtn.click(function () {
+        event.preventDefault();//去除按钮本身的事件
             swal.fire({
               title: '请输入分类名称',
               input: 'text',
@@ -22,14 +23,16 @@ AltTypeDict.prototype.listenAddAltTypeEvent=function () {
               showLoaderOnConfirm: true,
               inputPlaceholder:"请输入分类名称",
               inputValidator: function(value) {
+                   Swal.showLoading();
                 return new Promise(function(reject,resolve) {
                   if (value)
                     setTimeout(function() {
                         //alert(value );
+                        var timerInterval;
                           xfzajax.post({
-                            'url': '/Dict/Add_DB_Dict/',
+                            'url': '/Dict/Add_AltType_Dict/',
                             'data': {
-                                'Database': value
+                                'AltType': value
                             },
                             'success': function (result) {
                                 if(result['code'] === 200){
@@ -37,7 +40,18 @@ AltTypeDict.prototype.listenAddAltTypeEvent=function () {
                                     swal.fire({
                                         type: 'success',
                                         title: 'Ajax请求完成！',
-                                        html: '提交的分类名称是：' + value
+                                        html: ('提交的分类名称是：' + value+'<br><br/>')
+                                            +'我在<strong></strong>秒后自动关闭.',
+                                        timer:2000,
+                                        onBeforeOpen: function(){
+                                            Swal.showLoading();
+                                            timerInterval = setInterval(function () {
+                                                Swal.getContent().querySelector('strong').textContent = (Swal.getTimerLeft()/1000).toFixed(0)
+                                            }, 100)
+                                          },
+                                          onClose: function(){
+                                              clearInterval(timerInterval)
+                                          }
                                       }).then(function () {
                                         window.location.reload();
                                     })
@@ -71,26 +85,29 @@ AltTypeDict.prototype.listenAddAltTypeEvent=function () {
 AltTypeDict.prototype.listenEDITAltTypeEvent=function () {
     var EdiBtn= $('.Edi_btn');
     EdiBtn.click(function () {
+        event.preventDefault();//去除按钮本身的事件
         var current =$(this);
         var tr =current.parent().parent();
         var pk =tr.attr('id');
-        var Database=tr.attr('DBname');
+        var Database=tr.attr('AltTypename');
         event.preventDefault();
             swal.fire({
               title: '修改分类名称',
               input: 'text',
               showCancelButton: true,
+              cancelButtonText:'取消',
               confirmButtonText: '提交',
               showLoaderOnConfirm: true,
               inputPlaceholder:"请输入分类名称",
               inputValue:Database,
               inputValidator: function(value) {
+                  Swal.showLoading();
                 return new Promise(function(reject,resolve) {
                   if (value)
                     setTimeout(function() {
                         //alert(value );
                           xfzajax.post({
-                            'url': '/Dict/Edit_DB_Dict/',
+                            'url': '/Dict/Edit_AltType_Dict/',
                             'data': {
                                 'pk':pk,
                                 'Database': value
@@ -101,7 +118,18 @@ AltTypeDict.prototype.listenEDITAltTypeEvent=function () {
                                     swal.fire({
                                         type: 'success',
                                         title: 'Ajax请求完成！',
-                                        html: '提交的分类名称是：' + value
+                                        html: ('提交的分类名称是：' + value+'! <br/><br/>')
+                                            +'我在<strong></strong>秒后自动关闭.',
+                                        timer:2000,
+                                        onBeforeOpen: function(){
+                                            Swal.showLoading();
+                                            timerInterval = setInterval(function () {
+                                                Swal.getContent().querySelector('strong').textContent = (Swal.getTimerLeft()/1000).toFixed(0)
+                                            }, 100)
+                                          },
+                                          onClose: function(){
+                                              clearInterval(timerInterval)
+                                          }
                                       }).then(function () {
                                         window.location.reload();
                                     })
@@ -112,7 +140,7 @@ AltTypeDict.prototype.listenEDITAltTypeEvent=function () {
                                 }
                             }
                           });
-                    }, 2000);
+                    }, 1000);
                   else{
                      reject('你需要输入一些东西')
                   }
@@ -134,6 +162,7 @@ AltTypeDict.prototype.listenEDITAltTypeEvent=function () {
 AltTypeDict.prototype.listenDELAltTypeEvent=function(){
         var DelBTn = $('.Del_btn');
         DelBTn.click(function () {
+            event.preventDefault();//去除按钮本身的事件
             var current = $(this);
             var tr = current.parent().parent();
             var pk = tr.attr('id');
@@ -153,18 +182,28 @@ AltTypeDict.prototype.listenDELAltTypeEvent=function(){
             }).then(function (result) {
                 if (result.value) {
                     xfzajax.post({
-                        'url': '/Dict/Del_DB_Dict/',
+                        'url': '/Dict/Del_AltType_Dict/',
                         'data': {
                             'pk': pk,
 
                         },
                         'success': function (result) {
                             if (result['code'] === 200) {
+                                var timerInterval;
                                 Swal.fire({
-                                    title: '删除分类数据',
-                                    text: '删除成功',
+                                    title: '删除分类数据成功',
+                                    html: '我在<strong></strong>秒后自动关闭.',
                                     type: 'success',
-                                    timer: 1000
+                                    timer: 1000,
+                                    onBeforeOpen: function(){
+                                    Swal.showLoading();
+                                    timerInterval = setInterval(function () {
+                                        Swal.getContent().querySelector('strong').textContent = (Swal.getTimerLeft()/1000).toFixed(0)
+                                    }, 100)
+                                  },
+                                  onClose: function(){
+                                      clearInterval(timerInterval)
+                                  }
                                 }).then(function () {
                                     window.location.reload();
                                 })
@@ -176,11 +215,34 @@ AltTypeDict.prototype.listenDELAltTypeEvent=function(){
                     });
 
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    Swal.fire(
-                        '已取消！',
-                        '你的数据是安全的:)',
-                        'error'
-                    )
+                    // Swal.fire(
+                    //     '已取消！',
+                    //     '你的数据是安全的:)',
+                    //     'error'
+                    // )
+                    var timerInterval;
+                    Swal.fire({
+                      type: 'info',
+                      title: '取消成功,你的数据是安全的',
+                      html: '我在<strong></strong>秒后自动关闭.',
+                      timer: 1000,
+                      onBeforeOpen: function(){
+                        Swal.showLoading();
+                        timerInterval = setInterval(function () {
+                            Swal.getContent().querySelector('strong').textContent = (Swal.getTimerLeft()/1000).toFixed(0)
+                        }, 100)
+                      },
+                      onClose: function(){
+                          clearInterval(timerInterval)
+                      }
+                    }).then( function(result) {
+                      if (
+                        // Read more about handling dismissals
+                        result.dismiss === Swal.DismissReason.timer
+                      ) {
+                        console.log('倒计时结束窗口关闭')
+                      }
+                    });
                 }
             })
         })
@@ -192,3 +254,5 @@ $(function () {
     var AltType_Dict = new AltTypeDict();
     AltType_Dict.run();
 });
+
+
