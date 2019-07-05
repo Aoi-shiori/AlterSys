@@ -19,6 +19,7 @@ AltTypeDict.prototype.listenAddAltTypeEvent=function () {
               title: '请输入分类名称',
               input: 'text',
               showCancelButton: true,
+              cancelButtonText:'取消',
               confirmButtonText: '提交',
               showLoaderOnConfirm: true,
               inputPlaceholder:"请输入分类名称",

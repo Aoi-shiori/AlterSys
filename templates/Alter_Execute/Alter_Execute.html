@@ -4,14 +4,19 @@
     变更执行管理
 {% endblock %}
 
-{% block content-header %}
-       <h1>变更执行管理</h1>
-    <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css'%}">
-    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
-    <script src="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js' %}"></script>
+{% block head %}
+    <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css'%}">
+    <script src="{% static 'AdminLTE/bower_components/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'AdminLTE/bower_components/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+{#    <script src="{% static 'AdminLTE/bower_components/jquery-ui/ui/datepicker.js' %}"></script>#}
     <script src="{% static 'js/Alter_execute.min.js' %}"></script>
 {% endblock %}
 
+
+{% block content-header %}
+    <h1>变更执行管理</h1>
+
+{% endblock %}
 
 
 {% block content %}

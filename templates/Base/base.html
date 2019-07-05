@@ -21,9 +21,9 @@
   <link rel="stylesheet" href="{% static 'AdminLTE/dist/css/skins/_all-skins.min.css ' %}">
   <!-- Morris chart -->
 {#  <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/morris.js/morris.css' %}">#}
-  <!-- jvectormap -->
+{#  <!-- jvectormap -->#}
 {#  <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/jvectormap/jquery-jvectormap.css ' %}">#}
-  <!-- Date Picker -->
+{#  <!-- Date Picker -->#}
 {#  <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css '%}">#}
 {#  <!-- Daterange picker -->#}
 {#  <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css '%}">#}
@@ -40,7 +40,6 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
   <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-{#    <script src="{% static 'js/auth.min.js'%}"></script>#}
   <script src="{% static 'js/Alteralert.min.js' %}"></script>
   <script src="{% static 'js/message.min.js' %}"></script>
   <script src="{% static 'js/Alterajax.min.js' %}"></script>
@@ -54,7 +53,7 @@
 {#  <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>#}
 
   <!-- Google Font -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+{#  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">#}
 
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -93,8 +92,8 @@
                 <img src="{% static 'AdminLTE/dist/img/user2-160x160.jpg ' %}" class="img-circle" alt="User Image">
 
                 <p>
-                  {{ user.name }} 欢迎来到变更管理系统
-                  <small>Member since Nov. 2012</small>
+                  {{ user.Name }} 欢迎来到变更管理系统
+                  <small>{% now "Y-m-d" %}</small>
                 </p>
               </li>
 
@@ -242,7 +241,7 @@
   {#$.widget.bridge('uibutton', $.ui.button);#}
 </script>
 <!-- Bootstrap 3.3.7 -->
-{#<script src="{% static 'AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>#}
+<script src="{% static 'AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <!-- Morris.js charts -->
 
 <!-- AdminLTE App -->
@@ -259,77 +258,5 @@
 <!-- FastClick -->
 {#<script src="{% static 'AdminLTE/bower_components/fastclick/lib/fastclick.js' %}"></script>#}
 <!-- page script -->
- <!-- 模态对话框，用于点击后弹出使用 -->
-{#<div class="mask-wapper">#}
-{#        <div class="auth-wapper">#}
-{#            <div class="close-wapper">#}
-{#                <span class="close-btn icon-icon-test iconfont"></span>#}
-{#            </div>#}
-{#            <div class="auth-inner-wapper">#}
-{#                <div class="scoll-wapper">#}
-{#                    <div class="signin-group Auth-group">#}
-{#                        <div class="top-group">#}
-{#                            <span class="title">请登录</span>#}
-{#                            <a href="javascript:void(0);" class="switch">立即注册</a>#}
-{#                        </div>#}
-{#                        <div class="form-group">#}
-{#                            <div class="input-group">#}
-{#                                <input type="text" class="form-control" name="MobilePhone" placeholder="请输入手机号码">#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <input type="password" class="form-control" name="password" placeholder="请输入密码">#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <label><input type="checkbox" value="=1" name="remember">记住我</label>#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <input type="button" class="submit-btn" value="立即登录">#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    <div class="signup-group Auth-group">#}
-{#                        <div class="top-group">#}
-{#                            <span class="title">请注册</span>#}
-{#                            <a href="javascript:void(0);" class="switch">立即登录</a>#}
-{#                        </div>#}
-{#                        <div class="form-group">#}
-{#                            <div class="input-group">#}
-{#                                <input type="text" class="form-control" name="MobilePhone" placeholder="请输入手机号码">#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <input type="text" class="form-control" name="username" placeholder="请输入用户名">#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <div class="short-input-group">#}
-{#                                    <input type="text" class="form-control" name="img-captcha" placeholder="图形验证码">#}
-{#                                </div>#}
-{#                                <div class="input-group-addon">#}
-{#                                    <img src="" alt="">#}
-{#                                </div>#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <input type="text" class="form-control" name="password1" placeholder="密码">#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <input type="text" class="form-control" name="password2" placeholder="确认密码">#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <div class="short-input-group">#}
-{#                                    <input type="text" class="form-control" name="sms-captcha" placeholder="短信验证码">#}
-{#                                </div>#}
-{#                                <div class="input-group-addon">#}
-{#                                    <span class="sms-captcha-btn">发送验证码</span>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                            <div class="input-group">#}
-{#                                <input type="submit" class="submit-btn" value="立即注册" >#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{##}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
 </body>
 </html>

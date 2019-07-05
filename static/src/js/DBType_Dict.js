@@ -20,6 +20,7 @@ DBTypeDict.prototype.listenAddAltTypeEvent=function () {
               input: 'text',
               showCancelButton: true,
               confirmButtonText: '提交',
+              cancelButtonText:'取消',
               showLoaderOnConfirm: true,
               inputPlaceholder:"请输入分类名称",
               inputValidator: function(value) {

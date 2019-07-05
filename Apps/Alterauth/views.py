@@ -2,7 +2,7 @@
 #authenticate授权#
 from django.contrib.auth import login,logout,authenticate
 from  django.views.decorators.http import require_POST
-from .froms import loginform,AddStaffForm
+from .froms import loginform,AddStaffForm,EditStaffForm
 from  django.http import JsonResponse,HttpResponse
 from utils import resful
 from django.shortcuts import render,redirect,reverse
@@ -98,8 +98,46 @@ class AddStaff_view(View):
         else:
             return resful.params_error(message=form.get_error())
 
+
+class EditStaff_view(View):
+    def get(self,request):
+        id =request.GET.get('id')
+        Userdata = User.object.get(id=id)
+        groups = Userdata.groups.all().values()
+        context={
+            'Use':Userdata,
+            'Groups':groups,
+        }
+        return render(request,'Alter_management/add_staff.html',context=context)
+
+    def post(self,request):
+        form =EditStaffForm(request.POST)
+        if form.is_valid():
+            id = form.cleaned_data.get('id')
+            MobilePhone=form.cleaned_data.get('MobilePhone')
+            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
+            name =form.cleaned_data.get('name')
+            Department =form.cleaned_data.get('Department')
+            Permissions =form.cleaned_data.get('Permissions')
+            user=User.object.filter(id=id).update(MobilePhone=MobilePhone,Username=username,Email=email,Name=name,Department=Department,Permissions=Permissions)
+            groups = form.cleaned_data.get('groups')
+            gs = groups.split(',')
+            groups = Group.objects.filter(pk__in=gs)
+            user.groups.set(groups)
+            user.save()
+            return resful.OK()
+            #return redirect(reverse('Alterauth:add_staff'))
+        else:
+            return resful.params_error(message=form.get_error())
+
+
+
+
+
+#注销启用员工
 def Cancellation(request):
-        uid=request.POST.get('id').replace(',','') #传过来的uid后面带了个逗号，进行去除
+        id=request.POST.get('id').replace(',','') #传过来的uid后面带了个逗号，进行去除
         Cancellation=request.POST.get('Cancellation')
         if Cancellation == 'True':
             User.object.filter(id=id).update(Cancellation=False)

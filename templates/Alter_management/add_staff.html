@@ -15,49 +15,89 @@
                     <div class="box-body">
                         <div class="form-group">
                             <label for="MobilePhone-input">手机号码：</label>
-                            <input type="text" class="form-control" id="MobilePhone1">
+                            {% if Use %}
+                                <input type="text" class="form-control" id="MobilePhone1" value="{{ Use.MobilePhone}}">
+                            {% else %}
+                                <input type="text" class="form-control" id="MobilePhone1">
+                            {% endif %}
+
                         </div>
                         <div class="form-group">
                             <label for="username-input">用户名：</label>
-                            <input type="text" class="form-control" id="username">
+                            {% if Use %}
+                                 <input type="text" class="form-control" id="username" value="{{ Use.Name }}">
+                            {% else %}
+                                 <input type="text" class="form-control" id="username">
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="email-input">邮箱：</label>
-                            <input type="email" class="form-control" id="email">
+                            {% if Use %}
+                                 <input type="email" class="form-control" id="email" value="{{ Use.Email }}">
+                            {% else %}
+                                 <input type="email" class="form-control" id="email">
+                            {% endif %}
+
                         </div>
                         <div class="form-group">
                             <label for="name-input">姓名：</label>
-                            <input type="text" class="form-control" id="name">
+                            {% if Use %}
+                                <input type="text" class="form-control" id="name" value="{{ Use.Name }}">
+                            {% else %}
+                                <input type="text" class="form-control" id="name">
+                            {% endif %}
+
                         </div>
                         <div class="form-group">
                             <label for="Department-input">部门：</label>
-                            <input type="text" class="form-control" id="Department">
-                        </div>
-                        <div class="form-group">
-                            <label for="password-input1">密码：</label>
-                            <input type="password" class="form-control" id="password1">
-                        </div>
-                        <div class="form-group">
-                            <label for="password-input2">确认密码：</label>
-                            <input type="password" class="form-control" id="password2">
+                            {% if Use %}
+                                 <input type="text" class="form-control" id="Department" value="{{ Use.Department }}">
+                            {% else %}
+                                 <input type="text" class="form-control" id="Department">
+                            {% endif %}
+
                         </div>
                         <div class="form-group">
                             <label for="Department-input">审核权限：</label>
-                            <select name="Permissions" id="Permissions" >
-                                <option value=False>否</option>
-                                <option value=True>是</option>
-                            </select>
+
+                            {% if Use %}
+                                <select name="Permissions" id="Permissions"  >
+                                    {% if Use.Permissions == False %}
+                                        <option value=False>否</option>
+                                        <option value=True>是</option>
+                                    {% endif %}
+                                </select>
+                            {% else %}
+                                <select name="Permissions" id="Permissions" >
+                                    <option value=False>否</option>
+                                    <option value=True>是</option>
+                                </select>
+                            {% endif %}
                         </div>
                         <div class="checkbox">
-                            {% for group in groups %}
-                              <label style="margin-right: 20px">
-                                 <input type="checkbox" name="groups" value="{{ group.pk }}" id="groups">{{ group.name }}
-                              </label>
-                            {% endfor %}
+                            {% if Groups %}
+                                {% for Group in Groups %}
+                                    <label style="margin-right: 20px">
+                                    <input type="checkbox" name="groups" value="{{ Group.id }}"  checked id="groups">{{ Group.name }}
+                                    </label>
+                                {% endfor %}
+                            {% else %}
+                                {% for group in groups %}
+                                  <label style="margin-right: 20px">
+                                         <input type="checkbox" name="groups" value="{{ group.pk }}" id="groups">{{ group.name }}
+                                  </label>
+                                {% endfor %}
+                            {% endif %}
+
                         </div>
                     </div>
                     <div class="box box-footer">
-                        <button class="btn btn-primary pull-right " id="addstaff-btn">立即添加</button>
+                        {% if Use %}
+                             <button class="btn btn-primary pull-right "  User-id="{{ Users.pk }}" id="addstaff-btn">编辑用户</button>
+                        {% else %}
+                             <button class="btn btn-primary pull-right "  id="addstaff-btn">立即添加</button>
+                        {% endif %}
+
                     </div>
                 </form>
             </div>

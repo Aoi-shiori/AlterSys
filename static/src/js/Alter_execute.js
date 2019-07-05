@@ -242,18 +242,32 @@ Execute.prototype.listenDataPiker=function(){
     var todayDate = new Date();
     var todayStr = todayDate.getFullYear() + '/' + (todayDate.getMonth()+1) + '/' + todayDate.getDate();
     var options = {
-        'showButtonPanel': true,
-        'format': 'yyyy/mm/dd',
-        'startDate': '2017/6/1',
+        // 'showButtonPanel': true,
+        // 'format': 'yyyy/mm/dd',
+        // 'startDate': '2017/6/1',
+        // 'endDate': todayStr,
+        // 'language': 'zh-CN',
+        // 'todayBtn': 'linked',
+        // 'todayHighlight': true,
+        // 'clearBtn': true,
+        // 'autoclose': true
+
+
+
+        'format': 'yyyy/mm/dd',//显示格式
+        'language':  "zh-CN",//显示中文
+        'formatDate':    'Y/m/d',
+        'minView': "month",  //最精确的时间选择视图。
+        //'defaultDate': '2017/6/1',//为空的时候默认日期
+        'validateOnBlur': true,//如果输入的值为空，则默认当前日期
         'endDate': todayStr,
-        'language': 'zh-CN',
-        'todayBtn': 'linked',
-        'todayHighlight': true,
-        'clearBtn': true,
-        'autoclose': true
+        'todayBtn': 'linked',//显示今日按钮
+        'todayHighlight': true,//高亮当前日期
+        'clearBtn': true,//清除按钮显示
+        'autoclose': true //选中自动关闭
     };
-    startPicker.datepicker(options);
-    endPicker.datepicker(options);
+    startPicker.datetimepicker(options);
+    endPicker.datetimepicker(options);
 };
 
 

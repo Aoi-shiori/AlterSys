@@ -8,5 +8,6 @@ urlpatterns = [
         #员工管理
         path('staffs/',views.staff_view,name='staffs'),
         path('add_staff/',views.AddStaff_view.as_view(),name='add_staff'),
-        path('Cancellation/',views.Cancellation,name = 'Cancellation')
+        path('Cancellation/',views.Cancellation,name = 'Cancellation'),
+        path('Edit_Staff/',views.EditStaff_view.as_view(),name='edit_staff'),
 ]

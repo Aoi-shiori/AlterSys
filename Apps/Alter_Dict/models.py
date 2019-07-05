@@ -10,5 +10,6 @@ class DBname(models.Model):
 #变更类型字典
 class AltType(models.Model):
         AltType=models.CharField(max_length=50)
+        counts = models.CharField(max_length=50, null=True)
         class Meta:
                 db_table='alt_type_dict'

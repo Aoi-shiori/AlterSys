@@ -21,6 +21,15 @@ class AddStaffForm(forms.Form,FormMixin):
     Permissions = forms.CharField()# 审核权限
     groups=forms.CharField()
 
+class EditStaffForm(forms.Form, FormMixin):
+    id = forms.IntegerField(error_messages={"required":"必须传入uid！"})
+    MobilePhone = forms.CharField(max_length=11)
+    username = forms.CharField(max_length=100)  # 用户名#
+    email = forms.EmailField()
+    name = forms.CharField(max_length=50)  # 姓名#
+    Department = forms.CharField(max_length=100)  # 所在部门#
+    Permissions = forms.CharField()  # 审核权限
+    groups = forms.CharField()
 
     # def clean(self):
     #     clean_Data = super(AddStaffForm,self).clean()

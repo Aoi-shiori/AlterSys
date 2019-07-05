@@ -178,13 +178,65 @@ Auth.prototype.listenCancellationEvent = function () {
             },
              'success': function (result) {
                 if(result['code'] === 200){
-                     window.messageBox.show("操作成功");
-                    setTimeout("window.location.reload()","300");
+                    if(Cancellation==='True'){
+                                var timerInterval;
+                                Swal.fire({
+                                    title: '员工启用成功',
+                                    html: '我在<strong></strong>秒后自动关闭.',
+                                    type: 'success',
+                                    timer: 1000,
+                                    onBeforeOpen: function(){
+                                    Swal.showLoading();
+                                    timerInterval = setInterval(function () {
+                                        Swal.getContent().querySelector('strong').textContent = (Swal.getTimerLeft()/1000).toFixed(0)
+                                    }, 100)
+                                  },
+                                  onClose: function(){
+                                      clearInterval(timerInterval)
+                                  }
+                                }).then(function () {
+                                    window.location.reload();
+                                })
+
+                        ////下面是未导入sweetalter2的提示
+                        //window.messageBox.show("启用成功");
+                        //setTimeout("window.location.reload()","300");
+                        // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
+                        //     window.location.reload();
+                        // });
+                    }else {
+                                var timerInterval;
+                                Swal.fire({
+                                    title: '员工注销成功',
+                                    html: '我在<strong></strong>秒后自动关闭.',
+                                    type: 'success',
+                                    timer: 1000,
+                                    onBeforeOpen: function(){
+                                    Swal.showLoading();
+                                    timerInterval = setInterval(function () {
+                                        Swal.getContent().querySelector('strong').textContent = (Swal.getTimerLeft()/1000).toFixed(0)
+                                    }, 100)
+                                  },
+                                  onClose: function(){
+                                      clearInterval(timerInterval)
+                                  }
+                                }).then(function () {
+                                    window.location.reload();
+                                })
+
+
+                    ////下面是未导入sweetalter2的提示
+                    //window.messageBox.show("注销成功");
+                    //setTimeout("window.location.reload()","300");
                     // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
                     //     window.location.reload();
                     // });
+                        }
                 }
-            }
+            },
+             'fail':function (error) {
+                    window.messageBox.showError('服务器内部错误！');
+                }
         });
 
 
