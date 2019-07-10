@@ -22,7 +22,7 @@ class AddStaffForm(forms.Form,FormMixin):
     groups=forms.CharField()
 
 class EditStaffForm(forms.Form, FormMixin):
-    id = forms.IntegerField(error_messages={"required":"必须传入uid！"})
+    id = forms.CharField(error_messages={"required":"必须传入uid！"})
     MobilePhone = forms.CharField(max_length=11)
     username = forms.CharField(max_length=100)  # 用户名#
     email = forms.EmailField()

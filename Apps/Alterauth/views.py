@@ -88,9 +88,9 @@ class AddStaff_view(View):
             user=User.object.create_user(MobilePhone=MobilePhone,Username=username,password=password1,Email=email,Name=name,Department=Department,Permissions=Permissions)
             #groups_ids=request.POST.getlist('groups')
             #groups= Group.objects.filter(pk__in=groups_ids)
-            groups = form.cleaned_data.get('groups')
-            gs = groups.split(',')
-            groups = Group.objects.filter(pk__in=gs)
+            groups = form.cleaned_data.get('groups').split(',')
+            #gs = groups.split(',')
+            groups = Group.objects.filter(pk__in=groups)
             user.groups.set(groups)
             user.save()
             return resful.OK()
@@ -103,10 +103,12 @@ class EditStaff_view(View):
     def get(self,request):
         id =request.GET.get('id')
         Userdata = User.object.get(id=id)
-        groups = Userdata.groups.all().values()
+        Groups_use = Userdata.groups.all()
+        groups = Group.objects.all()
         context={
             'Use':Userdata,
-            'Groups':groups,
+            'Groups':Groups_use,
+            'groups':groups,
         }
         return render(request,'Alter_management/add_staff.html',context=context)
 
@@ -120,12 +122,14 @@ class EditStaff_view(View):
             name =form.cleaned_data.get('name')
             Department =form.cleaned_data.get('Department')
             Permissions =form.cleaned_data.get('Permissions')
-            user=User.object.filter(id=id).update(MobilePhone=MobilePhone,Username=username,Email=email,Name=name,Department=Department,Permissions=Permissions)
-            groups = form.cleaned_data.get('groups')
-            gs = groups.split(',')
-            groups = Group.objects.filter(pk__in=gs)
-            user.groups.set(groups)
-            user.save()
+            User.object.filter(id=id).update(MobilePhone=MobilePhone,Username=username,Email=email,Name=name,Department=Department,Permissions=Permissions)
+            use=User.object.get(id=id) #获取到当前的用户，如果直接使用上面的是一个值
+            groups = form.cleaned_data.get('groups').split(',')
+            #gs = groups.split(',')#将获取的字符串列表进行分割
+            group = Group.objects.filter(pk__in=groups)
+            use.groups.clear() #清除原有的分组权限数据
+            use.groups.set(group)
+            use.save()
             return resful.OK()
             #return redirect(reverse('Alterauth:add_staff'))
         else:

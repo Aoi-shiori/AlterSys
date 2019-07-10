@@ -50,6 +50,7 @@ Auth.prototype.run=function () {
         self.listenSwitchEvent();
         self.listenAddStaffEvent();
         self.listenCancellationEvent();
+        self.listenEditStaffEvent();
 
 };
 
@@ -146,6 +147,62 @@ Auth.prototype.listenAddStaffEvent= function(){
                 'success':function (result) {
                     if (result['code']===200){
                         window.messageBox.showSuccess('添加成功！');
+                    } else {
+                        window.messageBox.showError('服务有问题！');
+                    }
+                },
+                'fail':function (error) {
+                    window.messageBox.showError('服务器内部错误！');
+                }
+        });
+
+    });
+
+
+};
+
+
+Auth.prototype.listenEditStaffEvent= function(){
+    var EditstaffBtn = $('#Editstaff-btn');
+    EditstaffBtn.click(function (event) {
+        event.preventDefault();
+        var btn =$(this);
+        var id = btn.attr('staff-id');
+        alert(id);
+        var MobilePhone = $('#MobilePhone1').val();
+        //var MobilePhone = $("input[name='MobilePhone1']").val();
+        alert(MobilePhone);
+        var username = $('#username').val();
+        var email = $('#email').val();
+        var name = $('#name').val();
+        var Department = $('#Department').val();
+        var Permissions = $('#Permissions').find("option:selected").val();
+        //alert(Permissions);
+        var groups = '';//$('#groups:checked').val();
+        var gs = $("input[name='groups']");
+        for (var i=0;i<gs.length;i++){
+            if(gs[i].checked==true){
+                groups+=(gs[i].value+",");
+            }
+        }
+        groups = groups.substring(0, groups.length - 1);//减少列表长度，去除多余的逗号
+        //alert(groups);
+        xfzajax.post({
+                'url':'/account/Edit_Staff/',
+                'data':{
+                    'id':id,
+                    'MobilePhone':MobilePhone,
+                    'username':username,
+                    'email':email,
+                    'name':name,
+                    'Department':Department,
+                    'Permissions':Permissions,
+                    'groups':groups,
+                },
+                'success':function (result) {
+                    if (result['code']===200){
+                        window.messageBox.showSuccess('添加成功！');
+                        window.location.reload();
                     } else {
                         window.messageBox.showError('服务有问题！');
                     }

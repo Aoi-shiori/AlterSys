@@ -16,7 +16,7 @@
                         <div class="form-group">
                             <label for="MobilePhone-input">手机号码：</label>
                             {% if Use %}
-                                <input type="text" class="form-control" id="MobilePhone1" value="{{ Use.MobilePhone}}">
+                                <input type="text" class="form-control" name="MobilePhone1" id="MobilePhone1" value="{{ Use.MobilePhone}}">
                             {% else %}
                                 <input type="text" class="form-control" id="MobilePhone1">
                             {% endif %}
@@ -57,6 +57,24 @@
                             {% endif %}
 
                         </div>
+                        {% if Use %}
+
+                        {% else %}
+                            <div class="form-group">
+                                <label for="password1-input">密码：</label>
+                                <input type="text" class="form-control" id="password1">
+                            </div>
+                        {% endif %}
+
+                        {% if Use %}
+
+                        {% else %}
+                            <div class="form-group">
+                                <label for="password2-input">确认密码：</label>
+                                <input type="text" class="form-control" id="password2" >
+                            </div>
+                        {% endif %}
+
                         <div class="form-group">
                             <label for="Department-input">审核权限：</label>
 
@@ -65,6 +83,9 @@
                                     {% if Use.Permissions == False %}
                                         <option value=False>否</option>
                                         <option value=True>是</option>
+                                    {% else %}
+                                        <option value=True>是</option>
+                                        <option value=False>否</option>
                                     {% endif %}
                                 </select>
                             {% else %}
@@ -75,25 +96,24 @@
                             {% endif %}
                         </div>
                         <div class="checkbox">
-                            {% if Groups %}
-                                {% for Group in Groups %}
-                                    <label style="margin-right: 20px">
-                                    <input type="checkbox" name="groups" value="{{ Group.id }}"  checked id="groups">{{ Group.name }}
-                                    </label>
-                                {% endfor %}
-                            {% else %}
+
                                 {% for group in groups %}
-                                  <label style="margin-right: 20px">
-                                         <input type="checkbox" name="groups" value="{{ group.pk }}" id="groups">{{ group.name }}
-                                  </label>
+                                    {% if group in Groups %}
+                                        <label style="margin-right: 20px">
+                                            <input type="checkbox" name="groups" value="{{ group.id }}"  checked id="groups">{{ group.name }}
+                                        </label>
+                                    {% else %}
+                                        <label style="margin-right: 20px">
+                                            <input type="checkbox" name="groups" value="{{ group.id }}"   id="groups">{{ group.name }}
+                                        </label>
+                                    {% endif %}
                                 {% endfor %}
-                            {% endif %}
 
                         </div>
                     </div>
                     <div class="box box-footer">
                         {% if Use %}
-                             <button class="btn btn-primary pull-right "  User-id="{{ Users.pk }}" id="addstaff-btn">编辑用户</button>
+                             <button class="btn btn-primary pull-right "  staff-id="{{ Use.pk }}" id="Editstaff-btn">编辑用户</button>
                         {% else %}
                              <button class="btn btn-primary pull-right "  id="addstaff-btn">立即添加</button>
                         {% endif %}
