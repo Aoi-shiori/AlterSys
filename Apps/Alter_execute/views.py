@@ -7,6 +7,8 @@ from django.views.decorators.http import require_POST,require_GET
 from .forms import Executeform,execute_ExecuteForm
 #导入Alter_execute的模型
 from Apps.Alter_execute.models import Alter_execute
+#导入变更数据模型
+from Apps.Alter_management.models import Alter_managment
 #导入我们重构的resful文件，用于返回结果代码和消息，详细可以看resful.py文件
 from utils import resful
 #导入分页用的类
@@ -19,6 +21,34 @@ from django.utils.timezone import make_aware
 from django.db.models import Q
 #用于拼接url
 from urllib import parse
+
+# 三、FileResponse对象
+# class FileResponse(open_file,as_attachment=False,filename=",**kwargs)
+#
+# 如果as_attachment=True，则设置内容配置头，它要求浏览器将文件作为下载提供给用户。
+# 如果open_file没有名称，或者open_file的名称不合适，则使用filename参数提供自定义文件名。
+# FileResponse接受任何带有二进制内容的类文件对象。
+# >>> from django.http import FileResponse
+# >>> response = FileResponse(open('myfile.png', 'rb'))
+from django.http import FileResponse
+
+from Apps.Alter_Dict.models import DBname,AltType
+
+#消息弹窗
+from django.contrib import messages
+
+
+#
+from django.http import HttpResponse
+#
+import os
+#
+import glob
+
+#
+from django.http import StreamingHttpResponse
+
+
 
 
 # 执行管理页面
@@ -33,8 +63,9 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
         # 这个参数是只有没有传递参数的时候才会使用
         # 如果传递了，但是是一个空的字符串，也不会使用，那么可以使用 ('ReviewStatus',0) or 0
         reviewStatus = int(request.GET.get('ReviewStatus', 0))  # 获取审核状态查询值,因为get到的都是字符串，转换成整形才能在页面中用数值对比
-
-        Alterd_datas = Alter_execute.objects.all()  # 获取所有数据库的数据
+        DatabaseType = int(request.GET.get('DatabaseType', 0))
+        Databases = DBname.objects.all()
+        Alterd_datas = Alter_managment.objects.filter(ReviewStatus='1')  # 获取所有数据库的数据
 
         if start or end:  # 查询时间判断
             if start:
@@ -58,6 +89,9 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
         if reviewStatus:  # 审核状态判断
             Alterd_datas = Alterd_datas.filter(ReviewStatus=reviewStatus)
 
+        if DatabaseType:  # 数据库类型判断
+            Alterd_datas = Alterd_datas.filter(Database=DatabaseType)
+
         paginator = Paginator(Alterd_datas, 2)  # 分页用，表示每2条数据分一页
         page_obj = paginator.page(page)  # 获取总页数
 
@@ -70,6 +104,8 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
             'end': end,
             'cxtj': cxtj,
             'reviewStatus': reviewStatus,
+            'DatabaseType': DatabaseType,
+            'Databases': Databases,
             'url_query': '&' + parse.urlencode({
                 'start': start or '',
                 'end': end or '',
@@ -159,3 +195,60 @@ def delete_Alter_Execute(request):
         return resful.OK()
     except:
         return resful.params_error(message="该变更执行数据不存在")
+
+
+#export 变更内容导出
+#
+def export(request):
+    #checked=request.POST.get('checked')
+    checked =[1,2,3]
+    #checked=[]
+
+
+        #过滤出需要导出的数据
+    exports =Alter_managment.objects.filter(pk__in=checked,ReviewStatus=0)
+
+
+    if exports:
+        #打开Alter.sql
+        f = open(r'../AlterSys/Download/' + 'Alter.sql', "w", encoding='utf-8')
+        #写入数据
+        for export in exports:
+            #写头部说明信息
+            f.write('-- ----------------------------\n')
+            f.write('-- ID:' + str(export.pk)+'\n-- 变更库:'+export.Database.Database+'\n')
+            f.write('-- ----------------------------\n')
+            ##判断是否以;结尾
+            if export.AlterContent.endswith(';'):
+
+                #，如果是以';'结尾,则进行换行操作
+                f.write(export.AlterContent.replace(';',';\n'))
+
+            else:
+                # 如果不是';'结尾,添加';'结尾，并换行
+                f.write(export.AlterContent+';'+'\n')
+
+            #每个变更之间进行换行
+            f.write('\n')
+
+        f.close()
+
+        #查找并打开文件
+        file = open(r'../AlterSys/Download/'+'Alter.sql','rb')
+        #赋予新的文件名 时间+_Alter.sql
+        the_file_name = datetime.now().strftime('%Y%m%d%H%M%S')+'_Alter.sql'
+        #FileResponse对象，接收二进制对象
+        response =FileResponse(file)
+        #设置返回二进制文件类型
+        response['Content-Type'] = 'application/text/plain'
+        #设置attachment，让浏览器下载，而不是直接打开，并重命名
+        response['Content-Disposition'] = 'attachment;filename='+the_file_name
+        return response
+    else:
+        return resful.params_error(message="需要导出的数据不存在")
+
+
+
+
+#调用导出文件函数,测试用
+#export()

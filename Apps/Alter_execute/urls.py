@@ -8,4 +8,5 @@ urlpatterns = [
     path('add_Alter_Execute/',views.add_Alter_Execute,name="add_Alter_Execute"),
     path('delete_Alter_Execute/',views.delete_Alter_Execute,name="delete_Alter_Execute"),
     path('execute_Alter_Execute/',views.execute_Alter_Execute,name="execute_Alter_Execute"),
+    path('export/',views.export,name="export_Alter_Execute"),
 ]

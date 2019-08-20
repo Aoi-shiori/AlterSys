@@ -96,8 +96,10 @@
                             <a href="{% url 'management:Alter_manager' %}">清空</a>
                         </div>
 
-                            <a href="{% url 'management:export_alter_manager' %}">
-                                <button class="btn  pull-right export">导出</button></a>
+
+
+{#                        <a href="{% url 'Execute:export_Alter_Execute' %}">#}
+{#                                <button class="btn  pull-right export">导出测试</button></a>#}
                                 <button class="btn btn-info pull-right add-btn  Alt-BTN">添加</button>
                             {% if user.Permissions == True or user.is_superuser %}
                                 <button class="btn btn-success pull-right Review-btn  Alt-BTN">审核</button>

@@ -185,7 +185,7 @@ Auth.prototype.listenEditStaffEvent= function(){
                 groups+=(gs[i].value+",");
             }
         }
-        groups = groups.substring(0, groups.length - 1);//减少列表长度，去除多余的逗号
+        groups = groups.substring(0, groups.length - 1);//减少数组长度，去除多余的逗号
         //alert(groups);
         xfzajax.post({
                 'url':'/account/Edit_Staff/',

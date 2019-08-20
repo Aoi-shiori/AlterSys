@@ -266,3 +266,33 @@ def export(request):
     response = HttpResponse(dataset.csv, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="Alter.csv"'
     return response
+#测试代码 用于测试related_name='AltType_datas'
+# def test():
+#     types=DBname.objects.get(pk=1)
+#     DATAs =types.DBtype_datas.all()
+#     for DATA in DATAs:
+#         A=DATA.AltType.AltType
+#         B=DATA.Database.Database
+#         C=DATA.AlterContent
+#         print(A,B,C)
+# test()
+# def export(request,checked):
+#     #checked=request.POST.get('checked')
+#     checked =[1,2,3]
+#     exp =Alter_managment.objects.filter(pk__in=checked,ReviewStatus=0)
+#
+#     f =open("test.sql", "w",encoding='utf-8')
+#     for dd in exp:
+#         f.write('-- ----------------------------\n')
+#         f.write('-- ID:' + str(dd.pk)+'\n-- 变更库:'+dd.Database.Database+'\n')
+#         f.write('-- ----------------------------\n')
+#         ##判断是否以;结尾，如果是;结尾则进行换行操作
+#         if dd.AlterContent.endswith(';'):
+#
+#             f.write(dd.AlterContent.replace(';',';\n'))
+#         #如果不是;结尾，添加;结尾并换行
+#         else:
+#             f.write(dd.AlterContent+';'+'\n')
+#         #每个变更之间进行换行
+#         f.write('\n')
+#     f.close()
