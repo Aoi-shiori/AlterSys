@@ -15,12 +15,17 @@ from utils import resful
 from django.core.paginator import Paginator
 #导入时间分类
 from datetime import datetime
+#导入设置时区
+import pytz
 #将时间标记为清醒的时间
 from django.utils.timezone import make_aware
 #用于模糊查询
 from django.db.models import Q
 #用于拼接url
 from urllib import parse
+import io
+
+from django.http import JsonResponse
 
 # 三、FileResponse对象
 # class FileResponse(open_file,as_attachment=False,filename=",**kwargs)
@@ -33,6 +38,8 @@ from urllib import parse
 from django.http import FileResponse
 
 from Apps.Alter_Dict.models import DBname,AltType
+
+from django.views.decorators.csrf import csrf_exempt
 
 #消息弹窗
 from django.contrib import messages
@@ -67,6 +74,8 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
         Databases = DBname.objects.all()
         Alterd_datas = Alter_managment.objects.filter(ReviewStatus='1')  # 获取所有数据库的数据
 
+        Alterd_execute_datas=Alter_execute.objects.filter(UID=request.user.id)
+
         if start or end:  # 查询时间判断
             if start:
                 start_time = datetime.strptime(start, '%m/%d/%Y')
@@ -96,6 +105,7 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
         page_obj = paginator.page(page)  # 获取总页数
 
         context_date = self.get_pagination_data(paginator, page_obj)  # 调用分页函数获取到页码
+
         context = {
             'Alterd_datas': page_obj.object_list,
             'page_obj': page_obj,  # 将分了多少页的数据全部传过去
@@ -106,11 +116,13 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
             'reviewStatus': reviewStatus,
             'DatabaseType': DatabaseType,
             'Databases': Databases,
+            'Alterd_execute_datas':Alterd_execute_datas,
             'url_query': '&' + parse.urlencode({
                 'start': start or '',
                 'end': end or '',
                 'cxtj': cxtj or '',
                 'reviewStatus': reviewStatus or '',
+                'DatabaseType': DatabaseType,
             })  # 用于拼接url,让页面在查询后进行翻页，任然保留查询条件
 
         }  # 返回包含分页信息的数据
@@ -151,7 +163,7 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
 
 
 
-#变更添加
+#变执行
 @require_POST
 def add_Alter_Execute(request):
     form = Executeform(request.POST)
@@ -199,17 +211,29 @@ def delete_Alter_Execute(request):
 
 #export 变更内容导出
 #
+@csrf_exempt
 def export(request):
     #checked=request.POST.get('checked')
-    checked =[1,2,3]
+    #checked =[1,2,3]
     #checked=[]
+    Database =request.POST.get('DatabaseType')
+
+    #过滤出需要导出的数据
+    #exports =Alter_managment.objects.filter(pk__in=checked,ReviewStatus=1)
+    #Database =1
+    if Database != '0':
+        exports = Alter_managment.objects.filter(ReviewStatus=1,Database=Database)
+    else:
+        exports = Alter_managment.objects.filter(ReviewStatus=1)
 
 
-        #过滤出需要导出的数据
-    exports =Alter_managment.objects.filter(pk__in=checked,ReviewStatus=0)
 
+   # dd =cc+1
 
     if exports:
+
+        ids = exports.values_list('id')
+        nowMax = list(max(ids))[0]
         #打开Alter.sql
         f = open(r'../AlterSys/Download/' + 'Alter.sql', "w", encoding='utf-8')
         #写入数据
@@ -240,15 +264,53 @@ def export(request):
         #FileResponse对象，接收二进制对象
         response =FileResponse(file)
         #设置返回二进制文件类型
-        response['Content-Type'] = 'application/text/plain'
+        #response['Content-Type'] = 'application/text/plain'
+        response['Content-Type'] = 'application/octet/stream'
         #设置attachment，让浏览器下载，而不是直接打开，并重命名
         response['Content-Disposition'] = 'attachment;filename='+the_file_name
-        return response
+
+
+        #判断当前用户，在执行表中是否有记录
+        exits=Alter_execute.objects.filter(UID=request.user.id)
+
+        if exits:
+            #存在-更新数据
+            #AA=exits.values_list('AlterID')
+            #BB=exits.values('AlterID')
+            #CC=list(AA)[0][0]
+            #hh=CC[0]
+            #DD=BB.get('AlterID')
+            AlterID = exits.values_list('AlterID')
+            OldID=list(AlterID)[0][0]
+            #判断还是有点问题 需要修改一下
+            if nowMax < OldID:
+                exits.update(AlterID=OldID,Hospital='测试医院',Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id)
+
+            else:
+                exits.update(AlterID=nowMax,Hospital='测试医院',Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id)
+
+        else:
+            #不存在-插入数据
+            Alter_execute.objects.create(AlterID=nowMax,Hospital='测试医院',Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='首次执行到变更ID：'+str(nowMax),UID=request.user.id)
+
+        return resful.OK()
     else:
         return resful.params_error(message="需要导出的数据不存在")
 
+@csrf_exempt
+def download(request):
+        # 查找并打开文件
+        file = open(r'../AlterSys/Download/' + 'Alter.sql', 'rb')
+        # 赋予新的文件名 时间+_Alter.sql
+        the_file_name = datetime.now().strftime('%Y%m%d%H%M%S') + '_Alter.sql'
+        # FileResponse对象，接收二进制对象
+        response = FileResponse(file)
+        # 设置返回二进制文件类型
+        # response['Content-Type'] = 'application/text/plain'
+        response['Content-Type'] = 'application/octet/stream'
+        # 设置attachment，让浏览器下载，而不是直接打开，并重命名
+        response['Content-Disposition'] = 'attachment;filename=' + the_file_name
 
+        print('用户下载文件' + the_file_name)
+        return response
 
-
-#调用导出文件函数,测试用
-#export()

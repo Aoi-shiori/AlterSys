@@ -24,6 +24,7 @@ Execute.prototype.run=function () {
         self.listenselectnow();
         self.listenReviewEvent();
         self.listenReviewSbumitEvent();
+        self.listenExportSbumitEvent();
 
 };
 
@@ -404,6 +405,76 @@ Execute.prototype.listenReviewSbumitEvent=function(){
 };
 
 
+//监听导出测试按钮
+Execute.prototype.listenExportSbumitEvent=function(){
+    var self =this;
+    var exportBTN = $('.export-BTN');
+    var formgroup= $('.form-group');
+    var DatabaseType= formgroup.find("select[name='DatabaseType']");
+
+
+    exportBTN.click(function () {
+        // var Reviewstatus=$("input:radio[name='Reviewstatus']:checked").val();
+        // var AlterID = getchecked().parentElement.parentElement.getAttribute("alterid");
+        // var ReviewContent=ReviewContenInput.val();
+        // var Reviewer =ReviewerInput.val();
+        var Database= DatabaseType.val();
+        alert(Database);
+        // alert(AlterID);
+        // alert(Reviewstatus);
+        // alert(ReviewContent);
+        // alert(Reviewer);
+
+        $.ajax({
+            'url':'/execute/export/',
+            //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+            'type':'POST',
+            //'dataType':'json',
+            'data': {
+                'DatabaseType': Database,
+            },
+            'success': function (result) {
+                if(result['code'] === 200){
+
+                    var form = $('<form action="download/" method="post"></form>');
+                    $('body').append(form);
+                    form.submit(); //自动提交
+                    window.messageBox.show("提交导出成功!");
+                    //setTimeout("window.location.reload()","300");
+                    // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
+                    //     window.location.reload();
+                    // });
+                }else {
+                    //alert(JSON.stringify(result));
+                    window.messageBox.show(result['message']);
+                }
+            }
+        });
+        // xfzajax.post( {
+        //     'url':'/execute/export/',
+        //     'data':{
+        //         'DatabaseType':Database,
+        //     },
+        //     'dataType':'json',
+        //     'success': function (result) {
+        //         alert(result);
+        //         window.location.href=result;
+        //         if(result['code'] === 200){
+        //             window.messageBox.show("提交导出成功");
+        //             setTimeout("window.location.reload()","300");
+        //             // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
+        //             //     window.location.reload();
+        //             // });
+        //         }else {
+        //             //alert(JSON.stringify(result));
+        //             window.messageBox.show(result['message']);
+        //         }
+        //     }
+        // });
+
+    });
+
+};
 
 
 

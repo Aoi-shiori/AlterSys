@@ -501,7 +501,7 @@ Alter.prototype.listenReviewSbumitEvent=function(){
 
     ReviewsubBtn.click(function () {
         var Reviewstatus=$("input:radio[name='Reviewstatus']:checked").val();
-        var AlterID = getchecked().parentElement.parentElement.getAttribute("alterid");
+        var id = getchecked().parentElement.parentElement.getAttribute("id");
         var ReviewContent=ReviewContenInput.val();
         //alert(id);
         //alert(Reviewstatus);
@@ -510,7 +510,7 @@ Alter.prototype.listenReviewSbumitEvent=function(){
         xfzajax.post( {
             'url':'/alter/Review_Alter_manager/',
             'data':{
-                'AlterID':AlterID,
+                'id':id,
                 'ReviewStatus':Reviewstatus,
                 'ReviewContent':ReviewContent,
             },

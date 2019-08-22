@@ -14,7 +14,10 @@
 
 
 {% block content-header %}
-    <h1>变更执行管理</h1>
+    <h1>变更执行管理 </h1>{% for Alterd_execute_data in Alterd_execute_datas %}
+            <span class="title" style="margin-left: 400px;color: rebeccapurple;" >您上一次导出到变更ID：</span> <span style="font-size: 20px;color: red;">{{ Alterd_execute_data.AlterID }}</span>
+    {% endfor %}
+
 
 {% endblock %}
 
@@ -77,6 +80,7 @@
                     </form>
 {#                    <button class="btn btn-info pull-right add-btn">添加</button>#}
                     <a  class="btn  pull-right btn-info export"  href="{% url 'Execute:export_Alter_Execute' %}">导出测试</a>
+                    <button class="btn  pull-right btn-info export-BTN"><a href="{% url 'Execute:export_Alter_Execute' %}"></a>导出测试按钮</button>
 {#                    <button class="btn btn-success pull-right Review-btn">审核</button>#}
 
                 </div>
@@ -106,12 +110,13 @@
 
                                 {% for Alterd_data in Alterd_datas %}
                                     <tr class="tr-line click" id="{{ Alterd_data.id }}"  AlterID="{{ Alterd_data.AlterID }}"  Hospital="{{ Alterd_data.Hospital }}" ExecutionResult="{{ Alterd_data.ExecutionResult }}" Executor="{{ Alterd_data.Executor }}" ExecutionTime="{{ Alterd_data.ExecutionTime }}" >
-                                                                                <td class ='序号'>{{ forloop.counter}}</td>
+                                        <td><input name="" type="checkbox" ></td>
+                                        <td class ='序号'>{{ forloop.counter}}</td>
                                         <td class ='变更编号 AlterID-td'>{{ Alterd_data.id }}</td>
                                         <td class ='关联类型 AlterType-td'>{{ Alterd_data.AltType.AltType}}</td>
                                         <td class ='关联编号 AssociatedNumber-td'>{{ Alterd_data.AssociatedNumber}}</td>
                                         <td class ='数据库 Datebase-td'>{{ Alterd_data.Database.Database}}</td>
-                                        <td class ='变更内容 AlterContent-td'><a target="_blank" href="{% url 'management:Alter_deatil' id=Alterd_data.id %} ">{{ Alterd_data.AlterContent|truncatechars:20}}</a></td>
+                                        <td class ='变更内容 AlterContent-td' title="{{ Alterd_data.AlterContent|default:'' }}"><a target="_blank" href="{% url 'management:Alter_deatil' id=Alterd_data.id %} ">{{ Alterd_data.AlterContent|truncatechars:20}}</a></td>
                                         <td class ='填报人 Informant-td'>{{ Alterd_data.Informant}}</td>
                                         <td class ='填报时间 FillTime-td'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
                                         <td class ='审核人 Reviewer-td'>{{ Alterd_data.Reviewer|default:''}}</td>
@@ -123,7 +128,7 @@
                                              <td class ='审核状态 ReviewStatus-td'>未审核</td>
                                         {% endif %}
 
-                                        <td class ='审核内容 ReviewContent-td'>{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
+                                        <td class ='审核内容 ReviewContent-td' title="{{ Alterd_data.ReviewContent|default:'' }}">{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
                                         <td class ='审核时间 AuditTime-td  ' >{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
                                     </tr>
                                 {% endfor %}

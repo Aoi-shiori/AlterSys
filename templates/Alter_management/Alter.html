@@ -142,7 +142,7 @@
                                         <td class ='关联类型 AlterType-td'>{{ Alterd_data.AltType.AltType}}</td>
                                         <td class ='关联编号 AssociatedNumber-td'>{{ Alterd_data.AssociatedNumber}}</td>
                                         <td class ='数据库 Datebase-td'>{{ Alterd_data.Database.Database}}</td>
-                                        <td class ='变更内容 AlterContent-td'><a target="_blank" href="{% url 'management:Alter_deatil' id=Alterd_data.id %} ">{{ Alterd_data.AlterContent|truncatechars:20}}</a></td>
+                                        <td class ='变更内容 AlterContent-td' title="{{ Alterd_data.AlterContent|default:'' }}"><a target="_blank" href="{% url 'management:Alter_deatil' id=Alterd_data.id %} ">{{ Alterd_data.AlterContent|truncatechars:20}}</a></td>
                                         <td class ='填报人 Informant-td'>{{ Alterd_data.Informant}}</td>
                                         <td class ='填报时间 FillTime-td'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
                                         <td class ='审核人 Reviewer-td'>{{ Alterd_data.Reviewer|default:''}}</td>
@@ -156,7 +156,7 @@
                                              <td class ='审核状态 ReviewStatus-td'>未审核</td>
                                         {% endif %}
 
-                                        <td class ='审核内容 ReviewContent-td'>{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
+                                        <td class ='审核内容 ReviewContent-td' title="{{ Alterd_data.ReviewContent|default:'' }}">{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
                                         <td class ='审核时间 AuditTime-td  ' >{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
                                         <td>
                                             {% if  Alterd_data.ReviewStatus == '1'%}
