@@ -320,13 +320,14 @@ def export_New(request):
     Database =request.POST.get('DatabaseType')
 
 
-
+    #过滤数据库中可导出数据
     export_News_datas=Alter_managment.objects.filter(ReviewStatus=1)
 
     #过滤出需要导出的数据
     #exports =Alter_managment.objects.filter(pk__in=checked,ReviewStatus=1)
 
     # 获取可导出数据中，ID最大的值
+    nowMAXs= max(export_News_datas.values_list('id',flat=True))
 
     ids = Alter_managment.values_list('id', flat=True)
     Exports_Nums = list(ids)
