@@ -234,6 +234,10 @@ def Review_Alter_manager(request):#变更审核用
         ReviewStatus = form.cleaned_data.get('ReviewStatus')  # '审核状态',
         ReviewContent = form.cleaned_data.get('ReviewContent')  # '审核内容',
         Alter_managment.objects.filter(id=id).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=request.user.Name,AuditTime=datetime.now())
+        # #if Alter_managment:
+        #     Alter_managment.objects.create(Alter_managment)
+        #     pass
+
         return resful.OK()
     else:
        return resful.params_error(message=form.get_error())

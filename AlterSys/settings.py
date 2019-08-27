@@ -96,14 +96,14 @@ DATABASES = {
     #     #公司的数据库配置
     #     'USER': 'root',
     #     'PASSWORD': 'conlin',
-    #     'HOST': '192.168.0.51',
+    #     'HOST': '127.0.0.1',
     #     'PORT': '33066',
     #     #公司电脑本机数据库配置
         'USER': 'root',
-        'PASSWORD': 'Conlin2019',
+        'PASSWORD': 'Conlin',
         'HOST': '127.0.0.1',
         'PORT': '3306',
-     }
+      }
 }
 
 
