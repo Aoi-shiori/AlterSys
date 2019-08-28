@@ -412,6 +412,7 @@ Execute.prototype.listenExportSbumitEvent=function(){
     var exportBTN = $('.export-BTN');
     var formgroup= $('.form-group');
     var DatabaseType= formgroup.find("select[name='DatabaseType']");
+    var Hospital = formgroup.find("select[name='Hospital']")
 
     exportBTN.click(function () {
         // var Reviewstatus=$("input:radio[name='Reviewstatus']:checked").val();
@@ -419,7 +420,8 @@ Execute.prototype.listenExportSbumitEvent=function(){
         // var ReviewContent=ReviewContenInput.val();
         // var Reviewer =ReviewerInput.val();
         var Database= DatabaseType.val();
-        alert(Database);
+        var Hospital= Hospital.val();
+        alert('选择的医院是',Hospital);
         // alert(AlterID);
         // alert(Reviewstatus);
         // alert(ReviewContent);
@@ -432,6 +434,7 @@ Execute.prototype.listenExportSbumitEvent=function(){
             //'dataType':'json',
             'data': {
                 'DatabaseType': Database,
+                'Hospital':Hospital,
             },
             'success': function (result) {
                 if(result['code'] === 200){

@@ -26,7 +26,7 @@ from django.http import HttpResponse
 from .admin import Alter_managment_resources
 from Apps.Alterauth.decorators import Alter_login_required
 #导入数据库字典和变更类型字典
-from Apps.Alter_Dict.models import DBname,AltType
+from Apps.Alter_Dict.models import Alt_Database,Alt_Type
 # Create your views here.
 
 
@@ -62,8 +62,8 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
         reviewStatus=int(request.GET.get('ReviewStatus',0)) #获取审核状态查询值,因为get到的都是字符串，转换成整形才能在页面中用数值对比
         DatabaseType = int(request.GET.get('DatabaseType',0))
         Alterd_datas = Alter_managment.objects.all()#获取所有数据库的数据
-        Databases = DBname.objects.all()
-        AltTypes=AltType.objects.all()
+        Databases = Alt_Database.objects.all()
+        AltTypes=Alt_Type.objects.all()
 
         if start or end:#查询时间判断
             if start:
@@ -193,7 +193,7 @@ def delete_Alter_manager(request):#变更内容删除用
 
 class add_Alter_managerView(View):
     def get(self,request):
-        Databases=DBname.objects.all()
+        Databases=Alt_Database.objects.all()
         context={
             'Databases':Databases
         }
@@ -204,16 +204,16 @@ class add_Alter_managerView(View):
         #如果验证成功
         if form.is_valid():
             AltType_id=form.cleaned_data.get('AltType')
-            AltTypes = AltType.objects.get(pk=AltType_id)
+            AltTypes = Alt_Type.objects.get(pk=AltType_id)
             AssociatedNumber = form.cleaned_data.get('AssociatedNumber')
             Database_id = form.cleaned_data.get('Database')
-            Database= DBname.objects.get(pk=Database_id)
+            Database= Alt_Database.objects.get(pk=Database_id)
             AlterContent=form.cleaned_data.get('AlterContent')
 
             #判断变更内容在库中是否存在
             exists=Alter_managment.objects.filter(AlterContent=AlterContent).exists()
             if not exists:
-                Alter_managment.objects.create(AltType=AltTypes, AssociatedNumber=AssociatedNumber, Database=Database,AlterContent=AlterContent,
+                Alter_managment.objects.create(AltType_id=AltTypes.pk, AssociatedNumber=AssociatedNumber, Database_id=Database.pk,AlterContent=AlterContent,
                                                Informant=request.user.Name)
                 return resful.OK()
             else:
@@ -270,33 +270,3 @@ def export(request):
     response = HttpResponse(dataset.csv, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="Alter.csv"'
     return response
-#测试代码 用于测试related_name='AltType_datas'
-# def test():
-#     types=DBname.objects.get(pk=1)
-#     DATAs =types.DBtype_datas.all()
-#     for DATA in DATAs:
-#         A=DATA.AltType.AltType
-#         B=DATA.Database.Database
-#         C=DATA.AlterContent
-#         print(A,B,C)
-# test()
-# def export(request,checked):
-#     #checked=request.POST.get('checked')
-#     checked =[1,2,3]
-#     exp =Alter_managment.objects.filter(pk__in=checked,ReviewStatus=0)
-#
-#     f =open("test.sql", "w",encoding='utf-8')
-#     for dd in exp:
-#         f.write('-- ----------------------------\n')
-#         f.write('-- ID:' + str(dd.pk)+'\n-- 变更库:'+dd.Database.Database+'\n')
-#         f.write('-- ----------------------------\n')
-#         ##判断是否以;结尾，如果是;结尾则进行换行操作
-#         if dd.AlterContent.endswith(';'):
-#
-#             f.write(dd.AlterContent.replace(';',';\n'))
-#         #如果不是;结尾，添加;结尾并换行
-#         else:
-#             f.write(dd.AlterContent+';'+'\n')
-#         #每个变更之间进行换行
-#         f.write('\n')
-#     f.close()

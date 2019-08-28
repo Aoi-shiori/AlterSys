@@ -36,7 +36,7 @@ from django.http import JsonResponse
 # >>> response = FileResponse(open('myfile.png', 'rb'))
 from django.http import FileResponse
 
-from Apps.Alter_Dict.models import DBname,AltType
+from Apps.Alter_Dict.models import Alt_Database,Alt_Hospital
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -70,7 +70,9 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
         # 如果传递了，但是是一个空的字符串，也不会使用，那么可以使用 ('ReviewStatus',0) or 0
         reviewStatus = int(request.GET.get('ReviewStatus', 0))  # 获取审核状态查询值,因为get到的都是字符串，转换成整形才能在页面中用数值对比
         DatabaseType = int(request.GET.get('DatabaseType', 0))
-        Databases = DBname.objects.all()
+        HospitalType = int(request.GET.get('Hospital', 0))
+        Databases = Alt_Database.objects.all()
+        Hospital = Alt_Hospital.objects.all()
         Alterd_datas = Alter_managment.objects.filter(ReviewStatus='1')  # 获取所有数据库的数据
 
         Alterd_execute_datas=Alter_execute.objects.filter(UID=request.user.id)
@@ -100,6 +102,8 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
         if DatabaseType:  # 数据库类型判断
             Alterd_datas = Alterd_datas.filter(Database=DatabaseType)
 
+
+
         paginator = Paginator(Alterd_datas, 2)  # 分页用，表示每2条数据分一页
         page_obj = paginator.page(page)  # 获取总页数
 
@@ -115,6 +119,7 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
             'reviewStatus': reviewStatus,
             'DatabaseType': DatabaseType,
             'Databases': Databases,
+            'Hospital':Hospital,
             'Alterd_execute_datas':Alterd_execute_datas,
             'url_query': '&' + parse.urlencode({
                 'start': start or '',
@@ -221,6 +226,7 @@ def export(request):
     #checked =[1,2,3]
     #checked=[]
     Database =request.POST.get('DatabaseType')
+    Hospital = request.POST.get('Hospital')
 
     #过滤出需要导出的数据
     #exports =Alter_managment.objects.filter(pk__in=checked,ReviewStatus=1)
@@ -303,14 +309,14 @@ def export(request):
 
             #判断还是有点问题 需要修改一下
             if nowMax < int(OldID):
-                exits.update(AlterID=OldID,Hospital='测试医院',Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
+                exits.update(AlterID=OldID,Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
 
             else:
-                exits.update(AlterID=nowMax,Hospital='测试医院',Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
+                exits.update(AlterID=nowMax,Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
 
         else:
             #不存在-插入数据
-            Alter_execute.objects.create(AlterID=nowMax,Hospital='测试医院',Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='首次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
+            Alter_execute.objects.create(AlterID=nowMax,Hospital=Hospital,Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='首次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
 
         return resful.OK()
     else:

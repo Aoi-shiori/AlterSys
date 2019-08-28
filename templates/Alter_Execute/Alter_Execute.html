@@ -68,7 +68,24 @@
                                         <option value="{{ Database.pk }}">{{ Database.Database }}</option>
                                     {% endif %}
                                 {% endfor %}
-
+                            </select>
+                        </div>
+                        <div class="form-group left-group">
+                            <label for="">执行医院:</label>
+                            <select name="Hospital" id="Hospital" class="form-control">
+                                {% if Hospital == 0 %}
+                                    <option value="0" selected>全部</option>
+                                {% else %}
+                                    <option value="0">全部</option>
+                                {% endif %}
+                                {% for hospital in Hospital %}
+                                    {% if DatabaseType %}
+                                        {{ hospital.Pk }}={{ DatabaseType }}
+                                        <option value="{{ hospital.pk }}" selected>{{ hospital.Hospital }}</option>
+                                    {% else %}
+                                        <option value="{{ hospital.pk }}">{{ hospital.Hospital }}</option>
+                                    {% endif %}
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="form-group left-group">
