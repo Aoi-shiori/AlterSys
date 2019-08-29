@@ -11,4 +11,6 @@ urlpatterns = [
     path('export/',views.export,name="export_Alter_Execute"),
     path('export_new/',views.export_New,name="export_new_Alter_Execute"),
     path('download/',views.download,name="export_download"),
+    path('hospitaldatas/',views.hospital_datas,name="hospital_datas"),
+
 ]

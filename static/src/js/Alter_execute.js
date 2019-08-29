@@ -26,6 +26,7 @@ Execute.prototype.run=function () {
         self.listenReviewSbumitEvent();
         self.listenExportSbumitEvent();
         self.listenExportNewSbumitEvent();
+        self.listenExportbumitEvent();
 
 };
 
@@ -412,7 +413,7 @@ Execute.prototype.listenExportSbumitEvent=function(){
     var exportBTN = $('.export-BTN');
     var formgroup= $('.form-group');
     var DatabaseType= formgroup.find("select[name='DatabaseType']");
-    var Hospital = formgroup.find("select[name='Hospital']")
+    var hospital = formgroup.find("select[name='Hospital']");
 
     exportBTN.click(function () {
         // var Reviewstatus=$("input:radio[name='Reviewstatus']:checked").val();
@@ -420,8 +421,9 @@ Execute.prototype.listenExportSbumitEvent=function(){
         // var ReviewContent=ReviewContenInput.val();
         // var Reviewer =ReviewerInput.val();
         var Database= DatabaseType.val();
-        var Hospital= Hospital.val();
-        alert('选择的医院是',Hospital);
+        var Hospital= hospital.val();
+        alert('选择的医院是:',Hospital);
+        //alert('选择的数据库是',Database);
         // alert(AlterID);
         // alert(Reviewstatus);
         // alert(ReviewContent);
@@ -550,6 +552,34 @@ Execute.prototype.listenExportNewSbumitEvent=function(){
     });
 
 };
+
+//
+// Execute.prototype.listenExportbumitEvent=function(){
+//         var testbtn = $('.test-btn');
+//         testbtn.click(function () {
+//             console.log('数据是',Hospitals)
+//                 Swal.fire({
+//                     title: '请选择医院',
+//                     type: "prompt",
+//                     html:
+//                         Hospitals+
+//                         '<input id="swal-input1" class="swal2-input">' +
+//                         '<input id="swal-input2" class="swal2-input">'+
+//                          '<select name="Hospitals" id="Hospitals" class="form-control">\
+//                                 <option value="0">全部</option>\
+//                             {% for hospital in Hospital %}\
+//                                  <option value="{{ hospital.pk }}">{{ hospital.Hospital }}</option>\
+//                             {% endfor %}\
+//                           </select>',
+//                     focusConfirm: false,
+//                     }).then(function(){
+//                             alert(document.getElementById('swal-input1').value); // value of my-input1
+//                             alert(document.getElementById('swal-input2').value); // value of my-select
+//                     })
+//         })
+// };
+
+
 
 
 

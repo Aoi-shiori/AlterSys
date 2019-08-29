@@ -72,7 +72,7 @@
                         </div>
                         <div class="form-group left-group">
                             <label for="">执行医院:</label>
-                            <select name="Hospital" id="Hospital" class="form-control">
+                            <select name="Hospitals" id="Hospitals" class="form-control">
                                 {% if Hospital == 0 %}
                                     <option value="0" selected>全部</option>
                                 {% else %}
@@ -98,8 +98,60 @@
 {#                    <button class="btn btn-info pull-right add-btn">添加</button>#}
 {#                    <a  class="btn  pull-right btn-info export"  href="{% url 'Execute:export_Alter_Execute' %}">全部导出</a>#}
                     <button class="btn btn-success export—New pull-right">导出最新</button>
-                    <button class="btn  pull-right btn-info export-BTN"><a href="{% url 'Execute:export_Alter_Execute' %}"></a>全部导出</button>
-{#                    <button class="btn btn-success pull-right Review-btn">审核</button>#}
+{#                    <button class="btn  pull-right btn-info export-BTN"><a href="{% url 'Execute:export_Alter_Execute' %}"></a>全部导出</button>#}
+                    <button class="btn  pull-right btn-info export-BTN">全部导出</button>
+
+                    <button class="btn btn-success pull-right test-btn" onclick="TEST()">test</button>
+                    <script type="text/javascript" >
+                            function TEST() {
+                                var Database = 0;
+                                Swal.fire({
+                                        title: '请选择医院',
+                                        html: '<select name="Hospitals" id="Hospital-test" class="form-control">\
+                                                    <option value="0">全部</option>\
+                                                {% for hospital in Hospital %}\
+                                                     <option value="{{ hospital.pk }}">{{ hospital.Hospital }}</option>\
+                                                {% endfor %}\
+                                              </select>',
+                                        showCancelButton:true,
+                                        focusConfirm: false,
+                                        preConfirm:function () {
+                                                    Hospitalid =document.getElementById('Hospital-test').value;
+                                                    alert('选择的医院ID是'+Hospitalid);
+
+                                                    $.ajax({
+                                                            'url':'/execute/export_new/',
+                                                            //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+                                                            'type':'POST',
+                                                            //'dataType':'json',
+                                                            'data': {
+                                                                'DatabaseType': Database,
+                                                                'Hospital':Hospitalid,
+                                                            },
+                                                            'success': function (result) {
+                                                                if(result['code'] === 200){
+
+                                                                    var form = $('<form action="download/" method="post"></form>');
+                                                                    $('body').append(form);
+                                                                    form.submit(); //自动提交
+                                                                    window.messageBox.show("提交导出成功!");
+                                                                    //setTimeout("window.location.reload()","300");
+                                                                    // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
+                                                                    //     window.location.reload();
+                                                                    // });
+                                                                }else {
+                                                                    //alert(JSON.stringify(result));
+                                                                    window.messageBox.show(result['message']);
+                                                                }
+                                                            }
+                                                        });
+
+                                        }
+                                        })
+
+                            }
+
+                    </script>
 
                 </div>
                 <div class="box body">
