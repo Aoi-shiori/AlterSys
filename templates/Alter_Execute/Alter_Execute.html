@@ -14,10 +14,7 @@
 
 
 {% block content-header %}
-    <h1>变更执行管理 </h1>{% for Alterd_execute_data in Alterd_execute_datas %}
-            <span class="title" style="margin-left: 400px;color: rebeccapurple;" >您上一次导出到变更ID：</span> <span style="font-size: 20px;color: red;">{{ Alterd_execute_data.AlterID }}</span>
-    {% endfor %}
-
+    <h1>变更执行管理 </h1>
 
 {% endblock %}
 
@@ -70,24 +67,24 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="form-group left-group">
-                            <label for="">执行医院:</label>
-                            <select name="Hospitals" id="Hospitals" class="form-control">
-                                {% if Hospital == 0 %}
-                                    <option value="0" selected>全部</option>
-                                {% else %}
-                                    <option value="0">全部</option>
-                                {% endif %}
-                                {% for hospital in Hospital %}
-                                    {% if DatabaseType %}
-                                        {{ hospital.Pk }}={{ DatabaseType }}
-                                        <option value="{{ hospital.pk }}" selected>{{ hospital.Hospital }}</option>
-                                    {% else %}
-                                        <option value="{{ hospital.pk }}">{{ hospital.Hospital }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
+{#                        <div class="form-group left-group">#}
+{#                            <label for="">执行医院:</label>#}
+{#                            <select name="Hospitals" id="Hospitals" class="form-control">#}
+{#                                {% if Hospital == 0 %}#}
+{#                                    <option value="0" selected>全部</option>#}
+{#                                {% else %}#}
+{#                                    <option value="0">全部</option>#}
+{#                                {% endif %}#}
+{#                                {% for hospital in Hospital %}#}
+{#                                    {% if DatabaseType %}#}
+{#                                        {{ hospital.Pk }}={{ DatabaseType }}#}
+{#                                        <option value="{{ hospital.pk }}" selected>{{ hospital.Hospital }}</option>#}
+{#                                    {% else %}#}
+{#                                        <option value="{{ hospital.pk }}">{{ hospital.Hospital }}</option>#}
+{#                                    {% endif %}#}
+{#                                {% endfor %}#}
+{#                            </select>#}
+{#                        </div>#}
                         <div class="form-group left-group">
                              <button class="btn btn-primary ">查询</button>
                         </div>
@@ -97,35 +94,43 @@
                     </form>
 {#                    <button class="btn btn-info pull-right add-btn">添加</button>#}
 {#                    <a  class="btn  pull-right btn-info export"  href="{% url 'Execute:export_Alter_Execute' %}">全部导出</a>#}
-                    <button class="btn btn-success export—New pull-right">导出最新</button>
+{#                    <button class="btn btn-success export—New pull-right">导出最新</button>#}
 {#                    <button class="btn  pull-right btn-info export-BTN"><a href="{% url 'Execute:export_Alter_Execute' %}"></a>全部导出</button>#}
-                    <button class="btn  pull-right btn-info export-BTN">全部导出</button>
+{#                    <button class="btn  pull-right btn-info export-BTN">全部导出</button>#}
 
-                    <button class="btn btn-success pull-right test-btn" onclick="TEST()">test</button>
+                    <button class="btn btn-success pull-right test-btn" onclick="TEST()">导出变更数据</button>
                     <script type="text/javascript" >
                             function TEST() {
                                 var Database = 0;
                                 Swal.fire({
-                                        title: '请选择医院',
-                                        html: '<select name="Hospitals" id="Hospital-test" class="form-control">\
-                                                    <option value="0">全部</option>\
+                                        title: '请选择要导出数据库和执行医院',
+                                        html:'数据库<select name="Database" id="Database-test" class="form-control">\
+                                                    <option value="0">请选择数据库</option>\
+                                                {% for Database in Databases %}\
+                                                     <option value={{ Database.pk }}>{{ Database.Database }}</option>\
+                                                {% endfor %}\
+                                              </select><br/>'+
+                                            '医院<select name="Hospitals" id="Hospital-test" class="form-control">\
+                                                    <option value="0">选择医院</option>\
                                                 {% for hospital in Hospital %}\
-                                                     <option value="{{ hospital.pk }}">{{ hospital.Hospital }}</option>\
+                                                     <option value={{ hospital.pk }}>{{ hospital.Hospital }}</option>\
                                                 {% endfor %}\
                                               </select>',
                                         showCancelButton:true,
                                         focusConfirm: false,
                                         preConfirm:function () {
                                                     Hospitalid =document.getElementById('Hospital-test').value;
-                                                    alert('选择的医院ID是'+Hospitalid);
+                                                    Databaseid =document.getElementById('Database-test').value;
+
+                                                    //alert('选择的医院ID是'+Hospitalid);
 
                                                     $.ajax({
-                                                            'url':'/execute/export_new/',
+                                                            'url':'/execute/exportAltData/',
                                                             //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
                                                             'type':'POST',
                                                             //'dataType':'json',
                                                             'data': {
-                                                                'DatabaseType': Database,
+                                                                'Database': Databaseid,
                                                                 'Hospital':Hospitalid,
                                                             },
                                                             'success': function (result) {
@@ -182,7 +187,7 @@
                                     <tr class="tr-line click" id="{{ Alterd_data.id }}"  AlterID="{{ Alterd_data.AlterID }}"  Hospital="{{ Alterd_data.Hospital }}" ExecutionResult="{{ Alterd_data.ExecutionResult }}" Executor="{{ Alterd_data.Executor }}" ExecutionTime="{{ Alterd_data.ExecutionTime }}" >
                                         <td><input name="" type="checkbox" ></td>
                                         <td class ='序号'>{{ forloop.counter}}</td>
-                                        <td class ='变更编号 AlterID-td'>{{ Alterd_data.id }}</td>
+                                        <td class ='变更编号 AlterID-td'>{{ Alterd_data.AlterID_id }}</td>
                                         <td class ='关联类型 AlterType-td'>{{ Alterd_data.AltType.AltType}}</td>
                                         <td class ='关联编号 AssociatedNumber-td'>{{ Alterd_data.AssociatedNumber}}</td>
                                         <td class ='数据库 Datebase-td'>{{ Alterd_data.Database.Database}}</td>

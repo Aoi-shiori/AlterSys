@@ -5,12 +5,10 @@ app_name ='Execute'
 
 urlpatterns = [
     path('Alter_execute',views.Alter_Execute_view.as_view(),name ='Alter_execute'),
-    path('add_Alter_Execute/',views.add_Alter_Execute,name="add_Alter_Execute"),
-    path('delete_Alter_Execute/',views.delete_Alter_Execute,name="delete_Alter_Execute"),
-    path('execute_Alter_Execute/',views.execute_Alter_Execute,name="execute_Alter_Execute"),
     path('export/',views.export,name="export_Alter_Execute"),
     path('export_new/',views.export_New,name="export_new_Alter_Execute"),
     path('download/',views.download,name="export_download"),
-    path('hospitaldatas/',views.hospital_datas,name="hospital_datas"),
+    path('exportAltData/',views.export_alt_data,name="ExportAltData"),
+    path('alter_execute_history/',views.alter_execute_history_view.as_view(),name="alter_execute_history"),
 
 ]

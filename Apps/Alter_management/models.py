@@ -22,6 +22,7 @@ class Alter_managment(models.Model):
 
 class Alter_managment_checked(models.Model):
         id= models.AutoField(primary_key=True)#变更ID
+        AlterID = models.ForeignKey('Alter_managment',on_delete=models.SET_NULL, null=True)
         AltType=models.ForeignKey('Alter_Dict.Alt_Type', related_name='checked_AltType_datas', on_delete=models.SET_NULL, null=True)#'关联类型BUG'#可通过db_column= 改变字段名
         AssociatedNumber=models.CharField(max_length=50)#'关联编号'#
         Database=models.ForeignKey('Alter_Dict.Alt_Database', related_name='checked_Database_datas', on_delete=models.SET_NULL, null=True)#'数据库'#

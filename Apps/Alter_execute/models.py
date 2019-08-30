@@ -9,7 +9,7 @@ class Alter_execute(models.Model):
     Executor=models.CharField(max_length=50)#执行人
     ExecutionTime=models.DateTimeField(auto_now=True)#上次执行时间
     ExecutionResult=models.TextField(max_length=500)#执行结果记录
-    UID=ShortUUIDField(unique=True)
+    UID=ShortUUIDField()
     Exports=models.CharField(max_length=255,null=True)
     class Meta:
         db_table = 'alt_execute'#执行表

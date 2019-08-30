@@ -1,0 +1,177 @@
+{% extends 'Base/base.html' %}
+
+{% block title %}
+    导出执行记录
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'AdminLTE/bower_components/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css'%}">
+    <script src="{% static 'AdminLTE/bower_components/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'AdminLTE/bower_components/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+{#    <script src="{% static 'AdminLTE/bower_components/jquery-ui/ui/datepicker.js' %}"></script>#}
+    <script src="{% static 'js/Alter_execute.min.js' %}"></script>
+{% endblock %}
+
+
+{% block content-header %}
+    <h1>导出执行记录 </h1>
+
+{% endblock %}
+
+
+{% block content %}
+       <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <form action=""  method="get" class="form-inline">
+                        <div class="form-group">
+                            <label for="">时间:</label>
+                            {% if start %}
+                                <input type="text" class="form-control" name="start" id="startpicker" placeholder="开始" readonly value="{{ start }}">
+                            {% else %}
+                                <input type="text" class="form-control" name="start" id="startpicker" placeholder="开始" readonly>
+{#                                   <input type="date" class="form-control" min="2019-01-01" max="2099-01-01"  placeholder="开始"/>#}
+                            {% endif %}
+
+                            <span>-</span>
+                            {% if end %}
+                                <input type="text" class="form-control" name="end" id="endpicker" placeholder="结束" readonly value="{{ end }}">
+                            {% else %}
+                                <input type="text" class="form-control" name="end" id="endpicker" placeholder="结束" readonly>
+                            {% endif %}
+                        </div>
+                        <div class="form-group left-group">
+                            <label for="">查询条件:</label>
+                            {% if cxtj %}
+                                 <input type="text" class="form-control" name="cxtj" placeholder="请输入查询条件" value="{{ cxtj }}">
+                            {% else %}
+                                <input type="text" class="form-control" name="cxtj" placeholder="请输入查询条件">
+                            {% endif %}
+                        </div>
+{#                        <div class="form-group left-group">#}
+{#                            <label for="">数据库:</label>#}
+{#                            <select name="DatabaseType" id="DatabaseType" class="form-control">#}
+{#                                {% if Database == 0 %}#}
+{#                                    <option value="0" selected>全部</option>#}
+{#                                {% else %}#}
+{#                                    <option value="0">全部</option>#}
+{#                                {% endif %}#}
+{#                                {% for Database in Databases %}#}
+{#                                    {% if DatabaseType %}#}
+{#                                        {{ Database.Pk }}={{ DatabaseType }}#}
+{#                                        <option value="{{ Database.pk }}" selected>{{ Database.Database }}</option>#}
+{#                                    {% else %}#}
+{#                                        <option value="{{ Database.pk }}">{{ Database.Database }}</option>#}
+{#                                    {% endif %}#}
+{#                                {% endfor %}#}
+{#                            </select>#}
+{#                        </div>#}
+                        <div class="form-group left-group">
+                            <label for="">执行医院:</label>
+                            <select name="Hospital" id="Hospital" class="form-control">
+                                {% if Hospital == 0 %}
+                                    <option value="0" selected>全部</option>
+                                {% else %}
+                                    <option value="0">全部</option>
+                                {% endif %}
+                                {% for Hospital_data in Hospital_datas %}
+                                    {% if Hodpital %}
+                                        {{ Hospital_data.Pk }}={{ Hodpital }}
+                                        <option value="{{ Hospital_data.pk }}" selected>{{ Hospital_data.Hospital }}</option>
+                                    {% else %}
+                                        <option value="{{ Hospital_data.pk }}">{{ Hospital_data.Hospital }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group left-group">
+                             <button class="btn btn-primary ">查询</button>
+                        </div>
+                        <div class="form-group left-group">
+                            <a href="{% url 'Execute:alter_execute_history' %}">清空</a>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="box body">
+                    <table class="table bordered">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+{#                                <th>记录编号</th>#}
+                                <th>执行至变更编号</th>
+                                <th>执行医院</th>
+                                <th>执行人</th>
+                                <th>执行时间</th>
+                                <th>执行结果备注</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list">
+                                {% for Alterd_data in Alterd_datas %}
+                                    <tr class="tr-line click" id="{{ Alterd_data.id }}"  AlterID="{{ Alterd_data.AlterID }}"  Hospital="{{ Alterd_data.Hospital }}" ExecutionResult="{{ Alterd_data.ExecutionResult }}" Executor="{{ Alterd_data.Executor }}" ExecutionTime="{{ Alterd_data.ExecutionTime }}" >
+                                        <td class ='序号'>{{ forloop.counter}}</td>
+{#                                        <td class ='执行记录id '>{{ Alterd_data.id }}</td>#}
+                                        <td class ='执行至ID '>{{Alterd_data.AlterID}}</td>
+                                        <td class ='执行医院'>{{ Alterd_data.Hospital.Hospital}}</td>
+                                        <td class ='执行人'>{{ Alterd_data.Executor}}</td>
+                                        <td class ='执行时间'>{{ Alterd_data.ExecutionTime|date:"Y-m-d H:i:s" }}</td>
+                                        <td class ='执行结果备注' title="{{ Alterd_data.ExecutionResult|default:'' }}">{{ Alterd_data.ExecutionResult|default:''|truncatechars:15}}</td>
+                                    </tr>
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="box-footer">
+            <p class="pull-left">第{{ current_page }}/总共{{ num_pages }}页</p>
+            <ul class="pagination pull-right">
+                {#上一页#}
+                {% if page_obj.has_previous %}
+                    <li><a href="?p={{ page_obj.previous_page_number }}{{ url_query }}">上一页</a></li>
+                {% else %}
+                    <li class="disabled"><a href="javascript:void(0);">上一页</a></li>
+                {% endif %}
+
+                {# 是否需要出现三个点 #}
+                {% if left_has_more %}
+                    <li><a href="?p=1">1</a></li>
+                    <li><a href="javascript:void(0);">...</a></li>
+                {% endif %}
+
+                {# 左边的页码 #}
+                {% for left_page in left_pages %}
+                    <li><a href="?p={{ left_page }}{{ url_query }}">{{ left_page }}</a></li>
+                {% endfor %}
+
+                {# 当前的页面 #}
+                <li class="active"><a href="?p={{ current_page }}{{ url_query }}">{{ current_page }}</a></li>
+
+                {# 右边的页码 #}
+                {% for right_page in right_pages %}
+                    <li><a href="?p={{ right_page }}{{ url_query }}">{{ right_page }}</a></li>
+                {% endfor %}
+
+                {# 用来控制右边三个点 #}
+                {% if right_has_more %}
+                    <li><a href="javascript:void(0);">...</a></li>
+                    <li><a href="?p={{ num_pages }}{{ url_query }}">{{ num_pages }}</a></li>
+                {% endif %}
+
+                {#下一页#}
+                {% if page_obj.has_next %}
+                    <li><a href="?p={{ page_obj.next_page_number }}{{ url_query }}">下一页</a></li>
+                {% else %}
+                    <li class="disabled"><a href="javascript:void(0);">下一页</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block footer %}
+
+{% endblock %}

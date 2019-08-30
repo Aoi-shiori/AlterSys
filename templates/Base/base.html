@@ -143,8 +143,8 @@
           </a>
           <ul class="treeview-menu">
             <li ><a href="{% url 'management:Alter_manager' %}"><i class="fa fa-pencil-square-o"></i> 变更管理</a></li>
-{#            <li><a href="{% url 'management:Alter_add' %}"><i class="fa fa-circle-o"></i> 变更提交</a></li>#}
             <li ><a href="{% url 'Execute:Alter_execute' %}"><i class="fa fa-circle-o"></i> 变更执行</a></li>
+            <li><a href="{% url 'Execute:alter_execute_history' %}"><i class="fa fa-circle-o"></i> 执行记录</a></li>
           </ul>
         </li>
         {% if user.is_superuser %}
@@ -170,7 +170,7 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li ><a href="{% url 'Dict:Database_Dict_View' %}"><i class="fa fa-pencil-square-o"></i> 数据库类型</a></li>
+            <li ><a href="{% url 'Dict:Database_Dict_View' %}"><i class="fa fa-pencil-square-o"></i> 数据库字典</a></li>
 {#            <li><a href="{% url 'management:Alter_add' %}"><i class="fa fa-circle-o"></i> 变更提交</a></li>#}
             <li ><a href="{% url 'Dict:AltType_View' %}"><i class="fa fa-circle-o"></i> 变更类型字典</a></li>
             <li ><a href="{% url 'Dict:Hospital_Dict_view' %}"><i class="fa fa-circle-o"></i> 医院字典</a></li>

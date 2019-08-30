@@ -17,9 +17,10 @@ class Alt_Type(models.Model):
         #         return self.AltType
         class Meta:
                 db_table='alt_type_dict'
-#变更类型字典
+#医院字典
 class Alt_Hospital(models.Model):
         Hospital=models.CharField(max_length=50)
+        beginTime= models.DateTimeField(auto_now_add=True)
         counts = models.CharField(max_length=50, null=True)
         # def __unicode__(self):
         #         return self.Hospital

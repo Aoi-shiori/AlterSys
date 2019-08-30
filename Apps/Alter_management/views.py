@@ -5,7 +5,7 @@ from django.views.decorators.http import require_GET,require_POST
 #导入form验证用的表单
 from .forms import Alterform,EditAlterform,Reviewform
 #导入Alter_manage的模型
-from Apps.Alter_management.models import Alter_managment
+from Apps.Alter_management.models import Alter_managment,Alter_managment_checked
 #导入我们重构的resful文件，用于返回结果代码和消息，详细可以看resful.py文件
 from utils import resful
 #导入分页用的类
@@ -80,7 +80,7 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
 
         if cxtj:#查询条件判断
             #多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
-            Alterd_datas=Alterd_datas.filter(Q(Database__icontains=cxtj)|Q(id__icontains=cxtj)|Q(AlterContent__icontains=cxtj)|Q(AlterType__icontains=cxtj)|Q(Informant__icontains=cxtj)|Q(AssociatedNumber__icontains=cxtj))
+            Alterd_datas=Alterd_datas.filter(Q(Database_id=cxtj)|Q(id=cxtj)|Q(AlterContent__icontains=cxtj)|Q(AltType_id=cxtj)|Q(Informant__icontains=cxtj)|Q(AssociatedNumber__icontains=cxtj))
 
         if DatabaseType:#数据库类型判断
             Alterd_datas=Alterd_datas.filter(Database=DatabaseType)
@@ -224,7 +224,12 @@ class add_Alter_managerView(View):
             print(error)
             return resful.params_error(message=form.get_error())
 
-#变更审核
+# * @函数名: Review_Alter_manager
+# * @功能描述: 变更审核
+# * @作者: 郭军
+# * @时间: 2019-6-30 09:39:03
+# * @最后编辑时间: 2019-8-30 14:41:00
+# * @最后编辑者: 郭军
 @require_POST
 @Alter_login_required
 def Review_Alter_manager(request):#变更审核用
@@ -233,11 +238,24 @@ def Review_Alter_manager(request):#变更审核用
         id = form.cleaned_data.get('id')
         ReviewStatus = form.cleaned_data.get('ReviewStatus')  # '审核状态',
         ReviewContent = form.cleaned_data.get('ReviewContent')  # '审核内容',
-        Alter_managment.objects.filter(id=id).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=request.user.Name,AuditTime=datetime.now())
-        # #if Alter_managment:
-        #     Alter_managment.objects.create(Alter_managment)
-        #     pass
+        Review=Alter_managment.objects.filter(id=id).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=request.user.Name,AuditTime=datetime.now())
+        if Review:
+            alter_data = Alter_managment.objects.get(id=id)
+            alter_data_checked=Alter_managment_checked.objects.filter(AlterID_id=id)
 
+            if alter_data_checked:
+                alter_data_checked.objects.update(AlterID_id=alter_data.pk, AssociatedNumber=alter_data.AssociatedNumber,
+                                                       AlterContent=alter_data.AlterContent, Informant=alter_data.Informant,
+                                                       FillTime=alter_data.FillTime, Reviewer=alter_data.Reviewer,
+                                                       ReviewStatus=alter_data.ReviewStatus, ReviewContent=alter_data.ReviewContent,
+                                                       AuditTime=alter_data.AuditTime, AltType_id=alter_data.AltType_id,
+                                                       Database_id=alter_data.Database_id)
+                return resful.OK()
+            else:
+                Alter_managment_checked.objects.create(AlterID_id=alter_data.pk,AssociatedNumber=alter_data.AssociatedNumber,AlterContent=alter_data.AlterContent,Informant=alter_data.Informant,FillTime=alter_data.FillTime,Reviewer=alter_data.Reviewer,ReviewStatus=alter_data.ReviewStatus,ReviewContent=alter_data.ReviewContent,AuditTime=alter_data.AuditTime,AltType_id=alter_data.AltType_id,Database_id=alter_data.Database_id)
+                return resful.OK()
+        else:
+            return resful.params_error(message='审核失败！')
         return resful.OK()
     else:
        return resful.params_error(message=form.get_error())
