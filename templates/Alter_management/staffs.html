@@ -32,11 +32,11 @@
                         </thead>
                         <tbody>
                         {% for staff in staffs %}
-                            <tr id ={{ staff.id }},  Cancellation={{staff.Cancellation }}>
+                            <tr id ={{ staff.id }},  Cancellation={{staff.iscancellation }}>
                               <td>{{ forloop.counter }}</td>
-                              <td>{{ staff.Username }}</td>
-                              <td>{{ staff.Name }}</td>
-                              <td>{{ staff.MobilePhone }}</td>
+                              <td>{{ staff.jobnumber }}</td>
+                              <td>{{ staff.username }}</td>
+                              <td>{{ staff.mobilephone }}</td>
                               <td>
                                 {% if staff.is_superuser %}
                                     超级管理员
@@ -46,14 +46,14 @@
                                     {% endfor %}
                                 {% endif %}
                               </td>
-                              <td>{{ staff.Department }}</td>
-                              {% if staff.Permissions == True %}
+                              <td>{{ staff.department }}</td>
+                              {% if staff.permissions == True %}
                                   <td><input type="checkbox"  checked disabled="True"></td>
                               {% else %}
                                    <td><input type="checkbox" disabled="True"></td>
                               {% endif %}
 
-                              {% if staff.Cancellation == True %}
+                              {% if staff.iscancellation == True %}
                                   <td><input type="checkbox"  checked disabled="True"></td>
                               {% else %}
                                    <td><input type="checkbox"  disabled="True"></td>
@@ -64,7 +64,7 @@
                                     {% if staff.is_superuser %}
 
                                     {% else %}
-                                        {% if staff.Cancellation == False%}
+                                        {% if staff.iscancellation == False%}
                                             <button class="btn btn-danger btn-xs Cancellation_btn">注销</button>
                                         {% else %}
                                             <button class="btn btn-danger btn-xs Cancellation_btn">启用</button>

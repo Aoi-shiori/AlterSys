@@ -18,8 +18,13 @@
 
 {% endblock %}
 
-
+{#用于提交下载#}
 {% block content %}
+{#    <form action="download/" id="downForm" method="post" hidden="hidden">#}
+{#    {% csrf_token %}#}
+{#    </form>#}
+
+
        <div class="row">
         <div class="col-md-12">
             <div class="box box-primary">
@@ -60,9 +65,9 @@
                                 {% for Database in Databases %}
                                     {% if DatabaseType %}
                                         {{ Database.Pk }}={{ DatabaseType }}
-                                        <option value="{{ Database.pk }}" selected>{{ Database.Database }}</option>
+                                        <option value="{{ Database.pk }}" selected>{{ Database.dbname }}</option>
                                     {% else %}
-                                        <option value="{{ Database.pk }}">{{ Database.Database }}</option>
+                                        <option value="{{ Database.pk }}">{{ Database.dbname }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -97,6 +102,9 @@
 {#                    <button class="btn btn-success export—New pull-right">导出最新</button>#}
 {#                    <button class="btn  pull-right btn-info export-BTN"><a href="{% url 'Execute:export_Alter_Execute' %}"></a>全部导出</button>#}
 {#                    <button class="btn  pull-right btn-info export-BTN">全部导出</button>#}
+                    <button class="btn  pull-right btn-info" id="testOut">导出数据</button>
+                    <button class="btn  pull-right btn-info test-btn-2">全部导出</button>
+
 
                     <button class="btn btn-success pull-right test-btn" onclick="TEST()">导出变更数据</button>
                     <script type="text/javascript" >
@@ -107,13 +115,13 @@
                                         html:'数据库<select name="Database" id="Database-test" class="form-control">\
                                                     <option value="0">请选择数据库</option>\
                                                 {% for Database in Databases %}\
-                                                     <option value={{ Database.pk }}>{{ Database.Database }}</option>\
+                                                     <option value={{ Database.pk }}>{{ Database.dbname }}</option>\
                                                 {% endfor %}\
                                               </select><br/>'+
                                             '医院<select name="Hospitals" id="Hospital-test" class="form-control">\
                                                     <option value="0">选择医院</option>\
                                                 {% for hospital in Hospital %}\
-                                                     <option value={{ hospital.pk }}>{{ hospital.Hospital }}</option>\
+                                                     <option value={{ hospital.pk }}>{{ hospital.hospitalname }}</option>\
                                                 {% endfor %}\
                                               </select>',
                                         showCancelButton:true,

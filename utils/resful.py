@@ -6,6 +6,7 @@ class Httpcode(object):
     unauth = 401
     methodeerror = 405
     servererror = 500
+    ajax_ok = 200
 
 
 #{"code":400,"message":"","date":""}
@@ -25,3 +26,5 @@ def method(message="",data =None):
     return result(code=Httpcode.methodeerror,message=message,data=data)
 def servererror(message="",data =None):
     return result(code=Httpcode.servererror,message=message,data=data)
+def ajax_ok(message="",data =None):
+    return result(code=Httpcode.ajax_ok, message=message, data=data)

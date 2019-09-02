@@ -78,9 +78,9 @@
                                 {% for Hospital_data in Hospital_datas %}
                                     {% if Hodpital %}
                                         {{ Hospital_data.Pk }}={{ Hodpital }}
-                                        <option value="{{ Hospital_data.pk }}" selected>{{ Hospital_data.Hospital }}</option>
+                                        <option value="{{ Hospital_data.pk }}" selected>{{ Hospital_data.hospitalname }}</option>
                                     {% else %}
-                                        <option value="{{ Hospital_data.pk }}">{{ Hospital_data.Hospital }}</option>
+                                        <option value="{{ Hospital_data.pk }}">{{ Hospital_data.hospitalname }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>

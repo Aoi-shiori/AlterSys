@@ -43,15 +43,21 @@
                               <th>序号</th>
                               <th>数据库类型</th>
                                 <th>分类数量</th>
+                                <th>修改人</th>
+                                <th>修改時間</th>
+                                <th>創建時間</th>
                               <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for Database in Databases    %}
-                            <tr id ={{ Database.id }}  DBname="{{ Database.Database }}" >
+                            <tr id ={{ Database.id }}  DBname="{{ Database.dbname }}" >
                               <td>{{ forloop.counter }}</td>
-                              <td>{{ Database.Database }}</td>
+                              <td>{{ Database.dbname }}</td>
                                 <td>{{ Database.counts }}</td>
+                                <td>{{ Database.modifier }}</td>
+                                <td>{{ Database.modifytime |date:"Y-m-d H:i:s"}}</td>
+                                <td>{{ Database.begintime  |date:"Y-m-d H:i:s"}}</td>
                               <td>
                                   <button class="btn btn-info btn-xs Edi_btn">编辑</button>
                                   <button class="btn btn-danger btn-xs Del_btn">删除</button>

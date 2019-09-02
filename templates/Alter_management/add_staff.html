@@ -16,7 +16,7 @@
                         <div class="form-group">
                             <label for="MobilePhone-input">手机号码：</label>
                             {% if Use %}
-                                <input type="text" class="form-control" name="MobilePhone1" id="MobilePhone1" value="{{ Use.MobilePhone}}">
+                                <input type="text" class="form-control" name="MobilePhone1" id="MobilePhone1" value="{{ Use.mobilephone }}">
                             {% else %}
                                 <input type="text" class="form-control" id="MobilePhone1">
                             {% endif %}
@@ -25,7 +25,7 @@
                         <div class="form-group">
                             <label for="username-input">用户名：</label>
                             {% if Use %}
-                                 <input type="text" class="form-control" id="username" value="{{ Use.Name }}">
+                                 <input type="text" class="form-control" id="username" value="{{ Use.username }}">
                             {% else %}
                                  <input type="text" class="form-control" id="username">
                             {% endif %}
@@ -42,7 +42,7 @@
                         <div class="form-group">
                             <label for="name-input">姓名：</label>
                             {% if Use %}
-                                <input type="text" class="form-control" id="name" value="{{ Use.Name }}">
+                                <input type="text" class="form-control" id="name" value="{{ Use.username }}">
                             {% else %}
                                 <input type="text" class="form-control" id="name">
                             {% endif %}
@@ -51,7 +51,7 @@
                         <div class="form-group">
                             <label for="Department-input">部门：</label>
                             {% if Use %}
-                                 <input type="text" class="form-control" id="Department" value="{{ Use.Department }}">
+                                 <input type="text" class="form-control" id="Department" value="{{ Use.department }}">
                             {% else %}
                                  <input type="text" class="form-control" id="Department">
                             {% endif %}
@@ -80,7 +80,7 @@
 
                             {% if Use %}
                                 <select name="Permissions" id="Permissions"  >
-                                    {% if Use.Permissions == False %}
+                                    {% if Use.permissions == False %}
                                         <option value=False>否</option>
                                         <option value=True>是</option>
                                     {% else %}

@@ -59,9 +59,9 @@
                                 {% for Database in Databases %}
                                     {% if DatabaseType %}
                                         {{ Database.Pk }}={{ DatabaseType }}
-                                        <option value="{{ Database.pk }}" selected>{{ Database.Database }}</option>
+                                        <option value="{{ Database.pk }}" selected>{{ Database.dbname }}</option>
                                     {% else %}
-                                        <option value="{{ Database.pk }}">{{ Database.Database }}</option>
+                                        <option value="{{ Database.pk }}">{{ Database.dbname }}</option>
                                     {% endif %}
                                 {% endfor %}
 
@@ -139,27 +139,27 @@
                                         <td><input name="se" type="checkbox" ></td>
                                         <td class ='序号'>{{ forloop.counter}}</td>
                                         <td class ='变更编号 AlterID-td'>{{ Alterd_data.id }}</td>
-                                        <td class ='关联类型 AlterType-td'>{{ Alterd_data.AltType.AltType}}</td>
-                                        <td class ='关联编号 AssociatedNumber-td'>{{ Alterd_data.AssociatedNumber}}</td>
-                                        <td class ='数据库 Datebase-td'>{{ Alterd_data.Database.Database}}</td>
-                                        <td class ='变更内容 AlterContent-td' title="{{ Alterd_data.AlterContent|default:'' }}"><a target="_blank" href="{% url 'management:Alter_deatil' id=Alterd_data.id %} ">{{ Alterd_data.AlterContent|truncatechars:20}}</a></td>
-                                        <td class ='填报人 Informant-td'>{{ Alterd_data.Informant}}</td>
-                                        <td class ='填报时间 FillTime-td'>{{ Alterd_data.FillTime|date:"Y-m-d H:i:s" }}</td>
-                                        <td class ='审核人 Reviewer-td'>{{ Alterd_data.Reviewer|default:''}}</td>
+                                        <td class ='关联类型 AlterType-td'>{{ Alterd_data.altertypenumber.altertypename}}</td>
+                                        <td class ='关联编号 AssociatedNumber-td'>{{ Alterd_data.associatednumber}}</td>
+                                        <td class ='数据库 Datebase-td'>{{ Alterd_data.dbnumber.dbname}}</td>
+                                        <td class ='变更内容 AlterContent-td' title="{{ Alterd_data.altercontent|default:'' }}"><a target="_blank" href="{% url 'management:Alter_deatil' id=Alterd_data.id %} ">{{ Alterd_data.altercontent|truncatechars:20}}</a></td>
+                                        <td class ='填报人 Informant-td'>{{ Alterd_data.informant}}</td>
+                                        <td class ='填报时间 FillTime-td'>{{ Alterd_data.filltime|date:"Y-m-d H:i:s" }}</td>
+                                        <td class ='审核人 Reviewer-td'>{{ Alterd_data.reviewer|default:''}}</td>
 {#                                        <td class ='审核状态 ReviewStatus-td'>{{ Alterd_data.ReviewStatus|default:''}}</td>#}
-                                        {% if Alterd_data.ReviewStatus == '1' %}
+                                        {% if Alterd_data.reviewstatus == '1' %}
                                                 <td class ='审核状态 ReviewStatus-td'>已审核</td>
-                                        {% elif Alterd_data.ReviewStatus == '2'  %}
+                                        {% elif Alterd_data.reviewstatus == '2'  %}
 
                                              <td class ='审核状态 ReviewStatus-td'>待修改</td>
                                         {% else%}
                                              <td class ='审核状态 ReviewStatus-td'>未审核</td>
                                         {% endif %}
 
-                                        <td class ='审核内容 ReviewContent-td' title="{{ Alterd_data.ReviewContent|default:'' }}">{{ Alterd_data.ReviewContent|default:''|truncatechars:10}}</td>
-                                        <td class ='审核时间 AuditTime-td  ' >{{ Alterd_data.AuditTime|date:"Y-m-d H:i:s"}}</td>
+                                        <td class ='审核内容 ReviewContent-td' title="{{ Alterd_data.reviewcontent|default:'' }}">{{ Alterd_data.reviewcontent|default:''|truncatechars:10}}</td>
+                                        <td class ='审核时间 AuditTime-td  ' >{{ Alterd_data.audittime|date:"Y-m-d H:i:s"}}</td>
                                         <td>
-                                            {% if  Alterd_data.ReviewStatus == '1'%}
+                                            {% if  Alterd_data.reviewstatus == '1'%}
                                                  <button class=" btn-xs editor-btn" style="background: grey" disabled="disabled">编辑</button>
                                             {% else %}
                                                  <button class="btn-warning btn-xs editor-btn" >编辑</button>
@@ -239,9 +239,9 @@
                                 <select name="AltType" id="AlterType-form" class="form-control">
                                     {% for AltType in AltTypes %}
                                         {% if Alterd_datas and Alterd_datas.AltType_id == AltType.pk %}
-                                            <option value="{{ AltType.pk }}" selected>{{ AltType.AltType }}</option>
+                                            <option value="{{ AltType.pk }}" selected>{{ AltType.altertypename }}</option>
                                         {% else %}
-                                            <option value="{{ AltType.pk }}">{{ AltType.AltType }}</option>
+                                            <option value="{{ AltType.pk }}">{{ AltType.altertypename }}</option>
                                         {% endif %}
                                     {% endfor %}
 
@@ -257,9 +257,9 @@
                                     <select name="Database" id="Database-form" class="form-control" >
                                         {% for Database in Databases %}
                                             {% if Alterd_datas and Alterd_datas.Database_id == Database.pk %}
-                                                <option value="{{ Database.pk }}" selected>{{ Database.Database }}</option>
+                                                <option value="{{ Database.pk }}" selected>{{ Database.dbname }}</option>
                                             {% else %}
-                                                <option value="{{ Database.pk }}">{{ Database.Database }}</option>
+                                                <option value="{{ Database.pk }}">{{ Database.dbname }}</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>
@@ -289,9 +289,9 @@
                                 <select name="AltType" id="AlterType-form" class="form-control">
                                     {% for AltType in AltTypes %}
                                         {% if Alterd_datas and Alterd_datas.AltType_id == AltType.pk %}
-                                            <option value="{{ AltType.pk }}" selected>{{ AltType.AltType }}</option>
+                                            <option value="{{ AltType.pk }}" selected>{{ AltType.altertypename }}</option>
                                         {% else %}
-                                            <option value="{{ AltType.pk }}">{{ AltType.AltType }}</option>
+                                            <option value="{{ AltType.pk }}">{{ AltType.altertypename }}</option>
                                         {% endif %}
                                     {% endfor %}
                                 </select>
@@ -305,9 +305,9 @@
                                      <select name="Database" id="Database-form" class="form-control" >
                                         {% for Database in Databases %}
                                             {% if Alterd_datas and Alterd_datas.Database_id == Database.pk %}
-                                                <option value="{{ Database.pk }}" selected>{{ Database.Database }}</option>
+                                                <option value="{{ Database.pk }}" selected>{{ Database.dbname }}</option>
                                             {% else %}
-                                                <option value="{{ Database.pk }}">{{ Database.Database }}</option>
+                                                <option value="{{ Database.pk }}">{{ Database.dbname }}</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>

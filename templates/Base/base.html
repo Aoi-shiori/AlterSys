@@ -46,6 +46,7 @@
   <script src="{% static 'js/auth.min.js' %}"></script>
   <script src="{% static 'sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
   <script src="{% static 'sweetalert2/dist/sweetalert2.min.js' %}"></script>
+  <script src="{% static 'js/jquery.cookie.min.js' %}"></script>
   {% block head %} {% endblock %}
 
   <!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browse/dist/sweetalert2.min.jsr and Android browser support -->
@@ -80,7 +81,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="{% static 'AdminLTE/dist/img/user2-160x160.jpg' %}" class="user-image" alt="User Image">
               {% if user.is_authenticated %}
-                <span class="hidden-xs"> {{ user.name }} </span>
+                <span class="hidden-xs"> {{ user.username }} </span>
               {% else %}
                   <span class="hidden-xs">请登录</span>
               {% endif %}

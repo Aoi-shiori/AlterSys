@@ -486,7 +486,7 @@ Execute.prototype.listenExportSbumitEvent=function(){
 //监听导出最新按钮
 Execute.prototype.listenExportNewSbumitEvent=function(){
     var self =this;
-    var exportNew = $('.export—New');
+    var exportNew = $('#testOut');
     var formgroup= $('.form-group');
     var DatabaseType= formgroup.find("select[name='DatabaseType']");
 
@@ -496,25 +496,34 @@ Execute.prototype.listenExportNewSbumitEvent=function(){
         // var ReviewContent=ReviewContenInput.val();
         // var Reviewer =ReviewerInput.val();
         var Database= DatabaseType.val();
-        alert(Database);
+        console.log(Database);
         // alert(AlterID);
         // alert(Reviewstatus);
         // alert(ReviewContent);
         // alert(Reviewer);
 
-        $.ajax({
-            'url':'/execute/export_new/',
+        xfzajax.post({
+            'url':'/execute/exportAltData/',
             //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
-            'type':'POST',
+            // 'type':'POST',
             //'dataType':'json',
             'data': {
                 'DatabaseType': Database,
             },
             'success': function (result) {
                 if(result['code'] === 200){
-
-                    var form = $('<form action="download/" method="post"></form>');
+                    var form = $('<form action="download/" method="post">' +
+                        '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
+                        '</form>');
                     $('body').append(form);
+                    // $("#downForm").append('{% csrf_token %}');
+                    // $("#downForm").append("<input type='hidden' id='infos' name='csrfmiddlewaretoken' value='' />");
+                    console.log($.cookie("csrftoken"));
+                    $("#infos").val($.cookie("csrftoken"));
+
+                    // return;
+                    // $("#downForm").submit();
+
                     form.submit(); //自动提交
                     window.messageBox.show("提交导出成功!");
                     //setTimeout("window.location.reload()","300");
@@ -554,30 +563,70 @@ Execute.prototype.listenExportNewSbumitEvent=function(){
 };
 
 //
-// Execute.prototype.listenExportbumitEvent=function(){
-//         var testbtn = $('.test-btn');
-//         testbtn.click(function () {
-//             console.log('数据是',Hospitals)
-//                 Swal.fire({
-//                     title: '请选择医院',
-//                     type: "prompt",
-//                     html:
-//                         Hospitals+
-//                         '<input id="swal-input1" class="swal2-input">' +
-//                         '<input id="swal-input2" class="swal2-input">'+
-//                          '<select name="Hospitals" id="Hospitals" class="form-control">\
-//                                 <option value="0">全部</option>\
-//                             {% for hospital in Hospital %}\
-//                                  <option value="{{ hospital.pk }}">{{ hospital.Hospital }}</option>\
-//                             {% endfor %}\
-//                           </select>',
-//                     focusConfirm: false,
-//                     }).then(function(){
-//                             alert(document.getElementById('swal-input1').value); // value of my-input1
-//                             alert(document.getElementById('swal-input2').value); // value of my-select
-//                     })
-//         })
-// };
+Execute.prototype.listenExportbumitEvent=function(){
+        var testbtn = $('.test-btn-2');
+        testbtn.click(function () {
+
+                $.ajax({
+                'url':'/execute/test_select/',
+                //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+                'type':'GET',
+                //'dataType':'json',
+                'success': function (result) {
+                    // console.log(result);
+                    //var res = JSON.stringify(result);
+                    console.log(result);
+
+                    for(var k in result){
+                        console.log(result[k]);
+                        $("#Hospitals_select").append("<option value='"+result[k]["pk"]+"'>"+result[k]["Hospital"]+"</option>");
+
+                    }
+                }
+            });
+
+            //     xfzajax.get({
+            //     'url':'/execute/test_select/',
+            //     //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+            //     //'dataType':'json',
+            //     'success': function (result) {
+            //         // console.log(result);
+            //         //var res = JSON.stringify(result);
+            //         console.log(result.data);
+            //         var datas = result.data;
+            //         for(var k in datas){
+            //             console.log(datas[k]);
+            //             $("#Hospitals_select").append("<option value='"+datas[k]["pk"]+"'>"+datas[k]["Hospital"]+"</option>");
+            //
+            //         }
+            //     }
+            // });
+
+
+
+
+
+                Swal.fire({
+                    title: '请选择医院',
+                    type: "prompt",
+                    html:
+                        // Hospitals+
+                        '<input id="swal-input1" class="swal2-input">' +
+                        '<input id="swal-input2" class="swal2-input">'+
+                         '<select name="Hospitals" id="Hospitals_select" class="form-control">\
+                               <option value="0">全部</option>\
+                          </select>',
+                    focusConfirm: false,
+                    }).then(function(){
+                        var v = $("#Hospitals_select option:selected").val();
+                        console.log($("#swal-input1").val());
+                        console.log(v);
+
+                            // alert(document.getElementById('swal-input1').value); // value of my-input1
+                            // alert(document.getElementById('swal-input2').value); // value of my-select
+                    })
+        })
+};
 
 
 

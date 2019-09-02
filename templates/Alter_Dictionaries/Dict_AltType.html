@@ -43,15 +43,21 @@
                               <th>序号</th>
                               <th>变更类型</th>
                               <th>分类数量</th>
+                              <th>修改人</th>
+                              <th>修改時間</th>
+                              <th>創建時間</th>
                               <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for AltType in AltTypes    %}
-                            <tr id ={{ AltType.id }}  AltTypename="{{ AltType.AltType }}" >
+                            <tr id ={{ AltType.id }}  altertypename="{{ AltType.altertypename }}" >
                               <td>{{ forloop.counter }}</td>
-                              <td>{{ AltType.AltType }}</td>
+                              <td>{{ AltType.altertypename }}</td>
                               <td>{{ AltType.counts }}</td>
+                              <td>{{ AltType.modifier }}</td>
+                              <td>{{ AltType.modifytime |date:"Y-m-d H:i:s"}}</td>
+                              <td>{{ AltType.begintime  |date:"Y-m-d H:i:s"}}</td>
                               <td>
                                   <button class="btn btn-info btn-xs Edi_btn">编辑</button>
                                   <button class="btn btn-danger btn-xs Del_btn">删除</button>

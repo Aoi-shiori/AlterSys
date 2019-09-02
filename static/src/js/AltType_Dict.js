@@ -86,11 +86,11 @@ AltTypeDict.prototype.listenAddAltTypeEvent=function () {
 AltTypeDict.prototype.listenEDITAltTypeEvent=function () {
     var EdiBtn= $('.Edi_btn');
     EdiBtn.click(function () {
-        event.preventDefault();//去除按钮本身的事件
+        event.preventDefault();//去除按钮本身的事件的功能
         var current =$(this);
         var tr =current.parent().parent();
         var pk =tr.attr('id');
-        var Database=tr.attr('AltTypename');
+        var altertypename=tr.attr('altertypename');
         event.preventDefault();
             swal.fire({
               title: '修改分类名称',
@@ -100,7 +100,7 @@ AltTypeDict.prototype.listenEDITAltTypeEvent=function () {
               confirmButtonText: '提交',
               showLoaderOnConfirm: true,
               inputPlaceholder:"请输入分类名称",
-              inputValue:Database,
+              inputValue:altertypename,
               inputValidator: function(value) {
                   Swal.showLoading();
                 return new Promise(function(reject,resolve) {
@@ -111,7 +111,7 @@ AltTypeDict.prototype.listenEDITAltTypeEvent=function () {
                             'url': '/Dict/Edit_AltType_Dict/',
                             'data': {
                                 'pk':pk,
-                                'Database': value
+                                'altertypename': value
                             },
                             'success': function (result) {
                                 if(result['code'] === 200){

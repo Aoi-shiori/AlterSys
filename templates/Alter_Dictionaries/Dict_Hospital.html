@@ -42,16 +42,22 @@
                             <tr>
                               <th>序号</th>
                               <th>医院名称</th>
-                                <th>分类数量</th>
+                              <th>分类数量</th>
+                              <th>修改人</th>
+                              <th>修改時間</th>
+                              <th>創建時間</th>
                               <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for HospitalData in HospitalDatas  %}
-                            <tr id ={{ HospitalData.id }}  Hospitalname="{{ HospitalData.Hospital }}" >
+                            <tr id ={{ HospitalData.id }}  Hospitalname="{{ HospitalData.hospitalname }}" >
                               <td>{{ forloop.counter }}</td>
-                              <td>{{ HospitalData.Hospital }}</td>
-                                <td>{{ HospitalData.counts }}</td>
+                              <td>{{ HospitalData.hospitalname }}</td>
+                              <td>{{ HospitalData.counts }}</td>
+                              <td>{{ HospitalData.modifier }}</td>
+                              <td>{{ HospitalData.modifytime |date:"Y-m-d H:i:s"}}</td>
+                              <td>{{ HospitalData.begintime  |date:"Y-m-d H:i:s"}}</td>
                               <td>
                                   <button class="btn btn-info btn-xs Edi_btn">编辑</button>
                                   <button class="btn btn-danger btn-xs Del_btn">删除</button>
