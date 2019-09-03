@@ -9,6 +9,9 @@ from Apps.Alter_execute.models import Alter_execute
 from django.core.paginator import Paginator
 from django.db.models import Q
 from urllib import parse
+from _datetime import datetime
+from Apps.Alterauth.decorators import Alter_login_required
+from django.utils.decorators import method_decorator
 # Create your views here.
 
 
@@ -18,10 +21,11 @@ from urllib import parse
 # * @时间: 2019-6-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:23
 # * @最后编辑者: 郭军
+@method_decorator(Alter_login_required,name='dispatch')
 class Database_dict_Views(View):
     def get(self,request):
         for Databases in Alt_Database.objects.all():
-            counts=Alter_managment.objects.filter(Database=Databases.pk).count()
+            counts=Alter_managment.objects.filter(dbnumber=Databases.pk).count()
             Alt_Database.objects.filter(pk=Databases.pk).update(counts=counts)
 
         page = int(request.GET.get('p', 1))  # 获当前页数,并转换成整形，没有传默认为1
@@ -98,11 +102,12 @@ class Database_dict_Views(View):
 # * @时间: 2019-6-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:23
 # * @最后编辑者: 郭军
+@Alter_login_required
 def Add_DB_Dict(request):
     Database =request.POST.get('Database')
-    exists= Alt_Database.objects.filter(Database=Database).exists()
+    exists= Alt_Database.objects.filter(dbname=Database).exists()
     if not exists:
-        Alt_Database.objects.create(Database=Database)
+        Alt_Database.objects.create(dbname=Database,modifier=request.user.username)
         return resful.OK()
     else:
         return resful.params_error(message='该数据库分类名称已经存在')
@@ -113,13 +118,14 @@ def Add_DB_Dict(request):
 # * @时间: 2019-6-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:23
 # * @最后编辑者: 郭军
+@Alter_login_required
 def Edit_DB_Dict(request):
     form = DB_Dict_Form(request.POST)
     if form.is_valid():
         pk=form.cleaned_data.get('pk')
         Database=form.cleaned_data.get('Database')
         try:
-            Alt_Database.objects.filter(pk=pk).update(Database=Database)
+            Alt_Database.objects.filter(pk=pk).update(dbname=Database, modifier=request.user.username,modifytime=datetime.now())
             return resful.OK()
         except:
             return resful.params_error(message="该分类不存在！")
@@ -132,6 +138,7 @@ def Edit_DB_Dict(request):
 # * @时间: 2019-6-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:23
 # * @最后编辑者: 郭军
+@Alter_login_required
 def Del_DB_Dict(request):
     pk = request.POST.get("pk")
     try:
@@ -147,10 +154,11 @@ def Del_DB_Dict(request):
 # * @时间: 2019-6-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:23
 # * @最后编辑者: 郭军
+
 class AltType_Dict_view(View):
     def get(self,request):
         for AltTypes in Alt_Type.objects.all():
-            counts = Alter_managment.objects.filter(AltType=AltTypes.pk).count()
+            counts = Alter_managment.objects.filter(altertypenumber_id=AltTypes.pk).count()
             Alt_Type.objects.filter(pk=AltTypes.pk).update(counts=counts)
 
 
@@ -226,11 +234,12 @@ class AltType_Dict_view(View):
 # * @时间: 2019-6-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:23
 # * @最后编辑者: 郭军
+@Alter_login_required
 def Add_AltType_Dict(request):
-    altType=request.POST.get('AltType')
-    exists=Alt_Type.objects.filter(AltType=altType).exists()
+    altertypename=request.POST.get('AltType')
+    exists=Alt_Type.objects.filter(altertypename=altertypename).exists()
     if not exists:
-        Alt_Type.objects.create(AltType=altType)
+        Alt_Type.objects.create(altertypename=altertypename,modifier=request.user.username,modifytime=datetime.now())
         return resful.OK()
     else:
         return resful.params_error("该类型已经存在！")
@@ -242,13 +251,14 @@ def Add_AltType_Dict(request):
 # * @时间: 2019-6-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:23
 # * @最后编辑者: 郭军
+@Alter_login_required
 def Edit_AltType_Dict(request):
     form=Hospital_Dict_Form(request.POST)
     if form.is_valid():
         pk =form.cleaned_data.get("pk")
-        altType=form.cleaned_data.get('AltType')
+        altertypename=form.cleaned_data.get('altertypename')
         try:
-            Alt_Type.objects.filter(pk=pk).update(AltType=altType)
+            Alt_Type.objects.filter(pk=pk).update(altertypename=altertypename,modifier=request.user.username,modifytime=datetime.now())
             return resful.OK()
         except:
             return resful.params_error(message="该类型不存在！")
@@ -262,6 +272,7 @@ def Edit_AltType_Dict(request):
 # * @时间: 2019-6-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:23
 # * @最后编辑者: 郭军
+@Alter_login_required
 def Del_AltType_Dict(request):
     pk=request.POST.get('pk')
     try:
@@ -282,7 +293,7 @@ def Del_AltType_Dict(request):
 class Hospital_Dict_view(View):
     def get(self,request):
         for Althospital in Alt_Hospital.objects.all():
-            counts = Alter_execute.objects.filter(Hospital=Althospital.pk).count()
+            counts = Alter_execute.objects.filter(hospital_id=Althospital.pk).count()
             Alt_Hospital.objects.filter(pk=Althospital.pk).update(counts=counts)
 
 
@@ -357,11 +368,12 @@ class Hospital_Dict_view(View):
 # * @时间: 2019-8-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:23
 # * @最后编辑者: 郭军
+@Alter_login_required
 def Add_hospital_Dict(request):
-    hospital=request.POST.get('hospital')
-    exists=Alt_Hospital.objects.filter(Hospital=hospital).exists()
+    hospitalname=request.POST.get('hospital')
+    exists=Alt_Hospital.objects.filter(hospitalname=hospitalname).exists()
     if not exists:
-        Alt_Hospital.objects.create(Hospital=hospital)
+        Alt_Hospital.objects.create(hospitalname=hospitalname,modifier=request.user.username)
         return resful.OK()
     else:
         return resful.params_error("该医院已经存在！")
@@ -372,13 +384,14 @@ def Add_hospital_Dict(request):
 # * @时间: 2019-8-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:19
 # * @最后编辑者: 郭军
+@Alter_login_required
 def Edit_hospital_Dict(request):
     form=Hospital_Dict_Form(request.POST)
     if form.is_valid():
         pk =form.cleaned_data.get("pk")
-        Hospital=form.cleaned_data.get('Hospital')
+        hospitalname=form.cleaned_data.get('Hospital')
         try:
-            Alt_Hospital.objects.filter(pk=pk).update(Hospital=Hospital)
+            Alt_Hospital.objects.filter(pk=pk).update(hospitalname=hospitalname, modifier=request.user.username, modifytime=datetime.now())
             return resful.OK()
         except:
             return resful.params_error(message="该医院不存在！")
@@ -391,6 +404,7 @@ def Edit_hospital_Dict(request):
 # * @时间: 2019-8-28 09:10:31
 # * @最后编辑时间: 2019-8-28 09:57:12
 # * @最后编辑者: 郭军
+@Alter_login_required
 def Del_hospital_Dict(request):
     pk=request.POST.get('pk')
     try:

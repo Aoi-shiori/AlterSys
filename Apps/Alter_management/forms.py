@@ -12,7 +12,7 @@ class Alterform(forms.Form,FormMixin):
         AlterContent = forms.CharField(widget=forms.Textarea,error_messages={"required":"变更内容不能为空"})  # 变更内容
         class Meta:
                 model=Alter_managment
-                exclude={'AltType','AssociatedNumber','Database','AlterContent','Informant'}
+                exclude={'altertypenumber', 'associatednumber', 'dbnumber', 'altercontent', 'informant'}
 
 
 class EditAlterform(forms.Form,FormMixin):

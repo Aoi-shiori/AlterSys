@@ -10,5 +10,6 @@ urlpatterns = [
     path('download/',views.download,name="export_download"),
     path('exportAltData/',views.export_alt_data,name="ExportAltData"),
     path('alter_execute_history/',views.alter_execute_history_view.as_view(),name="alter_execute_history"),
+    path('test_select/',views.test_select,name="test_select"),
 
 ]

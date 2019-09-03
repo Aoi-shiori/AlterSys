@@ -12,4 +12,4 @@ class AltType_Dict_Form(forms.Form,FormMixin):
 
 class Hospital_Dict_Form(forms.Form,FormMixin):
     pk =forms.IntegerField(error_messages={'required':"必须传入分类ID！"})
-    Hospital=forms.CharField(max_length='100',error_messages={'required':"医院名称不能为空！"})
+    altertypename=forms.CharField(max_length='100',error_messages={'required':"医院名称不能为空！"})

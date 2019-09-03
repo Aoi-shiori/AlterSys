@@ -1,3 +1,5 @@
+import json
+from django.core import serializers
 from django.shortcuts import render
 
 from django.views.generic import View
@@ -350,7 +352,7 @@ def export(request):
             #CC=list(AA)[0][0]
             #hh=CC[0]
             #DD=BB.get('AlterID')
-            AlterID = exits.values_list('AlterID')
+            AlterID = exits.values_list('alterid')
             OldID=list(AlterID)[0][0]
 
 
@@ -403,7 +405,7 @@ def export_New(request):
         Alt_execute=Alter_execute.objects.filter(UID=request.user.pk)
         if Alt_execute:
             # 获取用户已导出的数据
-            Export_old_Nums = Alt_execute.objects.values_list('Exports', flat=True)[0]
+            Export_old_Nums = Alt_execute.objects.values_list('exportlist', flat=True)[0]
 
             # 字符串转换成数值列表
             Export_old_Nums = [int(id) for id in (Export_old_Nums.split(','))]
@@ -482,7 +484,7 @@ def export_New(request):
                 # DD=BB.get('AlterID')
 
                 # 获取已经导出的最大ID
-                Old_AlterID = list(exits.values_list('AlterID'))[0][0]
+                Old_AlterID = list(exits.values_list('alterid'))[0][0]
 
                 # 将列表转换成字符串，用于存储数据库
                 Exports_Nums = ','.join([str(id) for id in Exports_Nums])
@@ -522,14 +524,17 @@ def export_New(request):
 # * @时间: 2019-8-30 09:39:03
 # * @最后编辑时间: 2019-8-30 14:41:00
 # * @最后编辑者: 郭军
-@csrf_exempt
+# @csrf_exempt
 def export_alt_data(request):
+    print(request.COOKIES.values())
 
     #获取当前选中的数据库类型
-    databaseId =request.POST.get('Database')
+    # databaseId =request.POST.get('Database')
+    databaseId =1
 
     #获取当前选择的医院ID
-    hospitalId =request.POST.get('Hospital')
+    # hospitalId =request.POST.get('Hospital')
+    hospitalId =1
 
     #调试用：打印获取到的数据
     print('获取到的数据库ID是:',databaseId)
@@ -565,16 +570,17 @@ def export_alt_data(request):
             if exportHistoryData:
 
                 # 获取用户已导出的数据
-                Export_old_Nums = exportHistoryData.values_list('Exports', flat=True)[0]
+                Export_old_Nums = exportHistoryData.values_list('exportlist', flat=True)[0]
 
                 # 获取已经导出的最大ID
-                old_alter_id = list(exportHistoryData.values_list('AlterID'))[0][0]
+                old_alter_id = list(exportHistoryData.values_list('alterid'))[0][0]
 
                 # 字符串转换成数值列表
                 Export_old_Nums = [int(id) for id in (Export_old_Nums.split(','))]
 
                 # 过滤出还未导出的数据
-                exportData = exportData.exclude(pk__in=Export_old_Nums)
+                # exportData = exportData.exclude(pk__in=Export_old_Nums)
+
 
                 if exportData:
                     # 调用导出文件生成函数
@@ -637,7 +643,7 @@ def export_alt_data(request):
 # * @时间: 2019-08-22 16:01:00
 # * @最后编辑时间: 2019-8-23 15:26:38
 # * @最后编辑者: 郭军
-@csrf_exempt
+# @csrf_exempt
 def download(request):
         # 查找并打开文件
         file = open(r'../AlterSys/Download/' + 'Alter.sql', 'rb')
@@ -653,6 +659,7 @@ def download(request):
 
         print('用户下载文件' + the_file_name)
         return response
+        # return resful.ajax_ok(message="",data=response)
 
 
 
@@ -690,3 +697,14 @@ def Export_file_Generate(export_datas):
             return True
     else:
         return False
+
+
+def test_select(request):
+    hospitalData=Alt_Hospital.objects.all()
+    datas = hospitalData.values("pk", "hospitalname")
+    # data = serializers.serialize("json",hospitalData)
+    # return resful.ajax_ok(message="",data=list(datas))
+    return  JsonResponse(list(datas),safe=False) #返回json数据对象，safe=false:允许将非字典转换json
+    # return  JsonResponse({'status':200,'msg':'ok','data':list(hospitalData)})
+
+

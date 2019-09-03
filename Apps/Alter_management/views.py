@@ -46,7 +46,13 @@ def index_manage(request):
 #         return render(request,"Alter_management/Alter.html",context=context)
 
 
-#新变更管理页面
+
+# * @函数名: Alter_manager_newview
+# * @功能描述: 变更管理页面视图
+# * @作者: 郭军
+# * @时间: 2019-6-30 15:28:19
+# * @最后编辑时间: 2019-9-3 10:00:36
+# * @最后编辑者: 郭军
 #@staff_member_required(login_url='login')
 @method_decorator(Alter_login_required,name='dispatch')
 class Alter_manager_newview(View):#变更管理页面，返回数据
@@ -64,6 +70,7 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
         Alterd_datas = Alter_managment.objects.all()#获取所有数据库的数据
         Databases = Alt_Database.objects.all()
         AltTypes=Alt_Type.objects.all()
+
 
         if start or end:#查询时间判断
             if start:
@@ -153,13 +160,13 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
 
 
 
-
-
-
-
-
-
-
+# * @函数名: edit_Alter_manager
+# * @功能描述: 编辑变更内容
+# * @作者: 郭军
+# * @时间: 2019-6-30 15:28:19
+# * @最后编辑时间: 2019-9-3 10:00:36
+# * @最后编辑者: 郭军
+# *
 @require_POST
 @Alter_login_required
 #@method_decorator(permission_required(perm='alter_managment.change_alter_managment',login_url='/'),name="dispatch")
@@ -177,6 +184,13 @@ def edit_Alter_manager(request):#变更内容编辑用
     else:
         return resful.params_error(message=form.get_error())
 
+
+# * @函数名: delete_Alter_manager
+# * @功能描述: 删除变更内容
+# * @作者: 郭军
+# * @时间: 2019-6-30 15:28:19
+# * @最后编辑时间: 2019-9-3 10:00:36
+# * @最后编辑者: 郭军
 @require_POST
 @Alter_login_required
 def delete_Alter_manager(request):#变更内容删除用
@@ -190,7 +204,12 @@ def delete_Alter_manager(request):#变更内容删除用
 
 
 
-
+# * @函数名: add_Alter_managerView
+# # * @功能描述: 添加变更内容
+# # * @作者: 郭军
+# # * @时间: 2019-6-30 15:28:19
+# # * @最后编辑时间: 2019-9-3 10:00:36
+# # * @最后编辑者: 郭军
 class add_Alter_managerView(View):
     def get(self,request):
         Databases=Alt_Database.objects.all()
@@ -211,10 +230,10 @@ class add_Alter_managerView(View):
             AlterContent=form.cleaned_data.get('AlterContent')
 
             #判断变更内容在库中是否存在
-            exists=Alter_managment.objects.filter(AlterContent=AlterContent).exists()
+            exists=Alter_managment.objects.filter(altercontent=AlterContent).exists()
             if not exists:
-                Alter_managment.objects.create(AltType_id=AltTypes.pk, AssociatedNumber=AssociatedNumber, Database_id=Database.pk,AlterContent=AlterContent,
-                                               Informant=request.user.Name)
+                Alter_managment.objects.create(altertypenumber_id=AltTypes.pk, associatednumber=AssociatedNumber, dbnumber_id=Database.pk,altercontent=AlterContent,
+                                               informant=request.user.username)
                 return resful.OK()
             else:
 
@@ -238,21 +257,21 @@ def Review_Alter_manager(request):#变更审核用
         id = form.cleaned_data.get('id')
         ReviewStatus = form.cleaned_data.get('ReviewStatus')  # '审核状态',
         ReviewContent = form.cleaned_data.get('ReviewContent')  # '审核内容',
-        Review=Alter_managment.objects.filter(id=id).update(ReviewStatus=ReviewStatus, ReviewContent=ReviewContent, Reviewer=request.user.Name,AuditTime=datetime.now())
+        Review=Alter_managment.objects.filter(id=id).update(reviewstatus=ReviewStatus, reviewcontent=ReviewContent, reviewer=request.user.username,audittime=datetime.now())
         if Review:
             alter_data = Alter_managment.objects.get(id=id)
-            alter_data_checked=Alter_managment_checked.objects.filter(AlterID_id=id)
+            alter_data_checked=Alter_managment_checked.objects.filter(alterid_id=id)
 
             if alter_data_checked:
-                alter_data_checked.objects.update(AlterID_id=alter_data.pk, AssociatedNumber=alter_data.AssociatedNumber,
-                                                       AlterContent=alter_data.AlterContent, Informant=alter_data.Informant,
-                                                       FillTime=alter_data.FillTime, Reviewer=alter_data.Reviewer,
-                                                       ReviewStatus=alter_data.ReviewStatus, ReviewContent=alter_data.ReviewContent,
-                                                       AuditTime=alter_data.AuditTime, AltType_id=alter_data.AltType_id,
+                alter_data_checked.objects.update(alterid_id=alter_data.pk,associatednumber=alter_data.associatednumber,
+                                                       altercontent=alter_data.altercontent, informant=alter_data.informant,
+                                                       filltime=alter_data.filltime, reviewer=alter_data.reviewer,
+                                                       reviewstatus=alter_data.reviewstatus, reviewcontent=alter_data.reviewcontent,
+                                                       audittime=alter_data.audittime, alttype_id=alter_data.AltType_id,
                                                        Database_id=alter_data.Database_id)
                 return resful.OK()
             else:
-                Alter_managment_checked.objects.create(AlterID_id=alter_data.pk,AssociatedNumber=alter_data.AssociatedNumber,AlterContent=alter_data.AlterContent,Informant=alter_data.Informant,FillTime=alter_data.FillTime,Reviewer=alter_data.Reviewer,ReviewStatus=alter_data.ReviewStatus,ReviewContent=alter_data.ReviewContent,AuditTime=alter_data.AuditTime,AltType_id=alter_data.AltType_id,Database_id=alter_data.Database_id)
+                Alter_managment_checked.objects.create(alterid_id=alter_data.pk,associatednumber=alter_data.associatednumber,altercontent=alter_data.altercontent,informant=alter_data.informant,filltime=alter_data.filltime,reviewer=alter_data.reviewer,reviewstatus=alter_data.reviewstatus,reviewcontent=alter_data.reviewcontent,audittime=alter_data.audittime,alttype_id=alter_data.alttype_id,Database_id=alter_data.Database_id)
                 return resful.OK()
         else:
             return resful.params_error(message='审核失败！')
@@ -262,7 +281,12 @@ def Review_Alter_manager(request):#变更审核用
 
 
 
-
+# * @函数名: Alter_detail
+# * @功能描述: 变更内容详情
+# * @作者: 郭军
+# * @时间: 2019-6-30 09:39:03
+# * @最后编辑时间: 2019-8-30 14:41:00
+# * @最后编辑者: 郭军
 @Alter_login_required
 def Alter_detail(request,id):#变更详情页面
         Alterdeatil =Alter_managment.objects.get(id=id)
@@ -270,21 +294,6 @@ def Alter_detail(request,id):#变更详情页面
 
             'Alterdeatil':Alterdeatil
         }
-
         return render(request,"Alter_management/Alter_detail.html",context=context)
 
-class Alter_add_view(View):#旧的变更提交页面
-    def get(self,request):
-        return render(request,"Alter_management/Alter_add.html")
 
-
-
-#导出数据
-@Alter_login_required
-def export(request):
-    alter_managment_resources = Alter_managment_resources()
-    queryset = Alter_managment.objects.filter(ReviewStatus='1')
-    dataset = alter_managment_resources.export(queryset)
-    response = HttpResponse(dataset.csv, content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="Alter.csv"'
-    return response
