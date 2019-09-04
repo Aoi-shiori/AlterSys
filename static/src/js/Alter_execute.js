@@ -574,21 +574,24 @@ Execute.prototype.listenExportbumitEvent=function(){
                 'success': function (result) {
                     // console.log(result);
                     //var res = JSON.stringify(result);
-                    console.log(result);
-                    // console.log(result['hospital'][0]['pk']);
-                    // console.log(result['hospital'][0]['hospitalname']);
+                   if (result['code']===200){
+                       console.log(result);
 
-                    for(var k in result['hospital']){
-                        //console.log(result[k]);
-                        $("#Hospitals_select").append("<option value='"+result['hospital'][k]['pk']+"'>"+result['hospital'][k]["hospitalname"]+"</option>");
+                        for(var k in result['hospital']){
+                            //console.log(result[k]);
+                            $("#Hospitals_select").append("<option value='"+result['hospital'][k]['pk']+"'>"+result['hospital'][k]["hospitalname"]+"</option>");
 
-                    }
+                        }
 
-                    for(var k in result['database']){
-                        //console.log(result[k]);
-                        $("#database_select").append("<option value='"+result['database'][k]['pk']+"'>"+result['database'][k]["dbname"]+"</option>");
+                        for(var k in result['database']){
+                            //console.log(result[k]);
+                            $("#database_select").append("<option value='"+result['database'][k]['pk']+"'>"+result['database'][k]["dbname"]+"</option>");
 
-                    }
+                        }
+                   }else {
+                       console.log('请求失败，没有获取到数据！')
+                   }
+
 
 
                 }
@@ -628,6 +631,9 @@ Execute.prototype.listenExportbumitEvent=function(){
                                <option value="0">全部</option>\
                           </select>',
                     focusConfirm: false,
+                    showCancelButton: true,
+                    cancelButtonText:'导出取消',
+                    confirmButtonText: '确认导出',
                     }).then(function(){
                         var hospital = $("#Hospitals_select option:selected").val();
                          var hospitaltext = $("#Hospitals_select option:selected").text();

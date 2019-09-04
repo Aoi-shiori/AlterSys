@@ -86,13 +86,12 @@ HospitalDict.prototype.listenAddAltTypeEvent=function () {
 //编辑医院分类
 HospitalDict.prototype.listenEDITAltTypeEvent=function () {
     var EdiBtn= $('.Edi_btn');
-    EdiBtn.click(function () {
+    EdiBtn.click(function (event) {
         event.preventDefault();//去除按钮本身的事件
         var current =$(this);
         var tr =current.parent().parent();
         var pk =tr.attr('id');
         var hospital=tr.attr('Hospitalname');
-        event.preventDefault();
             swal.fire({
               title: '修改分类名称',
               input: 'text',

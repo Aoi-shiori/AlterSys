@@ -709,7 +709,8 @@ def test_select(request):
     # 转换列表
     databasedict=list(databasedict)
 
-    datas={'database':databasedict,'hospital':hospitaldict}
+
+    datas={'code':200,'database':databasedict,'hospital':hospitaldict}
     # data = serializers.serialize("json",hospitalData)
     # return resful.ajax_ok(message="",data=list(datas))
 
