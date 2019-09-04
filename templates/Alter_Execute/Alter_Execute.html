@@ -102,69 +102,69 @@
 {#                    <button class="btn btn-success export—New pull-right">导出最新</button>#}
 {#                    <button class="btn  pull-right btn-info export-BTN"><a href="{% url 'Execute:export_Alter_Execute' %}"></a>全部导出</button>#}
 {#                    <button class="btn  pull-right btn-info export-BTN">全部导出</button>#}
-                    <button class="btn  pull-right btn-info" id="testOut">导出数据</button>
-                    <button class="btn  pull-right btn-info test-btn-2">全部导出</button>
+{#                    <button class="btn  pull-right btn-info" id="testOut">导出数据</button>#}
+                    <button class="btn  pull-right btn-info export-btn">导出变更SQL</button>
 
 
-                    <button class="btn btn-success pull-right test-btn" onclick="TEST()">导出变更数据</button>
-                    <script type="text/javascript" >
-                            function TEST() {
-                                var Database = 0;
-                                Swal.fire({
-                                        title: '请选择要导出数据库和执行医院',
-                                        html:'数据库<select name="Database" id="Database-test" class="form-control">\
-                                                    <option value="0">请选择数据库</option>\
-                                                {% for Database in Databases %}\
-                                                     <option value={{ Database.pk }}>{{ Database.dbname }}</option>\
-                                                {% endfor %}\
-                                              </select><br/>'+
-                                            '医院<select name="Hospitals" id="Hospital-test" class="form-control">\
-                                                    <option value="0">选择医院</option>\
-                                                {% for hospital in Hospital %}\
-                                                     <option value={{ hospital.pk }}>{{ hospital.hospitalname }}</option>\
-                                                {% endfor %}\
-                                              </select>',
-                                        showCancelButton:true,
-                                        focusConfirm: false,
-                                        preConfirm:function () {
-                                                    Hospitalid =document.getElementById('Hospital-test').value;
-                                                    Databaseid =document.getElementById('Database-test').value;
-
-                                                    //alert('选择的医院ID是'+Hospitalid);
-
-                                                    $.ajax({
-                                                            'url':'/execute/exportAltData/',
-                                                            //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
-                                                            'type':'POST',
-                                                            //'dataType':'json',
-                                                            'data': {
-                                                                'Database': Databaseid,
-                                                                'Hospital':Hospitalid,
-                                                            },
-                                                            'success': function (result) {
-                                                                if(result['code'] === 200){
-
-                                                                    var form = $('<form action="download/" method="post"></form>');
-                                                                    $('body').append(form);
-                                                                    form.submit(); //自动提交
-                                                                    window.messageBox.show("提交导出成功!");
-                                                                    //setTimeout("window.location.reload()","300");
-                                                                    // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {
-                                                                    //     window.location.reload();
-                                                                    // });
-                                                                }else {
-                                                                    //alert(JSON.stringify(result));
-                                                                    window.messageBox.show(result['message']);
-                                                                }
-                                                            }
-                                                        });
-
-                                        }
-                                        })
-
-                            }
-
-                    </script>
+{#                    <button class="btn btn-success pull-right test-btn" onclick="TEST()">导出变更数据</button>#}
+{#                    <script type="text/javascript" >#}
+{#                            function TEST() {#}
+{#                                var Database = 0;#}
+{#                                Swal.fire({#}
+{#                                        title: '请选择要导出数据库和执行医院',#}
+{#                                        html:'数据库<select name="Database" id="Database-test" class="form-control">\#}
+{#                                                    <option value="0">请选择数据库</option>\#}
+{#                                                {% for Database in Databases %}\#}
+{#                                                     <option value={{ Database.pk }}>{{ Database.dbname }}</option>\#}
+{#                                                {% endfor %}\#}
+{#                                              </select><br/>'+#}
+{#                                            '医院<select name="Hospitals" id="Hospital-test" class="form-control">\#}
+{#                                                    <option value="0">选择医院</option>\#}
+{#                                                {% for hospital in Hospital %}\#}
+{#                                                     <option value={{ hospital.pk }}>{{ hospital.hospitalname }}</option>\#}
+{#                                                {% endfor %}\#}
+{#                                              </select>',#}
+{#                                        showCancelButton:true,#}
+{#                                        focusConfirm: false,#}
+{#                                        preConfirm:function () {#}
+{#                                                    Hospitalid =document.getElementById('Hospital-test').value;#}
+{#                                                    Databaseid =document.getElementById('Database-test').value;#}
+{##}
+{#                                                    //alert('选择的医院ID是'+Hospitalid);#}
+{##}
+{#                                                    $.ajax({#}
+{#                                                            'url':'/execute/exportAltData/',#}
+{#                                                            //'headers':{"X-CSRFToken":$.cookie("csrftoken")},#}
+{#                                                            'type':'POST',#}
+{#                                                            //'dataType':'json',#}
+{#                                                            'data': {#}
+{#                                                                'Database': Databaseid,#}
+{#                                                                'Hospital':Hospitalid,#}
+{#                                                            },#}
+{#                                                            'success': function (result) {#}
+{#                                                                if(result['code'] === 200){#}
+{##}
+{#                                                                    var form = $('<form action="download/" method="post"></form>');#}
+{#                                                                    $('body').append(form);#}
+{#                                                                    form.submit(); //自动提交#}
+{#                                                                    window.messageBox.show("提交导出成功!");#}
+{#                                                                    //setTimeout("window.location.reload()","300");#}
+{#                                                                    // xfzalert.alertSuccess('恭喜！新闻发表成功!',function () {#}
+{#                                                                    //     window.location.reload();#}
+{#                                                                    // });#}
+{#                                                                }else {#}
+{#                                                                    //alert(JSON.stringify(result));#}
+{#                                                                    window.messageBox.show(result['message']);#}
+{#                                                                }#}
+{#                                                            }#}
+{#                                                        });#}
+{##}
+{#                                        }#}
+{#                                        })#}
+{##}
+{#                            }#}
+{##}
+{#                    </script>#}
 
                 </div>
                 <div class="box body">

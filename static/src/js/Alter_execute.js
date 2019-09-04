@@ -564,9 +564,8 @@ Execute.prototype.listenExportNewSbumitEvent=function(){
 
 //
 Execute.prototype.listenExportbumitEvent=function(){
-        var testbtn = $('.test-btn-2');
-        testbtn.click(function () {
-
+        var exportbtn = $('.export-btn');
+        exportbtn.click(function () {
                 $.ajax({
                 'url':'/execute/test_select/',
                 //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
@@ -576,12 +575,22 @@ Execute.prototype.listenExportbumitEvent=function(){
                     // console.log(result);
                     //var res = JSON.stringify(result);
                     console.log(result);
+                    // console.log(result['hospital'][0]['pk']);
+                    // console.log(result['hospital'][0]['hospitalname']);
 
-                    for(var k in result){
-                        console.log(result[k]);
-                        $("#Hospitals_select").append("<option value='"+result[k]["pk"]+"'>"+result[k]["Hospital"]+"</option>");
+                    for(var k in result['hospital']){
+                        //console.log(result[k]);
+                        $("#Hospitals_select").append("<option value='"+result['hospital'][k]['pk']+"'>"+result['hospital'][k]["hospitalname"]+"</option>");
 
                     }
+
+                    for(var k in result['database']){
+                        //console.log(result[k]);
+                        $("#database_select").append("<option value='"+result['database'][k]['pk']+"'>"+result['database'][k]["dbname"]+"</option>");
+
+                    }
+
+
                 }
             });
 
@@ -607,23 +616,60 @@ Execute.prototype.listenExportbumitEvent=function(){
 
 
                 Swal.fire({
-                    title: '请选择医院',
-                    type: "prompt",
+                    title: '请选择医院和数据库',
+                    //type: "prompt",
                     html:
                         // Hospitals+
-                        '<input id="swal-input1" class="swal2-input">' +
-                        '<input id="swal-input2" class="swal2-input">'+
-                         '<select name="Hospitals" id="Hospitals_select" class="form-control">\
+                        // '<input id="swal-input1" class="swal2-input">' +
+                        // '<input id="swal-input2" class="swal2-input">'+
+                         '执行医院 <select name="Hospitals" id="Hospitals_select" class="form-control">\
+                               <option value="0">全部</option>\
+                          </select><br/>'+ '导出数据库 <select name="database" id="database_select" class="form-control">\
                                <option value="0">全部</option>\
                           </select>',
                     focusConfirm: false,
                     }).then(function(){
-                        var v = $("#Hospitals_select option:selected").val();
+                        var hospital = $("#Hospitals_select option:selected").val();
+                         var hospitaltext = $("#Hospitals_select option:selected").text();
                         console.log($("#swal-input1").val());
-                        console.log(v);
+                        console.log(hospital);
+                        console.log(hospitaltext);
+
+                        var database = $("#database_select option:selected").val();
+                        var databasetext = $("#database_select option:selected").text();
+                        console.log($("#swal-input1").val());
+                        console.log(database);
+                        console.log(databasetext);
+
 
                             // alert(document.getElementById('swal-input1').value); // value of my-input1
                             // alert(document.getElementById('swal-input2').value); // value of my-select
+
+                        $.ajax( {
+                                'url':'/execute/exportAltData/',
+                                'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+                                'type':'POST',
+                                'data':{
+                                    'database':database,
+                                    'hospital':hospital
+                                },
+                                //'dataType':'json',
+                                'success': function (result) {
+                                    if(result['code'] === 200){
+                                        window.messageBox.show("提交导出成功");
+
+                                    }else {
+                                        //alert(JSON.stringify(result));
+                                        //window.messageBox.show(result['message']);
+                                        swal.fire(
+                                            result['message'],
+                                            '如无医院可选，请先维护字典！',
+                                            'warning'
+                                        )
+                                    }
+                                }
+                            });
+
                     })
         })
 };

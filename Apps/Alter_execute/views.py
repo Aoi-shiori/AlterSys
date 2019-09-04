@@ -96,7 +96,7 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
 
 
         if DatabaseType:  # 数据库类型判断
-            Alterd_datas = Alterd_datas.filter(Database=DatabaseType)
+            Alterd_datas = Alterd_datas.filter(database=DatabaseType)
 
 
 
@@ -160,7 +160,7 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
 
 
 # * @函数名: alter_execute_history_view
-# * @功能描述: 变更数据导出执行记录视图
+# * @功能描述: 变更数据导出执行历史记录视图
 # * @作者: 郭军
 # * @时间: 2019-8-30 15:28:19
 # * @最后编辑时间: 22019-8-30 15:28:27
@@ -529,12 +529,12 @@ def export_alt_data(request):
     print(request.COOKIES.values())
 
     #获取当前选中的数据库类型
-    # databaseId =request.POST.get('Database')
-    databaseId =1
+    databaseId =request.POST.get('database')
+    # databaseId =1
 
     #获取当前选择的医院ID
-    # hospitalId =request.POST.get('Hospital')
-    hospitalId =1
+    hospitalId =request.POST.get('hospital')
+    # hospitalId =1
 
     #调试用：打印获取到的数据
     print('获取到的数据库ID是:',databaseId)
@@ -542,12 +542,12 @@ def export_alt_data(request):
 
     if hospitalId != '0':
         # 过滤出可导出数据
-        exportData = Alter_managment_checked.objects.filter(ReviewStatus=1)
+        exportData = Alter_managment_checked.objects.filter(reviewstatus=1)
 
         # 过滤数据库类型
         if databaseId != '0':
             # 当选择的不是全部，根据数据库类型过滤出数据
-            exportData = exportData.filter(Database_id=databaseId)
+            exportData = exportData.filter(dbnumber_id=databaseId)
         else:
             exportData
 
@@ -565,7 +565,7 @@ def export_alt_data(request):
             print('转换字符串', exportNumbers)
 
             # 导出执行表中是否有历史导出记录
-            exportHistoryData = Alter_execute.objects.filter(UID=request.user.pk, Hospital_id=hospitalId)
+            exportHistoryData = Alter_execute.objects.filter(userid=request.user.pk, hospital_id=hospitalId)
 
             if exportHistoryData:
 
@@ -629,7 +629,7 @@ def export_alt_data(request):
             return resful.params_error(message='当前条件无可导出数据！')
 
     else:
-        return resful.params_error(message='未选择医院或未维护医院字典！')
+        return resful.params_error(message='请选择医院！')
 
 
 
@@ -700,11 +700,29 @@ def Export_file_Generate(export_datas):
 
 
 def test_select(request):
-    hospitalData=Alt_Hospital.objects.all()
-    datas = hospitalData.values("pk", "hospitalname")
+    #取到需要的元组
+    hospitaldict=Alt_Hospital.objects.all().values("pk", "hospitalname")
+    #转换列表
+    hospitaldict=list(hospitaldict)
+    # 取到需要的元组
+    databasedict = Alt_Database.objects.all().values("pk", "dbname")
+    # 转换列表
+    databasedict=list(databasedict)
+
+    datas={'database':databasedict,'hospital':hospitaldict}
     # data = serializers.serialize("json",hospitalData)
     # return resful.ajax_ok(message="",data=list(datas))
-    return  JsonResponse(list(datas),safe=False) #返回json数据对象，safe=false:允许将非字典转换json
+
+    # return  JsonResponse(list(datas),safe=False) #返回json数据对象，safe=false:允许将非字典转换json
+    return  JsonResponse(datas,safe=False) #返回json数据对象，safe=false:允许将非字典转换json
+    # return  JsonResponse({'status':200,'msg':'ok','data':list(hospitalData)})
+
+def test_selectdb(request):
+    datas=Alt_Database.objects.all()
+    datas = datas.values("pk", "dbname")
+    # data = serializers.serialize("json",hospitalData)
+    # return resful.ajax_ok(message="",data=list(datas))
+    return  JsonResponse(datas,safe=False) #返回json数据对象，safe=false:允许将非字典转换json
     # return  JsonResponse({'status':200,'msg':'ok','data':list(hospitalData)})
 
 

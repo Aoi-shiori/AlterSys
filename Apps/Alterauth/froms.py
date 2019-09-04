@@ -5,7 +5,7 @@ from .models import User
 #表单数据验证
 
 class loginform(forms.Form,FormMixin):
-    MobilePhone = forms.CharField(max_length=11)
+    MobilePhone = forms.CharField(max_length=11,min_length=11,error_messages={"max_length":"手机号码长度大于11位！","min_length":"密码最少不能少于11位！"})
     password = forms.CharField(max_length=16, min_length=6,error_messages={"max_length":"密码最多不能超过16个字符！","min_length":"密码最少不能少于6个字符！"})
     remember = forms.IntegerField(required=False)
 

@@ -40,13 +40,14 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
   <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'js/jquery.cookie.min.js' %}"></script>
   <script src="{% static 'js/Alteralert.min.js' %}"></script>
   <script src="{% static 'js/message.min.js' %}"></script>
   <script src="{% static 'js/Alterajax.min.js' %}"></script>
   <script src="{% static 'js/auth.min.js' %}"></script>
   <script src="{% static 'sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
   <script src="{% static 'sweetalert2/dist/sweetalert2.min.js' %}"></script>
-  <script src="{% static 'js/jquery.cookie.min.js' %}"></script>
+
   {% block head %} {% endblock %}
 
   <!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browse/dist/sweetalert2.min.jsr and Android browser support -->
@@ -61,7 +62,7 @@
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="{% url 'management:index_manage' %}" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>Alt</b>er</span>
       <!-- logo for regular state and mobile devices -->
@@ -239,6 +240,8 @@
 <script src="{% static 'AdminLTE/bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
+
+
   {#$.widget.bridge('uibutton', $.ui.button);#}
 </script>
 <!-- Bootstrap 3.3.7 -->
