@@ -56,6 +56,7 @@ Alter.prototype.run=function () {
         self.listenselectnow();
         self.listenReviewEvent();
         self.listenReviewSbumitEvent();
+        self.listenReviewtestEvent();
 
 };
 
@@ -121,6 +122,13 @@ Alter.prototype.listenshowhideEvent=
             $("#ID-AlterContent").val(AlterContent);
             $("#ID-Informant").val(Informant);
             $("#ID-FillTime").val(FillTime);
+
+            console.log("ID："+id);
+            console.log("提交时间："+FillTime);
+            console.log("提交人："+Informant);
+            console.log("关联编号："+AssociatedNumber);
+            console.log("变更内容："+AlterContent);
+
 
 
 
@@ -438,7 +446,7 @@ getchecked=function () {
 Alter.prototype.listenReviewEvent=function(){
     var self =this;
     var reviewBtn =$('.Review-btn');
-    reviewBtn.click(function () {
+    reviewBtn.click(function (event) {
          event.preventDefault();//去除按钮本身的事件
         var checkednow = getchecked();
         if(checkednow){
@@ -538,7 +546,71 @@ Alter.prototype.listenReviewSbumitEvent=function(){
 
 
 
+//新审核功能测试
+Alter.prototype.listenReviewtestEvent=function(){
+        var reviewbtn = $('.Review-test');
 
+        reviewbtn.click(function (event) {
+            event.preventDefault();
+            $.ajax({
+                'url':'/execute/export_alt_datas_view/',
+                //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+                'type':'GET',
+                'success': function (result) {
+                    // console.log(result);
+                    //var res = JSON.stringify(result);
+                   if (result['code']===200){
+                       console.log(result);
+
+                        for(var k in result['hospital']){
+                            //console.log(result[k]);
+                            $("#Hospitals_select").append("<option value='"+result['hospital'][k]['pk']+"'>"+result['hospital'][k]["hospitalname"]+"</option>");
+                        }
+
+                        for(var k in result['database']){
+                            //console.log(result[k]);
+                            $("#database_select").append("<option value='"+result['database'][k]['pk']+"'>"+result['database'][k]["dbname"]+"</option>");
+                        }
+                   }else {
+                       console.log('请求失败，没有获取到数据！')
+                   }
+
+
+
+                }
+            });
+
+            Swal.fire({
+                    title: '变更数据审核',
+                    //type: "prompt",
+                    html:
+                         //'<input id="swal-input1" class="swal2-input">' +
+                         //'<input id="swal-input2" class="swal2-input">'+
+                            '<div class="input-group" style="text-align: center;margin: auto;font-size: 14px">\
+                               <label  for="ReviewType">审核通过: </label>\
+                                  <input id="test111" type="radio" class="radio-btn" checked="" name="Reviewstatus" value="1">\
+                               <label style="margin-left: 15px" for="ReviewType">审核不通过: </label>\
+                                  <input id="test222" type="radio" class="radio-btn" name="Reviewstatus" value="2">\
+                            </div>'+
+                        '<textarea  style="height: 100px;" id="swal-input2" class="swal2-input"  rows="15" maxlength="1000" required="" placeholder="请输入审核内容"></textarea>'
+                    ,
+                    //focusConfirm: false,
+                    showCancelButton: true,
+                    cancelButtonText:'导出取消',
+                    confirmButtonText: '确认导出',
+                    }).then(function () {
+                        var v = $('input[name="Reviewstatus"]:checked').val();
+                          console.log('判断条件',v)
+
+                        if (v==1){
+                            console.log($('#test222').val())
+                        } else {
+                            console.log($('#test111').val())
+                        };
+            })
+        })
+
+};
 
 
 

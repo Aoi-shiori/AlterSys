@@ -101,8 +101,10 @@
 {#                        <a href="{% url 'Execute:export_Alter_Execute' %}">#}
 {#                                <button class="btn  pull-right export">导出测试</button></a>#}
                                 <button class="btn btn-info pull-right add-btn  Alt-BTN">添加</button>
+                                <button class="btn btn-success pull-right Review-test">审核测试</button>
                             {% if user.Permissions == True or user.is_superuser %}
                                 <button class="btn btn-success pull-right Review-btn  Alt-BTN">审核</button>
+
                             {% else %}
 
                             {% endif %}
@@ -135,7 +137,7 @@
 {#                            {% endfor %}#}
 
                                 {% for Alterd_data in Alterd_datas %}
-                                    <tr class="tr-line click"   id="{{ Alterd_data.id }}"  AlterType="{{ Alterd_data.AlterType }}" AssociatedNumber="{{ Alterd_data.AssociatedNumber }}" Database="{{ Alterd_data.Database.Database }}" AlterContent="{{ Alterd_data.AlterContent }}" Informant="{{ Alterd_data.Informant }}" >
+                                    <tr class="tr-line click"   id="{{ Alterd_data.id }}"  AlterType="{{ Alterd_data.altertypenumber }}" AssociatedNumber="{{ Alterd_data.associatednumber }}" Database="{{ Alterd_data.dbnumber.dbname }}" AlterContent="{{ Alterd_data.altercontent }}" Informant="{{ Alterd_data.informant }}" >
                                         <td><input name="se" type="checkbox" ></td>
                                         <td class ='序号'>{{ forloop.counter}}</td>
                                         <td class ='变更编号 AlterID-td'>{{ Alterd_data.id }}</td>

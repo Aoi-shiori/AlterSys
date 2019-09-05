@@ -709,7 +709,7 @@ def test_select(request):
     # 转换列表
     databasedict=list(databasedict)
 
-
+    #组合成新的字典
     datas={'code':200,'database':databasedict,'hospital':hospitaldict}
     # data = serializers.serialize("json",hospitalData)
     # return resful.ajax_ok(message="",data=list(datas))
@@ -718,12 +718,139 @@ def test_select(request):
     return  JsonResponse(datas,safe=False) #返回json数据对象，safe=false:允许将非字典转换json
     # return  JsonResponse({'status':200,'msg':'ok','data':list(hospitalData)})
 
-def test_selectdb(request):
-    datas=Alt_Database.objects.all()
-    datas = datas.values("pk", "dbname")
-    # data = serializers.serialize("json",hospitalData)
-    # return resful.ajax_ok(message="",data=list(datas))
-    return  JsonResponse(datas,safe=False) #返回json数据对象，safe=false:允许将非字典转换json
-    # return  JsonResponse({'status':200,'msg':'ok','data':list(hospitalData)})
+
+
+# * @函数名: export_alt_datas_view
+# * @功能描述: 1、get请求：返回医院字典、数据库字典的json数据 2、post请求：根据请求生成导出变更数据并生成。
+# * @作者: 郭军
+# * @时间: 2019-9-5 16:12:55
+# * @最后编辑时间: 2019-9-5 16:20:00
+# * @最后编辑者: 郭军
+# @csrf_exempt
+class export_alt_datas_view(View):
+    #get请求：返回医院字典、数据库字典的json数据
+    def get(self,request):
+        # 取到需要的元组
+        hospitaldict = Alt_Hospital.objects.all().values("pk", "hospitalname")
+        # 转换列表
+        hospitaldict = list(hospitaldict)
+        # 取到需要的元组
+        databasedict = Alt_Database.objects.all().values("pk", "dbname")
+        # 转换列表
+        databasedict = list(databasedict)
+
+        # 组合成新的字典
+        datas = {'code': 200, 'database': databasedict, 'hospital': hospitaldict}
+        # data = serializers.serialize("json",hospitalData)
+        # return resful.ajax_ok(message="",data=list(datas))
+
+        # return  JsonResponse(list(datas),safe=False) #返回json数据对象，safe=false:允许将非字典转换json
+        return JsonResponse(datas, safe=False)  # 返回json数据对象，safe=false:允许将非字典转换json
+        # return  JsonResponse({'status':200,'msg':'ok','data':list(hospitalData)})
+
+    #根据请求生成导出变更数据并生成
+    def post(self,request):
+        print(request.COOKIES.values())
+
+        # 获取当前选中的数据库类型
+        databaseId = request.POST.get('database')
+        # databaseId =1
+
+        # 获取当前选择的医院ID
+        hospitalId = request.POST.get('hospital')
+        # hospitalId =1
+
+        # 调试用：打印获取到的数据
+        print('获取到的数据库ID是:', databaseId)
+        print('获取到的医院ID是:', hospitalId)
+
+        if hospitalId != '0':
+            # 过滤出可导出数据
+            exportData = Alter_managment_checked.objects.filter(reviewstatus=1)
+
+            # 过滤数据库类型
+            if databaseId != '0':
+                # 当选择的不是全部，根据数据库类型过滤出数据
+                exportData = exportData.filter(dbnumber_id=databaseId)
+            else:
+                exportData
+
+            # 判断是否有可导出数据
+            if exportData:
+
+                # 获取可导出数据中，ID最大的值
+                export_max_alter_id = max(exportData.values_list('id', flat=True))
+
+                # 获取当前导出数据的ID列表
+                exportNumbers = list(exportData.values_list('id', flat=True))
+
+                # 将列表转换成字符串，用于存储数据库
+                exportNumbers = ','.join([str(id) for id in exportNumbers])
+                print('转换字符串', exportNumbers)
+
+                # 导出执行表中是否有历史导出记录
+                exportHistoryData = Alter_execute.objects.filter(userid=request.user.pk, hospital_id=hospitalId)
+
+                if exportHistoryData:
+
+                    # 获取用户已导出的数据
+                    Export_old_Nums = exportHistoryData.values_list('exportlist', flat=True)[0]
+
+                    # 获取已经导出的最大ID
+                    old_alter_id = list(exportHistoryData.values_list('alterid'))[0][0]
+
+                    # 字符串转换成数值列表
+                    Export_old_Nums = [int(id) for id in (Export_old_Nums.split(','))]
+
+                    # 过滤出还未导出的数据
+                    # exportData = exportData.exclude(pk__in=Export_old_Nums)
+
+                    if exportData:
+                        # 调用导出文件生成函数
+                        File_Generate = Export_file_Generate(exportData)
+                    else:
+                        return resful.params_error(message='您已经导出过数据至最新！')
+
+                    if File_Generate:
+
+                        # 判断当前导出的最大ID否比原来的小
+                        if export_max_alter_id < int(old_alter_id):
+
+                            exportHistoryData.update(Executor=request.user.Name,
+                                                     ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                                     ExecutionResult='本次执行到变更ID：' + str(export_max_alter_id),
+                                                     UID=request.user.id)
+
+                        else:
+
+                            exportHistoryData.update(AlterID=export_max_alter_id, Executor=request.user.Name,
+                                                     ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                                     ExecutionResult='本次执行到变更ID：' + str(export_max_alter_id),
+                                                     UID=request.user.id,
+                                                     Exports=exportNumbers)
+                        return resful.OK()
+                    else:
+                        return resful.params_error(message='导出文件生成失败！')
+                else:
+
+                    File_Generate = Export_file_Generate(exportData)
+
+                    if File_Generate:
+                        # 创建新的导出执行记录
+                        Alter_execute.objects.create(AlterID=export_max_alter_id, Hospital_id=int(hospitalId),
+                                                     Executor=request.user.Name,
+                                                     ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                                     ExecutionResult='首次执行到变更ID：' + str(export_max_alter_id),
+                                                     UID=request.user.id,
+                                                     Exports=exportNumbers)
+                        return resful.OK()
+                    else:
+                        return resful.params_error(message='导出文件生成失败！')
+
+            else:
+                return resful.params_error(message='当前条件无可导出数据！')
+
+        else:
+            return resful.params_error(message='请选择医院！')
 
 

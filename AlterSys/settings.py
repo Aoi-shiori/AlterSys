@@ -88,10 +88,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alter_db',
         # #家里的数据库配置
-        'USER': 'root',
-        'PASSWORD': 'Conlin2019',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        # 'USER': 'root',
+        # 'PASSWORD': 'Conlin2019',
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '3306',
 
     #     #公司的数据库配置
     #     'USER': 'root',
@@ -99,10 +99,10 @@ DATABASES = {
     #     'HOST': '127.0.0.1',
     #     'PORT': '33066',
     #     #公司电脑本机数据库配置
-    #     'USER': 'root',
-    #     'PASSWORD': 'Conlin',
-    #     'HOST': '127.0.0.1',
-    #     'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': 'Conlin',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
       }
 }
 
