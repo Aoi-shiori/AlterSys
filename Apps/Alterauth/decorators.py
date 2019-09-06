@@ -16,7 +16,7 @@ def Alter_superuser_required(viewfunc):
 def Alter_login_required(func):
     def wapper(request,*args,**kwargs):
             #如果用户是经过授权的
-        if request.user.is_authenticated and request.user.iscancellation==False:
+        if request.user.is_authenticated and request.user.is_cancellation==False:
             return func(request,*args,**kwargs)
         else:
             if request.is_ajax():

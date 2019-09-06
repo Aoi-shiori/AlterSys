@@ -102,6 +102,7 @@
 {#                                <th>记录编号</th>#}
                                 <th>执行至变更编号</th>
                                 <th>执行医院</th>
+                                <th>执行数据库</th>
                                 <th>执行人</th>
                                 <th>执行时间</th>
                                 <th>执行结果备注</th>
@@ -109,14 +110,15 @@
                         </thead>
                         <tbody class="list">
                                 {% for Alterd_data in Alterd_datas %}
-                                    <tr class="tr-line click" id="{{ Alterd_data.id }}"  AlterID="{{ Alterd_data.AlterID }}"  Hospital="{{ Alterd_data.Hospital }}" ExecutionResult="{{ Alterd_data.ExecutionResult }}" Executor="{{ Alterd_data.Executor }}" ExecutionTime="{{ Alterd_data.ExecutionTime }}" >
+                                    <tr class="tr-line click" id="{{ Alterd_data.id }}"  AlterID="{{ Alterd_data.alterid }}"  Hospital="{{ Alterd_data.hospitalid }}" ExecutionResult="{{ Alterd_data.executionresult }}" Executor="{{ Alterd_data.executor }}" ExecutionTime="{{ Alterd_data.executiontime }}" >
                                         <td class ='序号'>{{ forloop.counter}}</td>
 {#                                        <td class ='执行记录id '>{{ Alterd_data.id }}</td>#}
-                                        <td class ='执行至ID '>{{Alterd_data.AlterID}}</td>
-                                        <td class ='执行医院'>{{ Alterd_data.Hospital.Hospital}}</td>
-                                        <td class ='执行人'>{{ Alterd_data.Executor}}</td>
-                                        <td class ='执行时间'>{{ Alterd_data.ExecutionTime|date:"Y-m-d H:i:s" }}</td>
-                                        <td class ='执行结果备注' title="{{ Alterd_data.ExecutionResult|default:'' }}">{{ Alterd_data.ExecutionResult|default:''|truncatechars:15}}</td>
+                                        <td class ='执行至ID'>{{Alterd_data.alterid}}</td>
+                                        <td class ='执行医院'>{{ Alterd_data.hospitalid}}</td>
+                                        <td class ='执行数据库'>{{ Alterd_data.databaseid}}</td>
+                                        <td class ='执行人'>{{ Alterd_data.executor}}</td>
+                                        <td class ='执行时间'>{{ Alterd_data.executiontime|date:"Y-m-d H:i:s" }}</td>
+                                        <td class ='执行结果备注' title="{{ Alterd_data.executionresult|default:'' }}">{{ Alterd_data.executionresult|default:''|truncatechars:15}}</td>
                                     </tr>
                                 {% endfor %}
                         </tbody>

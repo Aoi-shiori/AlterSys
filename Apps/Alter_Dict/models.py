@@ -4,7 +4,7 @@ from django.db import models
 #数据库类型字典
 class Alt_Database(models.Model):
         dbname=models.CharField(max_length=50)#数据库名称
-        counts = models.CharField(max_length=50,null=True) #使用该分类的数据量
+        #classifycount = models.CharField(max_length=50,null=True) #使用该分类的数据量
         modifier =models.CharField(max_length=50) #修改人
         modifytime= models.DateTimeField(auto_now=True) #修改时间
         begintime= models.DateTimeField(auto_now_add=True) #创建时间
@@ -15,7 +15,7 @@ class Alt_Database(models.Model):
 #变更类型字典
 class Alt_Type(models.Model):
         altertypename=models.CharField(max_length=50)
-        counts = models.CharField(max_length=50, null=True) #使用该分类的数据量
+        #classifycount = models.CharField(max_length=50, null=True) #使用该分类的数据量
         modifier =models.CharField(max_length=50) #修改人
         modifytime= models.DateTimeField(auto_now=True) #修改时间
         begintime= models.DateTimeField(auto_now_add=True) #创建时间
@@ -27,10 +27,11 @@ class Alt_Type(models.Model):
 #医院字典
 class Alt_Hospital(models.Model):
         hospitalname=models.CharField(max_length=50)
+        #classifycount = models.CharField(max_length=50, null=True)  # 使用该分类的数据量
         modifier =models.CharField(max_length=50) #修改人
         modifytime= models.DateTimeField(auto_now=True) #修改时间
         begintime= models.DateTimeField(auto_now_add=True) #创建时间
-        counts = models.CharField(max_length=50, null=True)#使用该分类的数据量
+
         # def __unicode__(self):
         #         return self.Hospital
         class Meta:

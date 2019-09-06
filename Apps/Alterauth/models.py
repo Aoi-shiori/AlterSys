@@ -4,26 +4,26 @@ from shortuuidfield import ShortUUIDField
 from django.db import models
 
 class UserManager(BaseUserManager):
-    def _create_user(self, mobilephone, jobnumber, password, **kwargs):
+    def _create_user(self, mobilephone, worknumber, password, **kwargs):
         if not mobilephone:
             raise ValueError("请传入手机号码！")
-        if not jobnumber:
+        if not worknumber:
             raise ValueError('请传入用户名！')
         if not password:
             raise ValueError('请传入密码')
-        user = self.model(mobilephone=mobilephone, jobnumber=jobnumber,**kwargs)
+        user = self.model(mobilephone=mobilephone, worknumber=worknumber, **kwargs)
         user.set_password(password)
         user.save()
         return user
 
-    def create_user(self, mobilephone, jobnumber, password, **kwargs):
+    def create_user(self, mobilephone, worknumber, password, **kwargs):
         kwargs['is_superuser'] = False
-        return self._create_user(mobilephone, jobnumber, password, **kwargs)
+        return self._create_user(mobilephone, worknumber, password, **kwargs)
 
-    def create_superuser(self, mobilephone, jobnumber, password, **kwargs):
+    def create_superuser(self, mobilephone, worknumber, password, **kwargs):
         kwargs['is_superuser'] = True
-        kwargs['permissions'] = True
-        return self._create_user(mobilephone, jobnumber, password, **kwargs)
+        kwargs['userpermissions'] = '1'
+        return self._create_user(mobilephone, worknumber, password, **kwargs)
 
 
 
@@ -34,27 +34,27 @@ class User(AbstractBaseUser,PermissionsMixin):
         #因此我们是用UUID/shortuuid
         #所以需要一个第三方包，pip install django-shortuuidfield
         id = ShortUUIDField(primary_key=True) #用户唯一ID#
-        # Email = models.EmailField(unique=True) #唯一的unique true#
         # password = models.CharField(max_length=200)#密码#
         mobilephone = models.CharField(max_length=11, unique=True)#手机号码#
-        jobnumber = models.CharField(max_length=100)#工号/用户名
+        email = models.EmailField(unique=True,null=True) #唯一的unique true#
+        worknumber = models.CharField(max_length=100)#工号/用户名
         username = models.CharField(max_length=50)#姓名#
         department = models.CharField(max_length=100)#所在部门#
-        permissions = models.BooleanField(default=False)#用户权限0，管理员、1审核者，2提交者，3执行者#
+        userpermissions = models.CharField(max_length=4)#用户权限0，管理员、1审核者，2提交者，3执行者#
         registrationtime = models.DateTimeField(auto_now_add=True)#注册时间#
-        iscancellation = models.BooleanField(default=False)#注销状态#
+        is_cancellation = models.BooleanField(default=False)#注销状态#
         USERNAME_FIELD = 'mobilephone'
         #telphone,username,password
-        REQUIRED_FIELDS = ['jobnumber']
-        # EMAIL_FIELD = 'Email'
+        REQUIRED_FIELDS = ['worknumber']
+        EMAIL_FIELD = 'email'
 
 
         object = UserManager()
         def get_full_name(self):
-            return self.jobnumber
+            return self.worknumber
 
         def get_short_name(self):
-            return self.jobnumber
+            return self.worknumber
 
         class Meta:
             db_table = 'alt_user'

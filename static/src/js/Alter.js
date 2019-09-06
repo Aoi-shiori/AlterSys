@@ -552,10 +552,22 @@ Alter.prototype.listenReviewtestEvent=function(){
 
         reviewbtn.click(function (event) {
             event.preventDefault();
+            var checkednow = getchecked();
+            if (checkednow){
+                 var val = checkednow.parentElement.parentElement.getAttribute("alterid");
+            }
+            else{
+                console.log('没有选中')
+            };
+            console.log('选中的id',val);
+
             $.ajax({
-                'url':'/execute/export_alt_datas_view/',
+                'url':'/alter/test_review/',
                 //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
                 'type':'GET',
+                'data':{
+                    'id':val
+                },
                 'success': function (result) {
                     // console.log(result);
                     //var res = JSON.stringify(result);
@@ -592,21 +604,28 @@ Alter.prototype.listenReviewtestEvent=function(){
                                <label style="margin-left: 15px" for="ReviewType">审核不通过: </label>\
                                   <input id="test222" type="radio" class="radio-btn" name="Reviewstatus" value="2">\
                             </div>'+
-                        '<textarea  style="height: 100px;" id="swal-input2" class="swal2-input"  rows="15" maxlength="1000" required="" placeholder="请输入审核内容"></textarea>'
+                        '<textarea  style="height: 100px;" id="altcontect-input" class="swal2-input"  rows="15" maxlength="1000" required="" placeholder="请输入审核内容"></textarea>'
                     ,
                     //focusConfirm: false,
                     showCancelButton: true,
                     cancelButtonText:'导出取消',
                     confirmButtonText: '确认导出',
-                    }).then(function () {
+                    }).then(function (result) {
+                        if (result.dismiss === Swal.DismissReason.cancel ||result.dismiss === Swal.DismissReason.backdrop ){
+                            console.log('用户取消！')
+                            return;
+                        }
                         var v = $('input[name="Reviewstatus"]:checked').val();
-                          console.log('判断条件',v)
+                        console.log('判断条件',v)
+                        console.log('输入内容',$('#altcontect-input').val())
 
-                        if (v==1){
-                            console.log($('#test222').val())
-                        } else {
-                            console.log($('#test111').val())
-                        };
+                        // if (v==1){
+                        //
+                        //
+                        //     console.log($('#test222').val())
+                        // } else {
+                        //     console.log($('#test111').val())
+                        // };
             })
         })
 

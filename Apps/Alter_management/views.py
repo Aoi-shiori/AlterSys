@@ -22,7 +22,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.views.decorators import staff_member_required
 
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from .admin import Alter_managment_resources
 from Apps.Alterauth.decorators import Alter_login_required
 #导入数据库字典和变更类型字典
@@ -83,17 +83,17 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
             else:
                 end_time=datetime.today()
 
-            Alterd_datas=Alterd_datas.filter(FillTime__range=(make_aware(start_time), make_aware(end_time)))
+            Alterd_datas=Alterd_datas.filter(modifytime__range=(make_aware(start_time), make_aware(end_time)))
 
         if cxtj:#查询条件判断
             #多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
-            Alterd_datas=Alterd_datas.filter(Q(Database_id=cxtj)|Q(id=cxtj)|Q(AlterContent__icontains=cxtj)|Q(AltType_id=cxtj)|Q(Informant__icontains=cxtj)|Q(AssociatedNumber__icontains=cxtj))
+            Alterd_datas=Alterd_datas.filter(Q(databaseid=cxtj)|Q(id=cxtj)|Q(altercontent__icontains=cxtj)|Q(altertypeid=cxtj)|Q(modifier__icontains=cxtj)|Q(associatedid__icontains=cxtj))
 
         if DatabaseType:#数据库类型判断
-            Alterd_datas=Alterd_datas.filter(Database=DatabaseType)
+            Alterd_datas=Alterd_datas.filter(databaseid=DatabaseType)
 
         if reviewStatus:#审核状态判断
-            Alterd_datas =Alterd_datas.filter(ReviewStatus=reviewStatus)
+            Alterd_datas =Alterd_datas.filter(reviewstatus=reviewStatus)
 
         paginator = Paginator(Alterd_datas, 2)  # 分页用，表示每2条数据分一页
         if paginator.num_pages < page:
@@ -178,8 +178,8 @@ def edit_Alter_manager(request):#变更内容编辑用
         AssociatedNumber =form.cleaned_data.get("AssociatedNumber")  # '关联编号'#
         Database = form.cleaned_data.get("Database")  # '数据库'#
         AlterContent =form.cleaned_data.get("AlterContent")  # 变更内容
-        Alter_managment.objects.filter(id=id).update(AltType=AltType, AssociatedNumber=AssociatedNumber, Database=Database, AlterContent=AlterContent, Informant=request.user.Name
-,FillTime=datetime.now(),ReviewStatus='0')
+        Alter_managment.objects.filter(id=id).update(altertypeid=AltType, associatedid=AssociatedNumber, databaseid=Database, altercontent=AlterContent, modifier=request.user.username
+,modifytime=datetime.now(),reviewstatus='0')
         return resful.OK()
     else:
         return resful.params_error(message=form.get_error())
@@ -232,8 +232,8 @@ class add_Alter_managerView(View):
             #判断变更内容在库中是否存在
             exists=Alter_managment.objects.filter(altercontent=AlterContent).exists()
             if not exists:
-                Alter_managment.objects.create(altertypenumber_id=AltTypes.pk, associatednumber=AssociatedNumber, dbnumber_id=Database.pk,altercontent=AlterContent,
-                                               informant=request.user.username)
+                Alter_managment.objects.create(altertypeid=AltTypes.pk, associatedid=AssociatedNumber, databaseid=Database.pk,altercontent=AlterContent,
+                                               modifier=request.user.username)
                 return resful.OK()
             else:
 
@@ -257,21 +257,33 @@ def Review_Alter_manager(request):#变更审核用
         id = form.cleaned_data.get('id')
         ReviewStatus = form.cleaned_data.get('ReviewStatus')  # '审核状态',
         ReviewContent = form.cleaned_data.get('ReviewContent')  # '审核内容',
-        Review=Alter_managment.objects.filter(id=id).update(reviewstatus=ReviewStatus, reviewcontent=ReviewContent, reviewer=request.user.username,audittime=datetime.now())
-        if Review:
-            alter_data = Alter_managment.objects.get(id=id)
-            alter_data_checked=Alter_managment_checked.objects.filter(alterid_id=id)
 
-            if alter_data_checked:
-                alter_data_checked.objects.update(alterid_id=alter_data.pk,associatednumber=alter_data.associatednumber,
-                                                       altercontent=alter_data.altercontent, informant=alter_data.informant,
-                                                       filltime=alter_data.filltime, reviewer=alter_data.reviewer,
-                                                       reviewstatus=alter_data.reviewstatus, reviewcontent=alter_data.reviewcontent,
-                                                       audittime=alter_data.audittime, alttype_id=alter_data.AltType_id,
-                                                       Database_id=alter_data.Database_id)
-                return resful.OK()
+        #更新主表审核状态
+        Review=Alter_managment.objects.filter(id=id).update(reviewstatus=ReviewStatus, reviewcontent=ReviewContent, reviewer=request.user.username,reviewtime=datetime.now())
+
+        #判断主表是否审核成功
+        if Review:
+
+            #取得主表数据
+            alter_data = Alter_managment.objects.get(id=id)
+
+            #获取分表数据
+            alter_data_checked=Alter_managment_checked.objects.filter(alterid=id)
+
+            #判断分表是否有满足条件的数据并且审核状态是未审核
+            if alter_data_checked and ReviewStatus=='2':
+
+                #删除分表的数据
+                successdelete=alter_data_checked.delete()
+
+                if successdelete:
+                    return resful.OK()
+                else:
+                    return resful.params_error(message='分数据删除失败')
+
             else:
-                Alter_managment_checked.objects.create(alterid_id=alter_data.pk,associatednumber=alter_data.associatednumber,altercontent=alter_data.altercontent,informant=alter_data.informant,filltime=alter_data.filltime,reviewer=alter_data.reviewer,reviewstatus=alter_data.reviewstatus,reviewcontent=alter_data.reviewcontent,audittime=alter_data.audittime,alttype_id=alter_data.alttype_id,Database_id=alter_data.Database_id)
+                #如果审核通过则复制创建主表数据到分表
+                Alter_managment_checked.objects.create(alterid=alter_data.pk,associatedid=alter_data.associatedid,altercontent=alter_data.altercontent,modifier=alter_data.modifier,modifytime=alter_data.modifytime,reviewer=alter_data.reviewer,reviewstatus=alter_data.reviewstatus,reviewcontent=alter_data.reviewcontent,reviewtime=alter_data.reviewtime,altertypeid=alter_data.altertypeid,databaseid=alter_data.databaseid)
                 return resful.OK()
         else:
             return resful.params_error(message='审核失败！')
@@ -290,10 +302,20 @@ def Review_Alter_manager(request):#变更审核用
 @Alter_login_required
 def Alter_detail(request,id):#变更详情页面
         Alterdeatil =Alter_managment.objects.get(id=id)
-        context={
+        if Alterdeatil:
+            context = {
 
-            'Alterdeatil':Alterdeatil
-        }
-        return render(request,"Alter_management/Alter_detail.html",context=context)
+                'Alterdeatil': Alterdeatil
+            }
+            return render(request,"Alter_management/Alter_detail.html",context=context)
+        else:
+            return resful.params_error(message='没有找到详情数据')
 
 
+def test_review(request):
+    ids =request.GET.get('id')
+    print('获取到的id是：',ids)
+    id =1;
+    datas=Alter_managment.objects.values('pk','reviewstatus','altercontent').filter(pk=id)
+    datas =list(datas)
+    return JsonResponse(datas,safe=False)

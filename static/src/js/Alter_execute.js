@@ -668,6 +668,20 @@ Execute.prototype.listenExportbumitEvent=function(){
                                 //'dataType':'json',
                                 'success': function (result) {
                                     if(result['code'] === 200 ) {
+
+                                        var form = $('<form action="download/" method="post">' +
+                                            '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
+                                            '</form>');
+                                        $('body').append(form);
+                                        // $("#downForm").append('{% csrf_token %}');
+                                        // $("#downForm").append("<input type='hidden' id='infos' name='csrfmiddlewaretoken' value='' />");
+                                        console.log($.cookie("csrftoken"));
+                                        $("#infos").val($.cookie("csrftoken"));
+
+                                        // return;
+                                        // $("#downForm").submit();
+
+                                        form.submit(); //自动提交
                                         console.log('导出请求提交成功')
                                         window.messageBox.show("提交导出成功");
 

@@ -40,9 +40,8 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                              <th>序号</th>
-                              <th>数据库类型</th>
-                                <th>分类数量</th>
+                                <th>序号</th>
+                                <th>数据库类型</th>
                                 <th>修改人</th>
                                 <th>修改時間</th>
                                 <th>創建時間</th>
@@ -52,9 +51,8 @@
                         <tbody>
                         {% for Database in Databases    %}
                             <tr id ={{ Database.id }}  DBname="{{ Database.dbname }}" >
-                              <td>{{ forloop.counter }}</td>
-                              <td>{{ Database.dbname }}</td>
-                                <td>{{ Database.counts }}</td>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ Database.dbname }}</td>
                                 <td>{{ Database.modifier }}</td>
                                 <td>{{ Database.modifytime |date:"Y-m-d H:i:s"}}</td>
                                 <td>{{ Database.begintime  |date:"Y-m-d H:i:s"}}</td>

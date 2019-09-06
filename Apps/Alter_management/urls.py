@@ -13,5 +13,6 @@ urlpatterns = [
     path('delete_Alter_manager/',views.delete_Alter_manager,name='delete_Alter_manager'),
     path('Alter_deatil/<id>',views.Alter_detail,name='Alter_deatil'),
     path('Review_Alter_manager/',views.Review_Alter_manager,name="Review_Alter_manager"),
+    path('test_review/',views.test_review,name="test_review"),
 
 ]

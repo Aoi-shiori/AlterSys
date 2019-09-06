@@ -88,15 +88,15 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
             else:
                 end_time = datetime.today()
 
-            Alterd_datas = Alterd_datas.filter(AuditTime__range=(make_aware(start_time), make_aware(end_time)))
+            Alterd_datas = Alterd_datas.filter(modifytime__range=(make_aware(start_time), make_aware(end_time)))
 
         if cxtj:  # 查询条件判断
             # 多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
-            Alterd_datas = Alterd_datas.filter(Q(AlterID_id=cxtj)|Q(AlterContent__icontains=cxtj)|Q(Informant__icontains=cxtj)|Q(AssociatedNumber__icontains=cxtj))
+            Alterd_datas = Alterd_datas.filter(Q(alterid=cxtj)|Q(altercontent__icontains=cxtj)|Q(modifier__icontains=cxtj)|Q(associatednumber__icontains=cxtj))
 
 
         if DatabaseType:  # 数据库类型判断
-            Alterd_datas = Alterd_datas.filter(database=DatabaseType)
+            Alterd_datas = Alterd_datas.filter(databaseid=DatabaseType)
 
 
 
@@ -359,14 +359,14 @@ def export(request):
 
             #判断还是有点问题 需要修改一下
             if nowMax < int(OldID):
-                exits.update(AlterID=OldID,Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
+                exits.update(AlterID=OldID,Executor=request.user.username,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
 
             else:
-                exits.update(AlterID=nowMax,Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
+                exits.update(AlterID=nowMax,Executor=request.user.username,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
 
         else:
             #不存在-插入数据
-            Alter_execute.objects.create(AlterID=nowMax,Hospital=Hospital,Executor=request.user.Name,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='首次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
+            Alter_execute.objects.create(AlterID=nowMax,Hospital=Hospital,Executor=request.user.username,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='首次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
 
         return resful.OK()
     else:
@@ -492,19 +492,19 @@ def export_New(request):
 
                 # 判断还是有点问题 需要修改一下
                 if Now_MaxNum < int(Old_AlterID):
-                    exits.update(AlterID=Old_AlterID, Hospital_id=Hospital, Executor=request.user.Name,
+                    exits.update(AlterID=Old_AlterID, Hospital_id=Hospital, Executor=request.user.username,
                                  ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                                  ExecutionResult='本次执行到变更ID：' + str(Now_MaxNum), UID=request.user.id)
 
                 else:
-                    exits.update(AlterID=Now_MaxNum, Hospital_id=Hospital, Executor=request.user.Name,
+                    exits.update(AlterID=Now_MaxNum, Hospital_id=Hospital, Executor=request.user.username,
                                  ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                                  ExecutionResult='本次执行到变更ID：' + str(Now_MaxNum), UID=request.user.id,
                                  Exports=Exports_Nums)
 
             else:
                 # 不存在-插入数据
-                Alter_execute.objects.create(AlterID=Now_MaxNum, Hospital_id=Hospital, Executor=request.user.Name,
+                Alter_execute.objects.create(AlterID=Now_MaxNum, Hospital_id=Hospital, Executor=request.user.username,
                                              ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                                              ExecutionResult='首次执行到变更ID：' + str(Now_MaxNum), UID=request.user.id,
                                              Exports=Exports_Nums)
@@ -594,14 +594,14 @@ def export_alt_data(request):
                     # 判断当前导出的最大ID否比原来的小
                     if export_max_alter_id < int(old_alter_id):
 
-                        exportHistoryData.update(Executor=request.user.Name,
+                        exportHistoryData.update(Executor=request.user.username,
                                                  ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                                                  ExecutionResult='本次执行到变更ID：' + str(export_max_alter_id),
                                                  UID=request.user.id)
 
                     else:
 
-                        exportHistoryData.update(AlterID=export_max_alter_id, Executor=request.user.Name,
+                        exportHistoryData.update(AlterID=export_max_alter_id, Executor=request.user.username,
                                                  ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                                                  ExecutionResult='本次执行到变更ID：' + str(export_max_alter_id),
                                                  UID=request.user.id,
@@ -616,7 +616,7 @@ def export_alt_data(request):
                 if File_Generate:
                     # 创建新的导出执行记录
                     Alter_execute.objects.create(AlterID=export_max_alter_id, Hospital_id=int(hospitalId),
-                                                 Executor=request.user.Name,
+                                                 Executor=request.user.username,
                                                  ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                                                  ExecutionResult='首次执行到变更ID：' + str(export_max_alter_id),
                                                  UID=request.user.id,
@@ -677,18 +677,18 @@ def Export_file_Generate(export_datas):
             for export_data in export_datas:
                 # 写头部说明信息
                 f.write('-- ----------------------------\n')
-                f.write('-- ID:' + str(export_data.pk) + '\n-- 变更库:' + export_data.Database.Database + '\n')
-                f.write('--审核时间：' + str(export_data.AuditTime.strftime("%Y-%m-%d %H:%M:%S")) + '\n')
+                f.write('-- 变更ID:' + str(export_data.alterid) + '\n-- 变更库:' + str(export_data.databaseid) + '\n')
+                f.write('--审核时间：' + str(export_data.reviewtime.strftime("%Y-%m-%d %H:%M:%S")) + '\n')
                 f.write('-- ----------------------------\n')
                 ##判断是否以;结尾
-                if export_data.AlterContent.endswith(';'):
+                if export_data.altercontent.endswith(';'):
 
                     # ，如果是以';'结尾,则进行换行操作
-                    f.write(export_data.AlterContent.replace(';', ';\n'))
+                    f.write(export_data.altercontent.replace(';', ';\n'))
 
                 else:
                     # 如果不是';'结尾,添加';'结尾，并换行
-                    f.write(export_data.AlterContent + ';' + '\n')
+                    f.write(export_data.altercontent + ';' + '\n')
 
                 # 每个变更之间进行换行
                 f.write('\n')
@@ -764,16 +764,16 @@ class export_alt_datas_view(View):
         print('获取到的数据库ID是:', databaseId)
         print('获取到的医院ID是:', hospitalId)
 
-        if hospitalId != '0':
+        if hospitalId != '0'and databaseId != '0':
             # 过滤出可导出数据
-            exportData = Alter_managment_checked.objects.filter(reviewstatus=1)
+            exportData = Alter_managment_checked.objects.filter(reviewstatus=1,databaseid=databaseId)
 
-            # 过滤数据库类型
-            if databaseId != '0':
-                # 当选择的不是全部，根据数据库类型过滤出数据
-                exportData = exportData.filter(dbnumber_id=databaseId)
-            else:
-                exportData
+            # # 过滤数据库类型
+            # if databaseId != '0':
+            #     # 当选择的不是全部，根据数据库类型过滤出数据
+            #     exportData = exportData.filter(databaseid=databaseId)
+            # else:
+            #     exportData
 
             # 判断是否有可导出数据
             if exportData:
@@ -789,21 +789,24 @@ class export_alt_datas_view(View):
                 print('转换字符串', exportNumbers)
 
                 # 导出执行表中是否有历史导出记录
-                exportHistoryData = Alter_execute.objects.filter(userid=request.user.pk, hospital_id=hospitalId)
+                exportHistoryData = Alter_execute.objects.filter(userid=request.user.pk, hospitalid=int(hospitalId),databaseid=databaseId)
 
                 if exportHistoryData:
 
-                    # 获取用户已导出的数据
-                    Export_old_Nums = exportHistoryData.values_list('exportlist', flat=True)[0]
+                    # # 获取用户已导出的数据
+                    # Export_old_Nums = exportHistoryData.values_list('exportlist', flat=True)[0]
 
                     # 获取已经导出的最大ID
                     old_alter_id = list(exportHistoryData.values_list('alterid'))[0][0]
 
-                    # 字符串转换成数值列表
-                    Export_old_Nums = [int(id) for id in (Export_old_Nums.split(','))]
+                    # # 字符串转换成数值列表
+                    # Export_old_Nums = [int(id) for id in (Export_old_Nums.split(','))]
 
-                    # 过滤出还未导出的数据
+                    # # 过滤出还未导出的数据,将不在已导出列表中的数据过滤出来
                     # exportData = exportData.exclude(pk__in=Export_old_Nums)
+
+                    #过滤出变更ID大于当前alterid的数据
+                    exportData=exportData.filter(alterid__gt=old_alter_id)
 
                     if exportData:
                         # 调用导出文件生成函数
@@ -816,18 +819,18 @@ class export_alt_datas_view(View):
                         # 判断当前导出的最大ID否比原来的小
                         if export_max_alter_id < int(old_alter_id):
 
-                            exportHistoryData.update(Executor=request.user.Name,
-                                                     ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                                     ExecutionResult='本次执行到变更ID：' + str(export_max_alter_id),
-                                                     UID=request.user.id)
+                            exportHistoryData.update(executor=request.user.username,
+                                                     executiontime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                                     executionresult='本次执行到ID：' + str(export_max_alter_id),
+                                                     userid=request.user.id)
 
                         else:
 
-                            exportHistoryData.update(AlterID=export_max_alter_id, Executor=request.user.Name,
-                                                     ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                                     ExecutionResult='本次执行到变更ID：' + str(export_max_alter_id),
-                                                     UID=request.user.id,
-                                                     Exports=exportNumbers)
+                            exportHistoryData.update(alterid=export_max_alter_id, executor=request.user.username,
+                                                     executiontime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                                     executionresult='本次执行到ID：' + str(export_max_alter_id),
+                                                     userid=request.user.id,
+                                                     exportlist=exportNumbers)
                         return resful.OK()
                     else:
                         return resful.params_error(message='导出文件生成失败！')
@@ -837,12 +840,12 @@ class export_alt_datas_view(View):
 
                     if File_Generate:
                         # 创建新的导出执行记录
-                        Alter_execute.objects.create(AlterID=export_max_alter_id, Hospital_id=int(hospitalId),
-                                                     Executor=request.user.Name,
-                                                     ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                                     ExecutionResult='首次执行到变更ID：' + str(export_max_alter_id),
-                                                     UID=request.user.id,
-                                                     Exports=exportNumbers)
+                        Alter_execute.objects.create(alterid=export_max_alter_id, hospitalid=int(hospitalId),
+                                                     executor=request.user.username,databaseid=databaseId,
+                                                     executiontime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                                     executionresult='首次执行到变更ID：' + str(export_max_alter_id),
+                                                     userid=request.user.id,
+                                                     exportlist=exportNumbers)
                         return resful.OK()
                     else:
                         return resful.params_error(message='导出文件生成失败！')
@@ -851,6 +854,6 @@ class export_alt_datas_view(View):
                 return resful.params_error(message='当前条件无可导出数据！')
 
         else:
-            return resful.params_error(message='请选择医院！')
+            return resful.params_error(message='必须选择医院和数据库！')
 
 

@@ -24,9 +24,9 @@ from django.utils.decorators import method_decorator
 @method_decorator(Alter_login_required,name='dispatch')
 class Database_dict_Views(View):
     def get(self,request):
-        for Databases in Alt_Database.objects.all():
-            counts=Alter_managment.objects.filter(dbnumber=Databases.pk).count()
-            Alt_Database.objects.filter(pk=Databases.pk).update(counts=counts)
+        # for Databases in Alt_Database.objects.all():
+        #     classifycount=Alter_managment.objects.filter(dbnumber=Databases.pk).count()
+        #     Alt_Database.objects.filter(pk=Databases.pk).update(classifycount=classifycount)
 
         page = int(request.GET.get('p', 1))  # 获当前页数,并转换成整形，没有传默认为1
 
@@ -36,7 +36,7 @@ class Database_dict_Views(View):
 
         if cxtj:#查询条件判断
             #多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
-            Databases=Databases.filter(Q(Database__icontains=cxtj)|Q(id__icontains=cxtj)|Q(counts__icontains=cxtj))
+            Databases=Databases.filter(Q(Database__icontains=cxtj)|Q(id__icontains=cxtj))
 
 
         paginator = Paginator(Databases, 5)  # 通过调用分页方法，对数据进行分页，表示每2条数据分一页
@@ -157,9 +157,9 @@ def Del_DB_Dict(request):
 
 class AltType_Dict_view(View):
     def get(self,request):
-        for AltTypes in Alt_Type.objects.all():
-            counts = Alter_managment.objects.filter(altertypenumber_id=AltTypes.pk).count()
-            Alt_Type.objects.filter(pk=AltTypes.pk).update(counts=counts)
+        # for AltTypes in Alt_Type.objects.all():
+        #     classifycount = Alter_managment.objects.filter(altertypenumber_id=AltTypes.pk).count()
+        #     Alt_Type.objects.filter(pk=AltTypes.pk).update(classifycount=classifycount)
 
 
         page = int(request.GET.get('p', 1))  # 获当前页数,并转换成整形，没有传默认为1
@@ -167,7 +167,7 @@ class AltType_Dict_view(View):
 
         AltTypes=Alt_Type.objects.all()
         if cxtj:
-            AltTypes =AltTypes.filter(Q(AltType__icontains=cxtj)|Q(counts__icontains=cxtj))
+            AltTypes =AltTypes.filter(Q(AltType__icontains=cxtj))
 
         paginator = Paginator(AltTypes, 5)  # 通过调用分页方法，对数据进行分页，表示每2条数据分一页
         if paginator.num_pages < page:#用于当前页数据全部删除 发送请求导致查不到数据的错误
@@ -253,7 +253,7 @@ def Add_AltType_Dict(request):
 # * @最后编辑者: 郭军
 @Alter_login_required
 def Edit_AltType_Dict(request):
-    form=Hospital_Dict_Form(request.POST)
+    form=AltType_Dict_Form(request.POST)
     if form.is_valid():
         pk =form.cleaned_data.get("pk")
         altertypename=form.cleaned_data.get('altertypename')
@@ -292,9 +292,9 @@ def Del_AltType_Dict(request):
 # * @最后编辑者: 郭军
 class Hospital_Dict_view(View):
     def get(self,request):
-        for Althospital in Alt_Hospital.objects.all():
-            counts = Alter_execute.objects.filter(hospital_id=Althospital.pk).count()
-            Alt_Hospital.objects.filter(pk=Althospital.pk).update(counts=counts)
+        # for Althospital in Alt_Hospital.objects.all():
+        #     classifycount = Alter_execute.objects.filter(hospital_id=Althospital.pk).count()
+        #     Alt_Hospital.objects.filter(pk=Althospital.pk).update(classifycount=classifycount)
 
 
         page = int(request.GET.get('p', 1))  # 获当前页数,并转换成整形，没有传默认为1
@@ -302,7 +302,7 @@ class Hospital_Dict_view(View):
 
         Althospitals=Alt_Hospital.objects.all()
         if cxtj:
-            Althospitals =Althospitals.filter(Q(Hospital__icontains=cxtj)|Q(counts__icontains=cxtj))
+            Althospitals =Althospitals.filter(Q(Hospital__icontains=cxtj))
 
         paginator = Paginator(Althospitals, 5)  # 通过调用分页方法，对数据进行分页，表示每2条数据分一页
         if paginator.num_pages < page:#用于当前页数据全部删除 发送请求导致查不到数据的错误
