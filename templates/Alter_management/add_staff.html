@@ -3,7 +3,12 @@
     添加员工
 {% endblock %}
 {% block content-header %}
-    <h1>添加员工</h1>
+    {% if Use %}
+        <h1>员工编辑</h1>
+    {% else %}
+         <h1>添加员工</h1>
+    {% endif %}
+
 
 {% endblock %}
 
@@ -23,9 +28,9 @@
 
                         </div>
                         <div class="form-group">
-                            <label for="username-input">用户名：</label>
+                            <label for="username-input">工号：</label>
                             {% if Use %}
-                                 <input type="text" class="form-control" id="username" value="{{ Use.username }}">
+                                 <input type="text" class="form-control" id="username" value="{{ Use.worknumber }}">
                             {% else %}
                                  <input type="text" class="form-control" id="username">
                             {% endif %}
@@ -33,7 +38,7 @@
                         <div class="form-group">
                             <label for="email-input">邮箱：</label>
                             {% if Use %}
-                                 <input type="email" class="form-control" id="email" value="{{ Use.Email }}">
+                                 <input type="email" class="form-control" id="email" value="{{ Use.email|default:''}}">
                             {% else %}
                                  <input type="email" class="form-control" id="email">
                             {% endif %}
@@ -75,27 +80,13 @@
                             </div>
                         {% endif %}
 
-                        <div class="form-group">
-                            <label for="Department-input">审核权限：</label>
-
-                            {% if Use %}
-                                <select name="Permissions" id="Permissions"  >
-                                    {% if Use.permissions == False %}
-                                        <option value=False>否</option>
-                                        <option value=True>是</option>
-                                    {% else %}
-                                        <option value=True>是</option>
-                                        <option value=False>否</option>
-                                    {% endif %}
-                                </select>
-                            {% else %}
-                                <select name="Permissions" id="Permissions" >
-                                    <option value=False>否</option>
-                                    <option value=True>是</option>
-                                </select>
-                            {% endif %}
-                        </div>
                         <div class="checkbox">
+
+                            {% if Use.is_superuser %}
+                                <label style="margin-right: 20px">
+                                    <input type="checkbox" name="groups"  value="{{ Use.is_superuser }}"   id="groups" disabled="true" checked>超级管理员
+                                </label>
+                            {% else %}
 
                                 {% for group in groups %}
                                     {% if group in Groups %}
@@ -108,7 +99,7 @@
                                         </label>
                                     {% endif %}
                                 {% endfor %}
-
+                            {% endif %}
                         </div>
                     </div>
                     <div class="box box-footer">

@@ -251,6 +251,7 @@ class add_Alter_managerView(View):
 # * @最后编辑者: 郭军
 @require_POST
 @Alter_login_required
+@permission_required(perm= 'alter_managment.review_alter_managment',login_url='alter/Alter_manager/')
 def Review_Alter_manager(request):#变更审核用
     form =Reviewform(request.POST)
     if form.is_valid():
@@ -313,9 +314,9 @@ def Alter_detail(request,id):#变更详情页面
 
 
 def test_review(request):
-    ids =request.GET.get('id')
-    print('获取到的id是：',ids)
-    id =1;
-    datas=Alter_managment.objects.values('pk','reviewstatus','altercontent').filter(pk=id)
+    id=request.GET.get('id')
+    print('获取到的id是：',id)
+    datas=Alter_managment.objects.values('pk','reviewstatus','reviewcontent').filter(pk=id)
     datas =list(datas)
-    return JsonResponse(datas,safe=False)
+    data ={'code':200,'data':datas}
+    return JsonResponse(data,safe=False)

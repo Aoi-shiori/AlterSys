@@ -113,15 +113,13 @@ Auth.prototype.listenAddStaffEvent= function(){
     var addstaffbtn = $('#addstaff-btn');
     addstaffbtn.click(function () {
             event.preventDefault();
-        var MobilePhone = $('#MobilePhone1').val();
-        var username = $('#username').val();
+        var mobilephone = $('#MobilePhone1').val();
+        var worknumber = $('#username').val();
         var email = $('#email').val();
-        var name = $('#name').val();
-        var Department = $('#Department').val();
+        var username = $('#name').val();
+        var department = $('#Department').val();
         var password1 = $('#password1').val();
         var password2 = $('#password2').val();
-        var Permissions = $('#Permissions').find("option:selected").val();
-        alert(Permissions);
         var groups = '';//$('#groups:checked').val();
         var gs = $("input[name='groups']");
         for (var i=0;i<gs.length;i++){
@@ -134,22 +132,33 @@ Auth.prototype.listenAddStaffEvent= function(){
         xfzajax.post({
                 'url':'/account/add_staff/',
                 'data':{
-                    'MobilePhone':MobilePhone,
-                    'username':username,
+                    'mobilephone':mobilephone,
+                    'worknumber':worknumber,
                     'email':email,
-                    'name':name,
-                    'Department':Department,
+                    'username':username,
+                    'department':department,
                     'password1':password1,
                     'password2':password2,
-                    'Permissions':Permissions,
                     'groups':groups,
                 },
                 'success':function (result) {
                     if (result['code']===200){
                         window.messageBox.showSuccess('添加成功！');
                     } else {
-                        window.messageBox.showError('服务有问题！');
+                        console.log(result);
+                        console.log(result['message'][0]);
+                        if  (result['message'][0]){
+                             console.log('走到1了！')
+                            window.messageBox.showError(result['message']);
+
+                        }else {
+                            console.log('走到2了！')
+                            for(var m in result['message']){
+                                window.messageBox.showError(result['message'][m][0]);
+                            }
+                        }
                     }
+
                 },
                 'fail':function (error) {
                     window.messageBox.showError('服务器内部错误！');
@@ -169,15 +178,12 @@ Auth.prototype.listenEditStaffEvent= function(){
         var btn =$(this);
         var id = btn.attr('staff-id');
         alert(id);
-        var MobilePhone = $('#MobilePhone1').val();
+        var mobilephone = $('#MobilePhone1').val();
         //var MobilePhone = $("input[name='MobilePhone1']").val();
-        alert(MobilePhone);
-        var username = $('#username').val();
+        var worknumber = $('#username').val();
         var email = $('#email').val();
-        var name = $('#name').val();
-        var Department = $('#Department').val();
-        var Permissions = $('#Permissions').find("option:selected").val();
-        //alert(Permissions);
+        var username = $('#name').val();
+        var department = $('#Department').val();
         var groups = '';//$('#groups:checked').val();
         var gs = $("input[name='groups']");
         for (var i=0;i<gs.length;i++){
@@ -186,25 +192,55 @@ Auth.prototype.listenEditStaffEvent= function(){
             }
         }
         groups = groups.substring(0, groups.length - 1);//减少数组长度，去除多余的逗号
+        console.log(mobilephone,worknumber,email,username,Department)
         //alert(groups);
         xfzajax.post({
                 'url':'/account/Edit_Staff/',
                 'data':{
                     'id':id,
-                    'MobilePhone':MobilePhone,
-                    'username':username,
+                    'mobilephone':mobilephone,
+                    'worknumber':worknumber,
                     'email':email,
-                    'name':name,
-                    'Department':Department,
-                    'Permissions':Permissions,
+                    'username':username,
+                    'department':department,
                     'groups':groups,
                 },
                 'success':function (result) {
                     if (result['code']===200){
                         window.messageBox.showSuccess('添加成功！');
-                        window.location.reload();
+                        //window.location.reload();
+                        setTimeout(" location.href='/account/staffs/'","300")
                     } else {
-                        window.messageBox.showError('服务有问题！');
+                        console.log(result)
+                        // for (var i in result['email']){
+                        //     window.messageBox.showError(result['message']['email'][i]);
+                        // }
+                        // for (var i in result['department']){
+                        //    window.messageBox.showError(result['message']['department'][i]);
+                        // }
+                        // for (var i in result['username']){
+                        //    window.messageBox.showError(result['message']['username'][i]);
+                        // }
+                        // for (var i in result['mobilephone']){
+                        //    window.messageBox.showError(result['message']['mobilephone'][i]);
+                        // }
+                        // for (var i in result['worknumber']){
+                        //    window.messageBox.showError(result['message']['worknumber'][i]);
+                        // }
+
+                        console.log(result['message'][0]);
+                        if  (result['message'][0]){
+                             console.log('走到1了！')
+                            window.messageBox.showError(result['message']);
+
+                        }else {
+                            console.log('走到2了！')
+                            for(var m in result['message']){
+                                window.messageBox.showError(result['message'][m][0]);
+                            }
+                        }
+
+
                     }
                 },
                 'fail':function (error) {

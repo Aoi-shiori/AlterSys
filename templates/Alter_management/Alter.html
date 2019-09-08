@@ -159,7 +159,7 @@
                                         {% endif %}
 
                                         <td class ='审核内容 ReviewContent-td' title="{{ Alterd_data.reviewcontent|default:'' }}">{{ Alterd_data.reviewcontent|default:''|truncatechars:10}}</td>
-                                        <td class ='审核时间 AuditTime-td  ' >{{ Alterd_data.audittime|date:"Y-m-d H:i:s"}}</td>
+                                        <td class ='审核时间 AuditTime-td  ' >{{ Alterd_data.reviewtime|date:"Y-m-d H:i:s"}}</td>
                                         <td>
                                             {% if  Alterd_data.reviewstatus == '1'%}
                                                  <button class=" btn-xs editor-btn" style="background: grey" disabled="disabled">编辑</button>

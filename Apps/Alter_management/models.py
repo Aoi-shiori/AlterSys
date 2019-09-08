@@ -19,7 +19,9 @@ class Alter_managment(models.Model):
 
 
         class Meta:
+            permissions = (('review_alter_managment', '審核數據權限'),)
             db_table='alt_managment'#变更表
+
 
 
 class Alter_managment_checked(models.Model):

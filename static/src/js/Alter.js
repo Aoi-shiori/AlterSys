@@ -554,79 +554,100 @@ Alter.prototype.listenReviewtestEvent=function(){
             event.preventDefault();
             var checkednow = getchecked();
             if (checkednow){
-                 var val = checkednow.parentElement.parentElement.getAttribute("alterid");
+                 var val = checkednow.parentElement.parentElement.getAttribute("id");
+                 console.log('选中的id',val);
+                 $.ajax({
+                    'url':'/alter/test_review/',
+                    //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+                    'type':'GET',
+                    'data':{
+                        'id':val
+                    },
+                    'success': function (result) {
+                        // console.log(result);
+                        //var res = JSON.stringify(result);
+                       if (result['code']===200){
+                           console.log(result);
+                           $('#altcontect-input').val(result['data'][0]['reviewcontent'])
+
+                           if (result['data'][0]['reviewstatus']==1){
+
+                               console.log('审核状态1',result['data'][0]['reviewstatus'])
+                               $('#test111').prop('checked',true);
+                           }else {
+                               console.log('审核状态2',result['data'][0]['reviewstatus'])
+                               $('#test222').prop('checked',true);
+                           }
+
+                       }else {
+                           console.log('请求失败，没有获取到数据！')
+                       }
+
+                    }
+                });
+
+                Swal.fire({
+                        title: '变更数据审核',
+                        //type: "prompt",
+                        html:
+                             //'<input id="swal-input1" class="swal2-input">' +
+                             //'<input id="swal-input2" class="swal2-input">'+
+                                '<div class="input-group" style="text-align: center;margin: auto;font-size: 14px">\
+                                   <label  for="ReviewType">审核通过: </label>\
+                                      <input id="test111" type="radio" class="radio-btn" checked="" name="Reviewstatus" value="1">\
+                                   <label style="margin-left: 15px" for="ReviewType">审核不通过: </label>\
+                                      <input id="test222" type="radio" class="radio-btn" name="Reviewstatus" value="2">\
+                                </div>'+
+                            '<textarea  style="height: 100px;" id="altcontect-input" class="swal2-input"  rows="15" maxlength="1000" required="" placeholder="请输入审核内容"></textarea>'
+                        ,
+                        //focusConfirm: false,
+                        showCancelButton: true,
+                        cancelButtonText:'取消操作',
+                        confirmButtonText: '确认审核',
+                        }).then(function (result) {
+                            if (result.dismiss === Swal.DismissReason.cancel ||result.dismiss === Swal.DismissReason.backdrop ){
+                                console.log('用户取消！')
+                                return;
+                            }
+                            var reviewstatus = $('input[name="Reviewstatus"]:checked').val();
+                            var reviewContent = $('#altcontect-input').val()
+                            console.log('判断条件',reviewstatus)
+                            console.log('输入内容',reviewContent)
+                            xfzajax.post( {
+                                'url':'/alter/Review_Alter_manager/',
+                                'data':{
+                                    'id':val,
+                                    'ReviewStatus':reviewstatus,
+                                    'ReviewContent':reviewContent,
+                                }, 'success': function (result) {
+                                    if(result['code'] === 200){
+                                        //window.messageBox.show("审核成功");
+                                        Swal.fire(
+                                            '审核成功',
+                                            '审核提交成功啦',
+                                            'success'
+                                        ).then(function () {
+                                            window.location.reload()
+                                        })
+                                    }else {
+                                        window.messageBox.showError(result['message'])
+                                    }
+                                }
+                            });
+                })
+
+
+
+
+
             }
             else{
-                console.log('没有选中')
+                console.log('请选中一条数据！')
+                window.messageBox.showError('请选中一条数据！')
             };
-            console.log('选中的id',val);
-
-            $.ajax({
-                'url':'/alter/test_review/',
-                //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
-                'type':'GET',
-                'data':{
-                    'id':val
-                },
-                'success': function (result) {
-                    // console.log(result);
-                    //var res = JSON.stringify(result);
-                   if (result['code']===200){
-                       console.log(result);
-
-                        for(var k in result['hospital']){
-                            //console.log(result[k]);
-                            $("#Hospitals_select").append("<option value='"+result['hospital'][k]['pk']+"'>"+result['hospital'][k]["hospitalname"]+"</option>");
-                        }
-
-                        for(var k in result['database']){
-                            //console.log(result[k]);
-                            $("#database_select").append("<option value='"+result['database'][k]['pk']+"'>"+result['database'][k]["dbname"]+"</option>");
-                        }
-                   }else {
-                       console.log('请求失败，没有获取到数据！')
-                   }
 
 
 
-                }
-            });
-
-            Swal.fire({
-                    title: '变更数据审核',
-                    //type: "prompt",
-                    html:
-                         //'<input id="swal-input1" class="swal2-input">' +
-                         //'<input id="swal-input2" class="swal2-input">'+
-                            '<div class="input-group" style="text-align: center;margin: auto;font-size: 14px">\
-                               <label  for="ReviewType">审核通过: </label>\
-                                  <input id="test111" type="radio" class="radio-btn" checked="" name="Reviewstatus" value="1">\
-                               <label style="margin-left: 15px" for="ReviewType">审核不通过: </label>\
-                                  <input id="test222" type="radio" class="radio-btn" name="Reviewstatus" value="2">\
-                            </div>'+
-                        '<textarea  style="height: 100px;" id="altcontect-input" class="swal2-input"  rows="15" maxlength="1000" required="" placeholder="请输入审核内容"></textarea>'
-                    ,
-                    //focusConfirm: false,
-                    showCancelButton: true,
-                    cancelButtonText:'导出取消',
-                    confirmButtonText: '确认导出',
-                    }).then(function (result) {
-                        if (result.dismiss === Swal.DismissReason.cancel ||result.dismiss === Swal.DismissReason.backdrop ){
-                            console.log('用户取消！')
-                            return;
-                        }
-                        var v = $('input[name="Reviewstatus"]:checked').val();
-                        console.log('判断条件',v)
-                        console.log('输入内容',$('#altcontect-input').val())
-
-                        // if (v==1){
-                        //
-                        //
-                        //     console.log($('#test222').val())
-                        // } else {
-                        //     console.log($('#test111').val())
-                        // };
-            })
         })
 
 };

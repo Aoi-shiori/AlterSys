@@ -22,7 +22,8 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, mobilephone, worknumber, password, **kwargs):
         kwargs['is_superuser'] = True
-        kwargs['userpermissions'] = '1'
+        kwargs['username'] = '超级管理员'
+        kwargs['worknumber'] = 'admin'
         return self._create_user(mobilephone, worknumber, password, **kwargs)
 
 
@@ -39,8 +40,8 @@ class User(AbstractBaseUser,PermissionsMixin):
         email = models.EmailField(unique=True,null=True) #唯一的unique true#
         worknumber = models.CharField(max_length=100)#工号/用户名
         username = models.CharField(max_length=50)#姓名#
-        department = models.CharField(max_length=100)#所在部门#
-        userpermissions = models.CharField(max_length=4)#用户权限0，管理员、1审核者，2提交者，3执行者#
+        department = models.CharField(max_length=100,null=True)#所在部门#
+        #userpermissions = models.CharField(max_length=4)#用户权限0，管理员、1审核者，2提交者，3执行者#
         registrationtime = models.DateTimeField(auto_now_add=True)#注册时间#
         is_cancellation = models.BooleanField(default=False)#注销状态#
         USERNAME_FIELD = 'mobilephone'

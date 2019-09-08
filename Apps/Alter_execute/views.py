@@ -779,7 +779,11 @@ class export_alt_datas_view(View):
             if exportData:
 
                 # 获取可导出数据中，ID最大的值
-                export_max_alter_id = max(exportData.values_list('id', flat=True))
+                    #方法一：数据转换成列表，并且指定返回指定字段的值列表(flat=True),不加设置返回的是字典
+                export_max_alter_ids = max(exportData.values_list('id', flat=True))
+                    #方法二：将数据按指定字典id 从大到小进行排序，然后取首条数据的id值，这里是主键也就可以用Pk
+                export_max_alter_id =exportData.order_by('-id').first().pk
+
 
                 # 获取当前导出数据的ID列表
                 exportNumbers = list(exportData.values_list('id', flat=True))
@@ -791,13 +795,16 @@ class export_alt_datas_view(View):
                 # 导出执行表中是否有历史导出记录
                 exportHistoryData = Alter_execute.objects.filter(userid=request.user.pk, hospitalid=int(hospitalId),databaseid=databaseId)
 
+
+
                 if exportHistoryData:
 
                     # # 获取用户已导出的数据
                     # Export_old_Nums = exportHistoryData.values_list('exportlist', flat=True)[0]
 
                     # 获取已经导出的最大ID
-                    old_alter_id = list(exportHistoryData.values_list('alterid'))[0][0]
+                    #old_alter_id = list(exportHistoryData.values_list('alterid'))[0][0] #切片的方式获取id
+                    old_alter_id = Alter_execute.objects.get(userid=request.user.pk, hospitalid=int(hospitalId), databaseid=databaseId).alterid
 
                     # # 字符串转换成数值列表
                     # Export_old_Nums = [int(id) for id in (Export_old_Nums.split(','))]
@@ -805,8 +812,8 @@ class export_alt_datas_view(View):
                     # # 过滤出还未导出的数据,将不在已导出列表中的数据过滤出来
                     # exportData = exportData.exclude(pk__in=Export_old_Nums)
 
-                    #过滤出变更ID大于当前alterid的数据
-                    exportData=exportData.filter(alterid__gt=old_alter_id)
+                    #过滤出ID大于当前alterid的数据
+                    exportData=exportData.filter(id__gt=old_alter_id)
 
                     if exportData:
                         # 调用导出文件生成函数
