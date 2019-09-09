@@ -108,10 +108,10 @@ Auth.prototype.listenSwitchEvent=
 };
 
 
-
+//添加员工
 Auth.prototype.listenAddStaffEvent= function(){
     var addstaffbtn = $('#addstaff-btn');
-    addstaffbtn.click(function () {
+    addstaffbtn.click(function (event) {
             event.preventDefault();
         var mobilephone = $('#MobilePhone1').val();
         var worknumber = $('#username').val();
@@ -128,7 +128,7 @@ Auth.prototype.listenAddStaffEvent= function(){
             }
         }
         groups = groups.substring(0, groups.length - 1);
-        alert(groups);
+        console.log('用户组：',groups);
         xfzajax.post({
                 'url':'/account/add_staff/',
                 'data':{
@@ -144,6 +144,7 @@ Auth.prototype.listenAddStaffEvent= function(){
                 'success':function (result) {
                     if (result['code']===200){
                         window.messageBox.showSuccess('添加成功！');
+                         setTimeout(" location.href='/account/staffs/'","300")
                     } else {
                         console.log(result);
                         console.log(result['message'][0]);
@@ -170,14 +171,14 @@ Auth.prototype.listenAddStaffEvent= function(){
 
 };
 
-
+//编辑员工
 Auth.prototype.listenEditStaffEvent= function(){
     var EditstaffBtn = $('#Editstaff-btn');
     EditstaffBtn.click(function (event) {
         event.preventDefault();
         var btn =$(this);
         var id = btn.attr('staff-id');
-        alert(id);
+        console.log('用户ID：',id);
         var mobilephone = $('#MobilePhone1').val();
         //var MobilePhone = $("input[name='MobilePhone1']").val();
         var worknumber = $('#username').val();
@@ -192,7 +193,7 @@ Auth.prototype.listenEditStaffEvent= function(){
             }
         }
         groups = groups.substring(0, groups.length - 1);//减少数组长度，去除多余的逗号
-        console.log(mobilephone,worknumber,email,username,Department)
+        console.log('获取到的信息',mobilephone,worknumber,email,username,department)
         //alert(groups);
         xfzajax.post({
                 'url':'/account/Edit_Staff/',
@@ -207,11 +208,11 @@ Auth.prototype.listenEditStaffEvent= function(){
                 },
                 'success':function (result) {
                     if (result['code']===200){
-                        window.messageBox.showSuccess('添加成功！');
+                        window.messageBox.showSuccess('编辑成功！');
                         //window.location.reload();
                         setTimeout(" location.href='/account/staffs/'","300")
                     } else {
-                        console.log(result)
+                        console.log('返回Json信息：',result)
                         // for (var i in result['email']){
                         //     window.messageBox.showError(result['message']['email'][i]);
                         // }

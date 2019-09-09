@@ -56,7 +56,8 @@ Alter.prototype.run=function () {
         self.listenselectnow();
         self.listenReviewEvent();
         self.listenReviewSbumitEvent();
-        self.listenReviewtestEvent();
+        //新的审核
+        self.listenreviewEvent();
 
 };
 
@@ -332,12 +333,15 @@ Alter.prototype.listenDeleteEvent = function () {
             buttonsStyling: false
 
         }).then(function (result) {
-            if(result.value){
-                Swal.fire(
-                    '已删除！',
-                    '删除成功。',
-                    'success'
-                ).then(function () {
+                    if (result.dismiss === Swal.DismissReason.cancel) {
+                                Swal.fire(
+                                    '已取消！',
+                                    '你的数据是安全的:)',
+                                    'error'
+                                )
+                                console.log('用户取消！')
+                                return;
+                    }
                     xfzajax.post({
                         'url': '/alter/delete_Alter_manager/',
                         'data': {
@@ -345,22 +349,22 @@ Alter.prototype.listenDeleteEvent = function () {
                         },
                         'success':function (result) {
                             if (result['code']===200){
-                                window.location.reload();
+                                Swal.fire(
+                                    '已删除！',
+                                    '删除成功。',
+                                    'success'
+                                ).then(function () {
+                                    window.location.reload();
                                 //window.messageBox.showSuccess(result['message']);
+                                })
+
                             } else {
                                 window.messageBox.showError(result['message']);
                             }
                         },
 
-                    });
-                })
-            }else if (result.dismiss === Swal.DismissReason.cancel) {
-                    Swal.fire(
-                        '已取消！',
-                        '你的数据是安全的:)',
-                        'error'
-                    )
-                }
+                     })
+
             })
 
 
@@ -546,9 +550,9 @@ Alter.prototype.listenReviewSbumitEvent=function(){
 
 
 
-//新审核功能测试
-Alter.prototype.listenReviewtestEvent=function(){
-        var reviewbtn = $('.Review-test');
+//最新审核功能
+Alter.prototype.listenreviewEvent=function(){
+        var reviewbtn = $('.review-btn');
 
         reviewbtn.click(function (event) {
             event.preventDefault();
@@ -573,10 +577,10 @@ Alter.prototype.listenReviewtestEvent=function(){
                            if (result['data'][0]['reviewstatus']==1){
 
                                console.log('审核状态1',result['data'][0]['reviewstatus'])
-                               $('#test111').prop('checked',true);
+                               $('#review-radio1').prop('checked',true);
                            }else {
                                console.log('审核状态2',result['data'][0]['reviewstatus'])
-                               $('#test222').prop('checked',true);
+                               $('#review-radio2').prop('checked',true);
                            }
 
                        }else {
@@ -594,9 +598,9 @@ Alter.prototype.listenReviewtestEvent=function(){
                              //'<input id="swal-input2" class="swal2-input">'+
                                 '<div class="input-group" style="text-align: center;margin: auto;font-size: 14px">\
                                    <label  for="ReviewType">审核通过: </label>\
-                                      <input id="test111" type="radio" class="radio-btn" checked="" name="Reviewstatus" value="1">\
+                                      <input id="review-radio1" type="radio" class="radio-btn" checked="" name="Reviewstatus" value="1">\
                                    <label style="margin-left: 15px" for="ReviewType">审核不通过: </label>\
-                                      <input id="test222" type="radio" class="radio-btn" name="Reviewstatus" value="2">\
+                                      <input id="review-radio2" type="radio" class="radio-btn" name="Reviewstatus" value="2">\
                                 </div>'+
                             '<textarea  style="height: 100px;" id="altcontect-input" class="swal2-input"  rows="15" maxlength="1000" required="" placeholder="请输入审核内容"></textarea>'
                         ,

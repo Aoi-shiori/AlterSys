@@ -41,7 +41,7 @@ from django.http import JsonResponse
 # >>> response = FileResponse(open('myfile.png', 'rb'))
 from django.http import FileResponse
 
-from Apps.Alter_Dict.models import Alt_Database,Alt_Hospital
+from Apps.Alter_Dict.models import Alt_Database,Alt_Hospital,Alt_Type
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -69,6 +69,9 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
 
         #过滤数据库类型数据
         Databases = Alt_Database.objects.all()
+
+        #
+        Altertype = Alt_Type.objects.all()
 
         # 过滤医院类型数据
         Hospital = Alt_Hospital.objects.all()
@@ -115,6 +118,7 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
             'DatabaseType': DatabaseType,
             'Databases': Databases,
             'Hospital':Hospital,
+            'AltTypes':Altertype,
             'url_query': '&' + parse.urlencode({
                 'start': start or '',
                 'end': end or '',
@@ -180,8 +184,15 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
         # 获取执行记录库所有的数据
         Alterd_datas = Alter_execute.objects.all()
 
-        #
-        Hospital_datas = Alt_Hospital.objects.all()
+        # 过滤医院类型数据
+        Hospitals = Alt_Hospital.objects.all()
+
+        #过滤数据库类型数据
+        Databases = Alt_Database.objects.all()
+
+        #过滤出变更类型数据
+        Altertypes = Alt_Type.objects.all()
+
 
         if start or end:  # 查询时间判断
             if start:
@@ -218,7 +229,9 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
             'start': start,
             'end': end,
             'cxtj': cxtj,
-            'Hospital_datas':Hospital_datas,
+            'Hospitals':Hospitals,
+            'Databases':Databases,
+            'Altertypes':Altertypes,
             'url_query': '&' + parse.urlencode({
                 'start': start or '',
                 'end': end or '',

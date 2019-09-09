@@ -144,9 +144,13 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li ><a href="{% url 'management:Alter_manager' %}"><i class="fa fa-pencil-square-o"></i> 变更管理</a></li>
-            <li ><a href="{% url 'Execute:Alter_execute' %}"><i class="fa fa-circle-o"></i> 变更执行</a></li>
-            <li><a href="{% url 'Execute:alter_execute_history' %}"><i class="fa fa-circle-o"></i> 执行记录</a></li>
+                <li ><a href="{% url 'management:Alter_manager' %}"><i class="fa fa-pencil-square-o"></i> 变更管理</a></li>
+
+              {% if perms.Alter_execute.change_alter_execute or user.is_superuser %}
+                   <li ><a href="{% url 'Execute:Alter_execute' %}"><i class="fa fa-circle-o"></i> 变更执行</a></li>
+              {% endif %}
+
+                <li><a href="{% url 'Execute:alter_execute_history' %}"><i class="fa fa-circle-o"></i> 执行记录</a></li>
           </ul>
         </li>
         {% if user.is_superuser %}
@@ -164,7 +168,9 @@
           </ul>
         </li>
         {% endif %}
-        <li class="active treeview">
+      
+        {% if perms.Alt_Hospital.change_alt_hospital or perms.Alt_Database.change_alt_database or perms.Alt_Type.change_alt_type or user.is_superuser  %}
+            <li class="active treeview">
           <a href="#">
             <i class="fa fa-archive"></i> <span>字典管理</span>
             <span class="pull-right-container">
@@ -172,12 +178,25 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li ><a href="{% url 'Dict:Database_Dict_View' %}"><i class="fa fa-pencil-square-o"></i> 数据库字典</a></li>
+              {% if perms.Alt_Database.change_alt_database or user.is_superuser %}
+                <li ><a href="{% url 'Dict:Database_Dict_View' %}"><i class="fa fa-pencil-square-o"></i> 数据库字典</a></li>
+              {% endif %}
+
+              {% if perms.Alt_Type.change_alt_type or user.is_superuser  %}
+                 <li ><a href="{% url 'Dict:AltType_View' %}"><i class="fa fa-circle-o"></i> 变更类型字典</a></li>
+              {% endif %}
+
+              {% if perms.Alt_Hospital.change_alt_hospital  or user.is_superuser %}
+                         <li ><a href="{% url 'Dict:Hospital_Dict_view' %}"><i class="fa fa-circle-o"></i> 医院字典</a></li>
+              {% endif %}
+
 {#            <li><a href="{% url 'management:Alter_add' %}"><i class="fa fa-circle-o"></i> 变更提交</a></li>#}
-            <li ><a href="{% url 'Dict:AltType_View' %}"><i class="fa fa-circle-o"></i> 变更类型字典</a></li>
-            <li ><a href="{% url 'Dict:Hospital_Dict_view' %}"><i class="fa fa-circle-o"></i> 医院字典</a></li>
+
+
           </ul>
         </li>
+        {% endif %}
+
 
       </ul>
     </section>

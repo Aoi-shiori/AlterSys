@@ -45,7 +45,7 @@
                                     {% endfor %}
                                 {% endif %}
                               </td>
-                              <td>{{ staff.department }}</td>
+                              <td>{{ staff.department |default:''}}</td>
 
                               {% if staff.iscancellation == True %}
                                   <td><input type="checkbox"  checked disabled="True"></td>
@@ -58,7 +58,7 @@
                                     {% if staff.is_superuser %}
 
                                     {% else %}
-                                        {% if staff.iscancellation == False%}
+                                        {% if staff.is_cancellation == False%}
                                             <button class="btn btn-danger btn-xs Cancellation_btn">注销</button>
                                         {% else %}
                                             <button class="btn btn-danger btn-xs Cancellation_btn">启用</button>

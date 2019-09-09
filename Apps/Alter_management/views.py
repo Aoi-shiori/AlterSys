@@ -51,10 +51,11 @@ def index_manage(request):
 # * @功能描述: 变更管理页面视图
 # * @作者: 郭军
 # * @时间: 2019-6-30 15:28:19
-# * @最后编辑时间: 2019-9-3 10:00:36
+# * @最后编辑时间: 2019-9-9 16:57:39
 # * @最后编辑者: 郭军
 #@staff_member_required(login_url='login')
 @method_decorator(Alter_login_required,name='dispatch')
+# @method_decorator(permission_required('Alter_management.change_alter_managment',login_url='/alter/index/'),name="dispatch")
 class Alter_manager_newview(View):#变更管理页面，返回数据
     def get(self,request):
         #request.GET.get获取出来的数据都是字符串类型
@@ -164,43 +165,47 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
 # * @功能描述: 编辑变更内容
 # * @作者: 郭军
 # * @时间: 2019-6-30 15:28:19
-# * @最后编辑时间: 2019-9-3 10:00:36
+# * @最后编辑时间: 2019-9-9 17:00:18
 # * @最后编辑者: 郭军
-# *
 @require_POST
 @Alter_login_required
-#@method_decorator(permission_required(perm='alter_managment.change_alter_managment',login_url='/'),name="dispatch")
+#@method_decorator(permission_required(perm='Alter_management.change_alter_managment',login_url='/'),name="dispatch")
 def edit_Alter_manager(request):#变更内容编辑用
-    form =EditAlterform(request.POST)
-    if form.is_valid():
-        id=form.cleaned_data.get("id")#变更ID
-        AltType = form.cleaned_data.get("AltType")  # '关联类型'#
-        AssociatedNumber =form.cleaned_data.get("AssociatedNumber")  # '关联编号'#
-        Database = form.cleaned_data.get("Database")  # '数据库'#
-        AlterContent =form.cleaned_data.get("AlterContent")  # 变更内容
-        Alter_managment.objects.filter(id=id).update(altertypeid=AltType, associatedid=AssociatedNumber, databaseid=Database, altercontent=AlterContent, modifier=request.user.username
-,modifytime=datetime.now(),reviewstatus='0')
-        return resful.OK()
+    if request.user.has_perm('Alter_management.change_alter_managment'):
+        form =EditAlterform(request.POST)
+        if form.is_valid():
+            id=form.cleaned_data.get("id")#变更ID
+            AltType = form.cleaned_data.get("AltType")  # '关联类型'#
+            AssociatedNumber =form.cleaned_data.get("AssociatedNumber")  # '关联编号'#
+            Database = form.cleaned_data.get("Database")  # '数据库'#
+            AlterContent =form.cleaned_data.get("AlterContent")  # 变更内容
+            Alter_managment.objects.filter(id=id).update(altertypeid=AltType, associatedid=AssociatedNumber, databaseid=Database, altercontent=AlterContent, modifier=request.user.username
+    ,modifytime=datetime.now(),reviewstatus='0')
+            return resful.OK()
+        else:
+            return resful.params_error(message=form.get_error())
     else:
-        return resful.params_error(message=form.get_error())
+        return resful.unauth(message='您没有编辑的权限！')
 
 
 # * @函数名: delete_Alter_manager
 # * @功能描述: 删除变更内容
 # * @作者: 郭军
 # * @时间: 2019-6-30 15:28:19
-# * @最后编辑时间: 2019-9-3 10:00:36
+# * @最后编辑时间: 2019-9-9 17:01:02
 # * @最后编辑者: 郭军
 @require_POST
 @Alter_login_required
 def delete_Alter_manager(request):#变更内容删除用
-    id=request.POST.get("id")
-    try:
-        Alter_managment.objects.filter(id=id).delete()
-        return resful.OK()
-    except:
-        return resful.params_error(message="该变更不存在")
-
+    if request.user.has_perm('Alter_management.change_alter_managment'):
+        id=request.POST.get("id")
+        try:
+            Alter_managment.objects.filter(id=id).delete()
+            return resful.OK()
+        except:
+            return resful.params_error(message="该变更不存在")
+    else:
+        return resful.unauth(message='您没有删除的权限！')
 
 
 
@@ -212,36 +217,41 @@ def delete_Alter_manager(request):#变更内容删除用
 # # * @最后编辑者: 郭军
 class add_Alter_managerView(View):
     def get(self,request):
-        Databases=Alt_Database.objects.all()
-        context={
-            'Databases':Databases
-        }
-        return render(request,'Alter_management/Alter.html',context=context)
+
+            Databases=Alt_Database.objects.all()
+            context={
+                'Databases':Databases
+            }
+            return render(request,'Alter_management/Alter.html',context=context)
+
 
     def post(self,request):#添加变更内容
-        form = Alterform(request.POST)
-        #如果验证成功
-        if form.is_valid():
-            AltType_id=form.cleaned_data.get('AltType')
-            AltTypes = Alt_Type.objects.get(pk=AltType_id)
-            AssociatedNumber = form.cleaned_data.get('AssociatedNumber')
-            Database_id = form.cleaned_data.get('Database')
-            Database= Alt_Database.objects.get(pk=Database_id)
-            AlterContent=form.cleaned_data.get('AlterContent')
+        if request.user.has_perm('Alter_management.change_alter_managment'):
+            form = Alterform(request.POST)
+            #如果验证成功
+            if form.is_valid():
+                AltType_id=form.cleaned_data.get('AltType')
+                AltTypes = Alt_Type.objects.get(pk=AltType_id)
+                AssociatedNumber = form.cleaned_data.get('AssociatedNumber')
+                Database_id = form.cleaned_data.get('Database')
+                Database= Alt_Database.objects.get(pk=Database_id)
+                AlterContent=form.cleaned_data.get('AlterContent')
 
-            #判断变更内容在库中是否存在
-            exists=Alter_managment.objects.filter(altercontent=AlterContent).exists()
-            if not exists:
-                Alter_managment.objects.create(altertypeid=AltTypes.pk, associatedid=AssociatedNumber, databaseid=Database.pk,altercontent=AlterContent,
-                                               modifier=request.user.username)
-                return resful.OK()
+                #判断变更内容在库中是否存在
+                exists=Alter_managment.objects.filter(altercontent=AlterContent).exists()
+                if not exists:
+                    Alter_managment.objects.create(altertypeid=AltTypes.pk, associatedid=AssociatedNumber, databaseid=Database.pk,altercontent=AlterContent,
+                                                   modifier=request.user.username)
+                    return resful.OK()
+                else:
+
+                    return resful.params_error(message="该变更内容已经存在!")
             else:
-
-                return resful.params_error(message="该变更内容已经存在!")
+                error = form.get_error()
+                print(error)
+                return resful.params_error(message=form.get_error())
         else:
-            error = form.get_error()
-            print(error)
-            return resful.params_error(message=form.get_error())
+            return resful.unauth(message='您没有添加变更的权限！')
 
 # * @函数名: Review_Alter_manager
 # * @功能描述: 变更审核
@@ -251,47 +261,49 @@ class add_Alter_managerView(View):
 # * @最后编辑者: 郭军
 @require_POST
 @Alter_login_required
-@permission_required(perm= 'alter_managment.review_alter_managment',login_url='alter/Alter_manager/')
+# @permission_required(perm= 'Alter_management.review_alter_managment',login_url='alter/Alter_manager/')
 def Review_Alter_manager(request):#变更审核用
-    form =Reviewform(request.POST)
-    if form.is_valid():
-        id = form.cleaned_data.get('id')
-        ReviewStatus = form.cleaned_data.get('ReviewStatus')  # '审核状态',
-        ReviewContent = form.cleaned_data.get('ReviewContent')  # '审核内容',
+    if request.user.has_perm('Alter_management.review_alter_managment'):
+        form =Reviewform(request.POST)
+        if form.is_valid():
+            id = form.cleaned_data.get('id')
+            ReviewStatus = form.cleaned_data.get('ReviewStatus')  # '审核状态',
+            ReviewContent = form.cleaned_data.get('ReviewContent')  # '审核内容',
 
-        #更新主表审核状态
-        Review=Alter_managment.objects.filter(id=id).update(reviewstatus=ReviewStatus, reviewcontent=ReviewContent, reviewer=request.user.username,reviewtime=datetime.now())
+            #更新主表审核状态
+            Review=Alter_managment.objects.filter(id=id).update(reviewstatus=ReviewStatus, reviewcontent=ReviewContent, reviewer=request.user.username,reviewtime=datetime.now())
 
-        #判断主表是否审核成功
-        if Review:
+            #判断主表是否审核成功
+            if Review:
 
-            #取得主表数据
-            alter_data = Alter_managment.objects.get(id=id)
+                #取得主表数据
+                alter_data = Alter_managment.objects.get(id=id)
 
-            #获取分表数据
-            alter_data_checked=Alter_managment_checked.objects.filter(alterid=id)
+                #获取分表数据
+                alter_data_checked=Alter_managment_checked.objects.filter(alterid=id)
 
-            #判断分表是否有满足条件的数据并且审核状态是未审核
-            if alter_data_checked and ReviewStatus=='2':
+                #判断分表是否有满足条件的数据并且审核状态是未审核
+                if alter_data_checked and ReviewStatus=='2':
 
-                #删除分表的数据
-                successdelete=alter_data_checked.delete()
+                    #删除分表的数据
+                    successdelete=alter_data_checked.delete()
 
-                if successdelete:
-                    return resful.OK()
+                    if successdelete:
+                        return resful.OK()
+                    else:
+                        return resful.params_error(message='分数据删除失败')
+
                 else:
-                    return resful.params_error(message='分数据删除失败')
-
+                    #如果审核通过则复制创建主表数据到分表
+                    Alter_managment_checked.objects.create(alterid=alter_data.pk,associatedid=alter_data.associatedid,altercontent=alter_data.altercontent,modifier=alter_data.modifier,modifytime=alter_data.modifytime,reviewer=alter_data.reviewer,reviewstatus=alter_data.reviewstatus,reviewcontent=alter_data.reviewcontent,reviewtime=alter_data.reviewtime,altertypeid=alter_data.altertypeid,databaseid=alter_data.databaseid)
+                    return resful.OK()
             else:
-                #如果审核通过则复制创建主表数据到分表
-                Alter_managment_checked.objects.create(alterid=alter_data.pk,associatedid=alter_data.associatedid,altercontent=alter_data.altercontent,modifier=alter_data.modifier,modifytime=alter_data.modifytime,reviewer=alter_data.reviewer,reviewstatus=alter_data.reviewstatus,reviewcontent=alter_data.reviewcontent,reviewtime=alter_data.reviewtime,altertypeid=alter_data.altertypeid,databaseid=alter_data.databaseid)
-                return resful.OK()
+                return resful.params_error(message='审核失败！')
+            return resful.OK()
         else:
-            return resful.params_error(message='审核失败！')
-        return resful.OK()
+           return resful.params_error(message=form.get_error())
     else:
-       return resful.params_error(message=form.get_error())
-
+        return resful.unauth(message='您没有审核的权限！')
 
 
 # * @函数名: Alter_detail

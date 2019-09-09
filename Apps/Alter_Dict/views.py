@@ -3,7 +3,7 @@ from django.views.generic import View
 from django.views.decorators.http import require_POST,require_GET
 from utils import resful
 from Apps.Alter_Dict.models import Alt_Type,Alt_Database,Alt_Hospital
-from .forms import DB_Dict_Form,AltType_Dict_Form,Hospital_Dict_Form
+from .forms import DB_Dict_Form,AltType_Dict_Form,Hospital_Dict_Form,Hospital_Dict_addForm,AltType_Dict_addForm,DB_Dict_addForm
 from  Apps.Alter_management.models import Alter_managment
 from Apps.Alter_execute.models import Alter_execute
 from django.core.paginator import Paginator
@@ -12,6 +12,7 @@ from urllib import parse
 from _datetime import datetime
 from Apps.Alterauth.decorators import Alter_login_required
 from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 # Create your views here.
 
 
@@ -22,6 +23,8 @@ from django.utils.decorators import method_decorator
 # * @最后编辑时间: 2019-8-28 09:57:23
 # * @最后编辑者: 郭军
 @method_decorator(Alter_login_required,name='dispatch')
+# @method_decorator(permission_required('Alter_Dict.change_alt_database',login_url='/alter/index/'),name="dispatch")
+# @method_decorator(permission_required('Alter_Dict.change_alt_database',login_url='/'),name="dispatch")
 class Database_dict_Views(View):
     def get(self,request):
         # for Databases in Alt_Database.objects.all():
@@ -100,61 +103,76 @@ class Database_dict_Views(View):
 # * @功能描述: 数据库类型添加
 # * @作者: 郭军
 # * @时间: 2019-6-28 09:10:31
-# * @最后编辑时间: 2019-8-28 09:57:23
+# * @最后编辑时间: 2019-9-9 16:54:09
 # * @最后编辑者: 郭军
 @Alter_login_required
 def Add_DB_Dict(request):
-    Database =request.POST.get('Database')
-    exists= Alt_Database.objects.filter(dbname=Database).exists()
-    if not exists:
-        Alt_Database.objects.create(dbname=Database,modifier=request.user.username)
-        return resful.OK()
+    #dbname = request.POST.get('Database')
+    if request.user.has_perm('Alter_Dict.change_alt_database'):
+        form =DB_Dict_addForm(request.POST)
+        if form.is_valid():
+            dbname = form.cleaned_data.get('Database')
+            exists= Alt_Database.objects.filter(dbname=dbname).exists()
+            if not exists:
+                Alt_Database.objects.create(dbname=dbname,modifier=request.user.username)
+                return resful.OK()
+            else:
+                return resful.params_error(message='该数据库分类名称已经存在')
+        else:
+            return resful.params_error(form.get_error())
     else:
-        return resful.params_error(message='该数据库分类名称已经存在')
-
+        return resful.unauth(message='您没有添加数据库类型字典的权限！')
 # * @函数名: Edit_DB_Dict
 # * @功能描述: 编辑数据库类型
 # * @作者: 郭军
 # * @时间: 2019-6-28 09:10:31
-# * @最后编辑时间: 2019-8-28 09:57:23
+# * @最后编辑时间: 2019-9-9 16:49:09
 # * @最后编辑者: 郭军
 @Alter_login_required
 def Edit_DB_Dict(request):
-    form = DB_Dict_Form(request.POST)
-    if form.is_valid():
-        pk=form.cleaned_data.get('pk')
-        Database=form.cleaned_data.get('Database')
-        try:
-            Alt_Database.objects.filter(pk=pk).update(dbname=Database, modifier=request.user.username,modifytime=datetime.now())
-            return resful.OK()
-        except:
-            return resful.params_error(message="该分类不存在！")
+    if request.user.has_perm('Alter_Dict.change_alt_database'):
+        form = DB_Dict_Form(request.POST)
+        if form.is_valid():
+            pk=form.cleaned_data.get('pk')
+            Database=form.cleaned_data.get('Database')
+            try:
+                Alt_Database.objects.filter(pk=pk).update(dbname=Database, modifier=request.user.username,modifytime=datetime.now())
+                return resful.OK()
+            except:
+                return resful.params_error(message="该分类不存在！")
+        else:
+            return resful.params_error(form.get_error())
     else:
-        return resful.params_error(form.get_error())
+        return resful.unauth(message='您没有编辑数据库类型字典的权限！')
+
 
 # * @函数名: Del_DB_Dict
 # * @功能描述: 删除数据库类型
 # * @作者: 郭军
 # * @时间: 2019-6-28 09:10:31
-# * @最后编辑时间: 2019-8-28 09:57:23
+# * @最后编辑时间: 2019-9-9 16:48:12
 # * @最后编辑者: 郭军
 @Alter_login_required
 def Del_DB_Dict(request):
-    pk = request.POST.get("pk")
-    try:
-        Alt_Database.objects.filter(pk=pk).delete()
-        return resful.OK()
-    except:
-        return resful.params_error(message="该分类不存在！")
+    if request.user.has_perm('Alter_Dict.change_alt_database'):
+        pk = request.POST.get("pk")
+        try:
+            Alt_Database.objects.filter(pk=pk).delete()
+            return resful.OK()
+        except:
+            return resful.params_error(message="该分类不存在！")
+    else:
+        return resful.unauth(message='您没有删除数据库类型字典的权限！')
 
 
 # * @函数名: AltType_Dict_view
 # * @功能描述: 变更类型数据视图，用于前端页面数据展示
 # * @作者: 郭军
 # * @时间: 2019-6-28 09:10:31
-# * @最后编辑时间: 2019-8-28 09:57:23
+# * @最后编辑时间: 2019-9-9 16:45:56
 # * @最后编辑者: 郭军
-
+@method_decorator(Alter_login_required,name="dispatch")
+# @method_decorator(permission_required('Alter_Dict.change_alt_type',login_url='/alter/index/'),name="dispatch")
 class AltType_Dict_view(View):
     def get(self,request):
         # for AltTypes in Alt_Type.objects.all():
@@ -232,54 +250,69 @@ class AltType_Dict_view(View):
 # * @功能描述: 添加变更类型
 # * @作者: 郭军
 # * @时间: 2019-6-28 09:10:31
-# * @最后编辑时间: 2019-8-28 09:57:23
+# * @最后编辑时间: 2019-9-9 16:46:08
 # * @最后编辑者: 郭军
 @Alter_login_required
+
 def Add_AltType_Dict(request):
-    altertypename=request.POST.get('AltType')
-    exists=Alt_Type.objects.filter(altertypename=altertypename).exists()
-    if not exists:
-        Alt_Type.objects.create(altertypename=altertypename,modifier=request.user.username,modifytime=datetime.now())
-        return resful.OK()
+    if request.user.has_perm('Alter_Dict.change_alt_type'):
+        #altertypename = request.POST.get('AltType')
+        form = AltType_Dict_addForm(request.POST)
+        if form.is_valid():
+            altertypename = form.cleaned_data.get('AltType')
+
+            exists=Alt_Type.objects.filter(altertypename=altertypename).exists()
+            if not exists:
+                Alt_Type.objects.create(altertypename=altertypename,modifier=request.user.username,modifytime=datetime.now())
+                return resful.OK()
+            else:
+                return resful.params_error("该类型已经存在！")
+        else:
+            return resful.params_error(form.get_error())
     else:
-        return resful.params_error("该类型已经存在！")
+        return resful.unauth(message="您没有添加变更类型字典的权限！")
 
 
 # * @函数名: Edit_AltType_Dict
 # * @功能描述: 编辑变更类型
 # * @作者: 郭军
 # * @时间: 2019-6-28 09:10:31
-# * @最后编辑时间: 2019-8-28 09:57:23
+# * @最后编辑时间: 2019-9-9 16:27:59
 # * @最后编辑者: 郭军
 @Alter_login_required
 def Edit_AltType_Dict(request):
-    form=AltType_Dict_Form(request.POST)
-    if form.is_valid():
-        pk =form.cleaned_data.get("pk")
-        altertypename=form.cleaned_data.get('altertypename')
-        try:
-            Alt_Type.objects.filter(pk=pk).update(altertypename=altertypename,modifier=request.user.username,modifytime=datetime.now())
-            return resful.OK()
-        except:
-            return resful.params_error(message="该类型不存在！")
+    if request.user.has_perm('Alter_Dict.change_alt_type'):
+        form=AltType_Dict_Form(request.POST)
+        if form.is_valid():
+            pk =form.cleaned_data.get("pk")
+            altertypename=form.cleaned_data.get('altertypename')
+            try:
+                Alt_Type.objects.filter(pk=pk).update(altertypename=altertypename,modifier=request.user.username,modifytime=datetime.now())
+                return resful.OK()
+            except:
+                return resful.params_error(message="该类型不存在！")
+        else:
+            return resful.params_error(form.get_error())
     else:
-        return resful.params_error(form.get_error())
-
+        return resful.unauth(message='您没有编辑字典的权限！')
 
 # * @函数名: Del_AltType_Dict
 # * @功能描述: 删除变更类型
 # * @作者: 郭军
 # * @时间: 2019-6-28 09:10:31
-# * @最后编辑时间: 2019-8-28 09:57:23
+# * @最后编辑时间: 2019-9-9 16:27:51
 # * @最后编辑者: 郭军
 @Alter_login_required
 def Del_AltType_Dict(request):
-    pk=request.POST.get('pk')
-    try:
-        Alt_Type.objects.filter(pk=pk).delete()
-        return resful.OK()
-    except:
-        return resful.params_error(message="该变更类型不存在！")
+    if request.user.has_perm('Alter_Dict.change_alt_type'):
+        pk=request.POST.get('pk')
+        try:
+            Alt_Type.objects.filter(pk=pk).delete()
+            return resful.OK()
+        except:
+            return resful.params_error(message="该变更类型不存在！")
+    else:
+        return resful.unauth(message='您没有删除字典的权限！')
 
 
 
@@ -288,8 +321,10 @@ def Del_AltType_Dict(request):
 # * @功能描述: 医院字典数据视图，用于前端页面数据展示
 # * @作者: 郭军
 # * @时间: 2019-6-28 09:10:31
-# * @最后编辑时间: 2019-8-28 10:14:07
+# * @最后编辑时间: 2019-9-9 16:27:12
 # * @最后编辑者: 郭军
+@method_decorator(Alter_login_required,name="dispatch") #装饰器登陆用户才可以访问
+# @method_decorator(permission_required('Alter_Dict.change_alt_hospital',login_url='/alter/index/'),name="dispatch") #装饰器拥有指定权限才能访问，否则重定向到主页！
 class Hospital_Dict_view(View):
     def get(self,request):
         # for Althospital in Alt_Hospital.objects.all():
@@ -366,49 +401,62 @@ class Hospital_Dict_view(View):
 # * @功能描述: 添加医院字典
 # * @作者: 郭军
 # * @时间: 2019-8-28 09:10:31
-# * @最后编辑时间: 2019-8-28 09:57:23
+# * @最后编辑时间: 2019-9-9 16:27:20
 # * @最后编辑者: 郭军
 @Alter_login_required
 def Add_hospital_Dict(request):
-    hospitalname=request.POST.get('hospital')
-    exists=Alt_Hospital.objects.filter(hospitalname=hospitalname).exists()
-    if not exists:
-        Alt_Hospital.objects.create(hospitalname=hospitalname,modifier=request.user.username)
-        return resful.OK()
+    if request.user.has_perm('Alter_Dict.change_alt_hospital'):
+        # hospitalname=request.POST.get('hospital')
+        form = Hospital_Dict_addForm(request.POST)
+        if form.is_valid():
+            hospitalname = form.cleaned_data.get('hospital')
+            exists=Alt_Hospital.objects.filter(hospitalname=hospitalname).exists()
+            if not exists:
+                Alt_Hospital.objects.create(hospitalname=hospitalname,modifier=request.user.username)
+                return resful.OK()
+            else:
+                return resful.params_error("该医院已经存在！")
+        else:
+            return resful.params_error(form.get_error())
     else:
-        return resful.params_error("该医院已经存在！")
-
+        return resful.unauth(message='您没有添加医院字典权限！')
 # * @函数名: Edit_hospital_Dict
 # * @功能描述: 编辑医院字典
 # * @作者: 郭军
 # * @时间: 2019-8-28 09:10:31
-# * @最后编辑时间: 2019-8-28 09:57:19
+# * @最后编辑时间: 2019-9-9 16:27:25
 # * @最后编辑者: 郭军
 @Alter_login_required
 def Edit_hospital_Dict(request):
-    form=Hospital_Dict_Form(request.POST)
-    if form.is_valid():
-        pk =form.cleaned_data.get("pk")
-        hospitalname=form.cleaned_data.get('Hospital')
-        try:
-            Alt_Hospital.objects.filter(pk=pk).update(hospitalname=hospitalname, modifier=request.user.username, modifytime=datetime.now())
-            return resful.OK()
-        except:
-            return resful.params_error(message="该医院不存在！")
+    if request.user.has_perm('Alter_Dict.change_alt_hospital'):
+        form=Hospital_Dict_Form(request.POST)
+        if form.is_valid():
+            pk =form.cleaned_data.get("pk")
+            hospitalname=form.cleaned_data.get('Hospital')
+            try:
+                Alt_Hospital.objects.filter(pk=pk).update(hospitalname=hospitalname, modifier=request.user.username, modifytime=datetime.now())
+                return resful.OK()
+            except:
+                return resful.params_error(message="该医院不存在！")
+        else:
+            return resful.params_error(form.get_error())
     else:
-        return resful.params_error(form.get_error())
+        return resful.unauth(message='您没有编辑字典的权限！')
 
 # * @函数名: Del_hospital_Dict
 # * @功能描述: 删除医院字典
 # * @作者: 郭军
 # * @时间: 2019-8-28 09:10:31
-# * @最后编辑时间: 2019-8-28 09:57:12
+# * @最后编辑时间: 2019-9-9 16:27:33
 # * @最后编辑者: 郭军
 @Alter_login_required
 def Del_hospital_Dict(request):
-    pk=request.POST.get('pk')
-    try:
-        Alt_Hospital.objects.filter(pk=pk).delete()
-        return resful.OK()
-    except:
-        return resful.params_error(message="该医院不存在！")
+    if request.user.has_perm('Alter_Dict.change_alt_hospital'):
+        pk=request.POST.get('pk')
+        try:
+            Alt_Hospital.objects.filter(pk=pk).delete()
+            return resful.OK()
+        except:
+            return resful.params_error(message="该医院不存在！")
+    else:
+        return resful.unauth(message='您没有删除医院字典的权限！')

@@ -56,7 +56,7 @@
                         <div class="form-group">
                             <label for="Department-input">部门：</label>
                             {% if Use %}
-                                 <input type="text" class="form-control" id="Department" value="{{ Use.department }}">
+                                 <input type="text" class="form-control" id="Department" value="{{ Use.department|default:'' }}">
                             {% else %}
                                  <input type="text" class="form-control" id="Department">
                             {% endif %}

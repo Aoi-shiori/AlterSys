@@ -16,6 +16,9 @@ class Command(BaseCommand):
         Research_permissions=Permission.objects.filter(content_type__in=Research_content_type)
         Research_Group=Group.objects.create(name="研发组")
         Research_Group.permissions.set(Research_permissions)
+        pers = Permission.objects.filter(codename__in=['review_alter_managment',])
+        for per in pers:
+            Research_Group.permissions.remove(per)
         Research_Group.save()
         self.stdout.write(self.style.SUCCESS("研发组创建成功"))
 

@@ -114,8 +114,18 @@
                                         <td class ='序号'>{{ forloop.counter}}</td>
 {#                                        <td class ='执行记录id '>{{ Alterd_data.id }}</td>#}
                                         <td class ='执行至ID'>{{Alterd_data.alterid}}</td>
-                                        <td class ='执行医院'>{{ Alterd_data.hospitalid}}</td>
-                                        <td class ='执行数据库'>{{ Alterd_data.databaseid}}</td>
+{#                                        <td class ='执行医院'>{{ Alterd_data.hospitalid}}</td>#}
+                                        {% for Hospital in Hospitals %}
+                                            {% ifequal Alterd_data.hospitalid Hospital.pk %}
+                                                <td class ='执行医院'>{{ Hospital.hospitalname}}</td>
+                                            {% endifequal %}
+                                        {% endfor %}
+{#                                        <td class ='执行数据库'>{{ Alterd_data.databaseid}}</td>#}
+                                        {% for Database in Databases %}
+                                            {% ifequal Alterd_data.databaseid Database.pk %}
+                                                <td class ='执行数据库'>{{Database.dbname}}</td>
+                                            {% endifequal %}
+                                        {% endfor %}
                                         <td class ='执行人'>{{ Alterd_data.executor}}</td>
                                         <td class ='执行时间'>{{ Alterd_data.executiontime|date:"Y-m-d H:i:s" }}</td>
                                         <td class ='执行结果备注' title="{{ Alterd_data.executionresult|default:'' }}">{{ Alterd_data.executionresult|default:''|truncatechars:15}}</td>
