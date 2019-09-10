@@ -634,6 +634,7 @@ Alter.prototype.listenreviewEvent=function(){
                                             window.location.reload()
                                         })
                                     }else {
+                                        console.log('报错原因',result)
                                         window.messageBox.showError(result['message'])
                                     }
                                 }

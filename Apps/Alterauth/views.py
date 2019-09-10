@@ -64,6 +64,14 @@ def staff_view(request):
     }
     return  render(request,"Alter_management/staffs.html",context=context)
 
+
+
+# * @函数名: AddStaff_view
+# # * @功能描述: 添加员工
+# # * @作者: 郭军
+# # * @时间: 2019-6-30 15:28:19
+# # * @最后编辑时间: 2019-9-10 11:13:11
+# # * @最后编辑者: 郭军
 #添加员工,类视图需要借助其他工具才能使用装饰器,导入method_decorator
 @method_decorator(Alter_superuser_required,name='dispatch')
 class AddStaff_view(View):
@@ -75,29 +83,39 @@ class AddStaff_view(View):
         return render(request,'Alter_management/add_staff.html',context=context)
 
     def post(self,request):
-        form =AddStaffForm(request.POST)
-        if form.is_valid():
-            mobilephone=form.cleaned_data.get('mobilephone')
-            worknumber = form.cleaned_data.get('worknumber')
-            password1 = form.cleaned_data.get('password1')
-            email = form.cleaned_data.get('email')
-            username =form.cleaned_data.get('username')
-            department =form.cleaned_data.get('department')
+        if request.user.has_perm('Alterauth.change_user'):
+            form =AddStaffForm(request.POST)
+            if form.is_valid():
+                mobilephone=form.cleaned_data.get('mobilephone')
+                worknumber = form.cleaned_data.get('worknumber')
+                password1 = form.cleaned_data.get('password1')
+                email = form.cleaned_data.get('email')
+                username =form.cleaned_data.get('username')
+                department =form.cleaned_data.get('department')
 
-            user=User.object.create_user(mobilephone=mobilephone,worknumber=worknumber,password=password1,email=email,username=username,department=department)
-            #groups_ids=request.POST.getlist('groups')
-            #groups= Group.objects.filter(pk__in=groups_ids)
-            groups = form.cleaned_data.get('groups').split(',')
-            #gs = groups.split(',')
-            groups = Group.objects.filter(pk__in=groups)
-            user.groups.set(groups)
-            user.save()
-            return resful.OK()
-            #return redirect(reverse('Alterauth:add_staff'))
+                user=User.object.create_user(mobilephone=mobilephone,worknumber=worknumber,password=password1,email=email,username=username,department=department)
+                #groups_ids=request.POST.getlist('groups')
+                #groups= Group.objects.filter(pk__in=groups_ids)
+                groups = form.cleaned_data.get('groups').split(',')
+                #gs = groups.split(',')
+                groups = Group.objects.filter(pk__in=groups)
+                user.groups.set(groups)
+                user.save()
+                return resful.OK()
+                #return redirect(reverse('Alterauth:add_staff'))
+            else:
+                return resful.params_error(message=form.get_error())
         else:
-            return resful.params_error(message=form.get_error())
+            return resful.unauth(message='您没有添加员工的权限！')
 
 
+# * @函数名: EditStaff_view
+# # * @功能描述: 编辑员工
+# # * @作者: 郭军
+# # * @时间: 2019-6-30 15:28:19
+# # * @最后编辑时间: 2019-9-10 11:13:43
+# # * @最后编辑者: 郭军
+# @method_decorator(Alter_superuser_required,name='dispatch')
 class EditStaff_view(View):
     def get(self,request):
         id =request.GET.get('id')
@@ -112,50 +130,58 @@ class EditStaff_view(View):
         return render(request,'Alter_management/add_staff.html',context=context)
 
     def post(self,request):
-        form =EditStaffForm(request.POST)
-        if form.is_valid():
-            id = form.cleaned_data.get('id')
-            mobilephone=form.cleaned_data.get('mobilephone')
-            worknumber = form.cleaned_data.get('worknumber')
-            email = form.cleaned_data.get('email')
-            username =form.cleaned_data.get('username')
-            department =form.cleaned_data.get('department')
+        if request.user.has_perm('Alterauth.change_user'):
+            form =EditStaffForm(request.POST)
+            if form.is_valid():
+                id = form.cleaned_data.get('id')
+                mobilephone=form.cleaned_data.get('mobilephone')
+                worknumber = form.cleaned_data.get('worknumber')
+                email = form.cleaned_data.get('email')
+                username =form.cleaned_data.get('username')
+                department =form.cleaned_data.get('department')
 
-            exists = User.object.filter(id=id).exists()
-            if exists:
-                users = User.object.exclude(id=id)
-                if  users.filter(mobilephone=mobilephone):
-                    return resful.params_error(message='该手机号码已经注册，请重新输入！')
-                elif users.filter(worknumber=worknumber):
-                    return resful.params_error(message='该工号已经注册，请重新输入！')
-                elif users.filter(email=email):
-                    return resful.params_error(message='该邮箱地址已经注册，请重新输入！')
-                else:
-                    User.object.filter(id=id).update(mobilephone=mobilephone,worknumber=worknumber,email=email,username=username,department=department)
-                    use=User.object.get(id=id) #获取到当前的用户，如果直接使用上面的是一个值
-
-                    if User.object.get(id=id).is_superuser:
-                        use.save()
-                        #return resful.OK()
-                        return resful.OK()
+                exists = User.object.filter(id=id).exists()
+                if exists:
+                    users = User.object.exclude(id=id)
+                    if  users.filter(mobilephone=mobilephone):
+                        return resful.params_error(message='该手机号码已经注册，请重新输入！')
+                    elif users.filter(worknumber=worknumber):
+                        return resful.params_error(message='该工号已经注册，请重新输入！')
+                    elif users.filter(email=email):
+                        return resful.params_error(message='该邮箱地址已经注册，请重新输入！')
                     else:
-                        groups = form.cleaned_data.get('groups').split(',')
-                        #gs = groups.split(',')#将获取的字符串列表进行分割
-                        group = Group.objects.filter(pk__in=groups)
-                        use.groups.clear() #清除原有的分组权限数据
-                        use.groups.set(group)
-                        use.save()
-                        return resful.OK()
-            #return redirect(reverse('Alterauth:add_staff'))
+                        User.object.filter(id=id).update(mobilephone=mobilephone,worknumber=worknumber,email=email,username=username,department=department)
+                        use=User.object.get(id=id) #获取到当前的用户，如果直接使用上面的是一个值
+
+                        if User.object.get(id=id).is_superuser:
+                            use.save()
+                            #return resful.OK()
+                            return resful.OK()
+                        else:
+                            groups = form.cleaned_data.get('groups').split(',')
+                            #gs = groups.split(',')#将获取的字符串列表进行分割
+                            group = Group.objects.filter(pk__in=groups)
+                            use.groups.clear() #清除原有的分组权限数据
+                            use.groups.set(group)
+                            use.save()
+                            return resful.OK()
+                #return redirect(reverse('Alterauth:add_staff'))
+            else:
+                return resful.params_error(message=form.get_error())
         else:
-            return resful.params_error(message=form.get_error())
+            return resful.unauth(message='您没有编辑用户的权限！')
 
 
 
-
-
-#注销启用员工
+# * @函数名: Cancellation
+# # * @功能描述: 注销启用员工
+# # * @作者: 郭军
+# # * @时间: 2019-6-30 15:28:19
+# # * @最后编辑时间: 2019-9-10 11:14:16
+# # * @最后编辑者: 郭军
+@method_decorator(Alter_superuser_required,name='dispatch')
 def Cancellation(request):
+    if request.user.has_perm('Alterauth.change_user'):
         id=request.POST.get('id').replace(',','') #传过来的uid后面带了个逗号，进行去除
         Cancellation=request.POST.get('Cancellation')
         if Cancellation == 'True':
@@ -164,3 +190,5 @@ def Cancellation(request):
         else:
             User.object.filter(id=id).update(Cancellation=True)
             return resful.OK()
+    else:
+        return resful.unauth(message='您没有注销员工的权限！')

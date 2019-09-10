@@ -66,7 +66,7 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
         #request.GET.get（参数,默认值）
         #这个参数是只有没有传递参数的时候才会使用
         #如果传递了，但是是一个空的字符串，也不会使用，那么可以使用 ('ReviewStatus',0) or 0
-        reviewStatus=int(request.GET.get('ReviewStatus',0)) #获取审核状态查询值,因为get到的都是字符串，转换成整形才能在页面中用数值对比
+        reviewStatus = int(request.GET.get('ReviewStatus',0)) #获取审核状态查询值,因为get到的都是字符串，转换成整形才能在页面中用数值对比
         DatabaseType = int(request.GET.get('DatabaseType',0))
         Alterd_datas = Alter_managment.objects.all()#获取所有数据库的数据
         Databases = Alt_Database.objects.all()
@@ -118,6 +118,7 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
                 'end':end or '',
                 'cxtj':cxtj or '',
                 'reviewStatus':reviewStatus or '',
+                'DatabaseType':DatabaseType or '',
             })#用于拼接url,让页面在查询后进行翻页，任然保留查询条件
 
         }#返回包含分页信息的数据
@@ -146,6 +147,9 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
         else:
             right_has_more = True
             right_pages = range(current_page + 1, current_page + around_count + 1)
+        # current_page为当前页码数，count_page为每页显示数量
+        #strat = (current_page - 1) * count_page
+        start_num = (current_page - 1) * around_count
 
         return {
             # left_pages：代表的是当前这页的左边的页的页码
@@ -155,7 +159,8 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
             'current_page': current_page,
             'left_has_more': left_has_more,
             'right_has_more': right_has_more,
-            'num_pages': num_pages
+            'num_pages': num_pages,
+            'start_num':start_num
         }
 
 
@@ -289,9 +294,23 @@ def Review_Alter_manager(request):#变更审核用
                     successdelete=alter_data_checked.delete()
 
                     if successdelete:
+                        # 如果审核通过则复制创建主表数据到分表
+
                         return resful.OK()
                     else:
                         return resful.params_error(message='分数据删除失败')
+                elif alter_data_checked and ReviewStatus=='1':
+                    Alter_managment_checked.objects.update(alterid=alter_data.pk, associatedid=alter_data.associatedid,
+                                                           altercontent=alter_data.altercontent,
+                                                           modifier=alter_data.modifier,
+                                                           modifytime=alter_data.modifytime,
+                                                           reviewer=alter_data.reviewer,
+                                                           reviewstatus=alter_data.reviewstatus,
+                                                           reviewcontent=alter_data.reviewcontent,
+                                                           reviewtime=alter_data.reviewtime,
+                                                           altertypeid=alter_data.altertypeid,
+                                                           databaseid=alter_data.databaseid)
+                    return resful.OK()
 
                 else:
                     #如果审核通过则复制创建主表数据到分表

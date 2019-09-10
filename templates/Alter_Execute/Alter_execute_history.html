@@ -75,12 +75,12 @@
                                 {% else %}
                                     <option value="0">全部</option>
                                 {% endif %}
-                                {% for Hospital_data in Hospital_datas %}
+                                {% for Hospital in Hospitals %}
                                     {% if Hodpital %}
-                                        {{ Hospital_data.Pk }}={{ Hodpital }}
-                                        <option value="{{ Hospital_data.pk }}" selected>{{ Hospital_data.hospitalname }}</option>
+                                        {{ Hospital.Pk }}={{ Hodpital }}
+                                        <option value="{{ Hospital.pk }}" selected>{{ Hospital.hospitalname }}</option>
                                     {% else %}
-                                        <option value="{{ Hospital_data.pk }}">{{ Hospital_data.hospitalname }}</option>
+                                        <option value="{{ Hospital.pk }}">{{ Hospital.hospitalname }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -111,7 +111,7 @@
                         <tbody class="list">
                                 {% for Alterd_data in Alterd_datas %}
                                     <tr class="tr-line click" id="{{ Alterd_data.id }}"  AlterID="{{ Alterd_data.alterid }}"  Hospital="{{ Alterd_data.hospitalid }}" ExecutionResult="{{ Alterd_data.executionresult }}" Executor="{{ Alterd_data.executor }}" ExecutionTime="{{ Alterd_data.executiontime }}" >
-                                        <td class ='序号'>{{ forloop.counter}}</td>
+                                        <td class ='序号'>{{ forloop.counter|add:start_num}}</td>
 {#                                        <td class ='执行记录id '>{{ Alterd_data.id }}</td>#}
                                         <td class ='执行至ID'>{{Alterd_data.alterid}}</td>
 {#                                        <td class ='执行医院'>{{ Alterd_data.hospitalid}}</td>#}

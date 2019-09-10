@@ -79,15 +79,14 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
         # 获取所有数据库的数据
         Alterd_datas = Alter_managment_checked.objects.all()  # 获取所有数据库的数据
 
-
         if start or end:  # 查询时间判断
             if start:
-                start_time = datetime.strptime(start, '%m/%d/%Y')
+                start_time = datetime.strptime(start, '%Y/%m/%d')
             else:
                 start_time = datetime(year=2019, month=5, day=1)
 
             if end:
-                end_time = datetime.strptime(end, '%m/%d/%Y')
+                end_time = datetime.strptime(end, '%Y/%m/%d')
             else:
                 end_time = datetime.today()
 
@@ -95,7 +94,7 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
 
         if cxtj:  # 查询条件判断
             # 多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
-            Alterd_datas = Alterd_datas.filter(Q(alterid=cxtj)|Q(altercontent__icontains=cxtj)|Q(modifier__icontains=cxtj)|Q(associatednumber__icontains=cxtj))
+            Alterd_datas = Alterd_datas.filter(Q(alterid=cxtj)|Q(altercontent__icontains=cxtj)|Q(modifier__icontains=cxtj)|Q(associatedid__icontains=cxtj))
 
 
         if DatabaseType:  # 数据库类型判断
@@ -150,6 +149,9 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
         else:
             right_has_more = True
             right_pages = range(current_page + 1, current_page + around_count + 1)
+        # current_page为当前页码数，count_page为每页显示数量
+        # strat = (current_page - 1) * count_page
+        start_num = (current_page - 1) * around_count
 
         return {
             # left_pages：代表的是当前这页的左边的页的页码
@@ -159,7 +161,8 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
             'current_page': current_page,
             'left_has_more': left_has_more,
             'right_has_more': right_has_more,
-            'num_pages': num_pages
+            'num_pages': num_pages,
+            'start_num':start_num
         }
 
 
@@ -196,25 +199,25 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
 
         if start or end:  # 查询时间判断
             if start:
-                start_time = datetime.strptime(start, '%m/%d/%Y')
+                start_time = datetime.strptime(start, '%Y/%m/%d')
             else:
                 start_time = datetime(year=2019, month=5, day=1)
 
             if end:
-                end_time = datetime.strptime(end, '%m/%d/%Y')
+                end_time = datetime.strptime(end, '%Y/%m/%d')
             else:
                 end_time = datetime.today()
 
-            Alterd_datas = Alterd_datas.filter(ExecutionTime__range=(make_aware(start_time), make_aware(end_time)))
+            Alterd_datas = Alterd_datas.filter(executiontime__range=(make_aware(start_time), make_aware(end_time)))
 
         if cxtj:  # 查询条件判断
             # 多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
             Alterd_datas = Alterd_datas.filter(
-                Q(id__icontains=cxtj) | Q(AlterID__icontains=cxtj) | Q(
-                    Executor__icontains=cxtj) | Q(ExecutionResult__icontains=cxtj))
+                Q(id=cxtj) | Q(alterid=cxtj) | Q(
+                    executor__icontains=cxtj) | Q(executionresult__contains=cxtj))
 
         if Hospital:  # 审核状态判断
-            Alterd_datas = Alterd_datas.filter(Hospital_id=Hospital)
+            Alterd_datas = Alterd_datas.filter(hospitalid=Hospital)
 
 
         paginator = Paginator(Alterd_datas, 2)  # 分页用，表示每2条数据分一页
@@ -236,7 +239,7 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
                 'start': start or '',
                 'end': end or '',
                 'cxtj': cxtj or '',
-                'Hospital': Hospital or '',
+                'Hospital': Hospital or '0',
             })  # 用于拼接url,让页面在查询后进行翻页，任然保留查询条件
 
         }  # 返回包含分页信息的数据
@@ -263,6 +266,9 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
         else:
             right_has_more = True
             right_pages = range(current_page + 1, current_page + around_count + 1)
+        # current_page为当前页码数，count_page为每页显示数量
+        #strat = (current_page - 1) * count_page
+        start_num = (current_page - 1) * around_count
 
         return {
             # left_pages：代表的是当前这页的左边的页的页码
@@ -272,7 +278,8 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
             'current_page': current_page,
             'left_has_more': left_has_more,
             'right_has_more': right_has_more,
-            'num_pages': num_pages
+            'num_pages': num_pages,
+            'start_num':start_num
         }
 
 

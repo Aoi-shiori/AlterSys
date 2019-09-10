@@ -28,4 +28,4 @@ class EditAlterform(forms.Form,FormMixin):
 class Reviewform(forms.Form,FormMixin):
         id = forms.IntegerField(error_messages={"required": "必须传入变更id！"})
         ReviewStatus = forms.CharField(max_length=2)  # '审核状态',
-        ReviewContent = forms.CharField(widget=forms.Textarea,error_messages={'required':'审核内容不能为空！'})  # '审核内容',
+        ReviewContent = forms.CharField(required=False,max_length=255,error_messages={'max_length':'超出最大输入限制！'})  # '审核内容',

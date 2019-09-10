@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group,ContentType,Permission
 from Apps.Alter_management.models import Alter_managment
 from Apps.Alter_execute.models import Alter_execute
 from Apps.Alter_Dict.models import Alt_Database,Alt_Hospital,Alt_Type
+from Apps.Alterauth.models import User
 #必须有一个类叫Command让其继承BaseCommand
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -39,7 +40,9 @@ class Command(BaseCommand):
             ContentType.objects.get_for_model(Alter_managment),
             ContentType.objects.get_for_model(Alt_Hospital),
             ContentType.objects.get_for_model(Alt_Type),
-            ContentType.objects.get_for_model(Alt_Database)
+            ContentType.objects.get_for_model(Alt_Database),
+            ContentType.objects.get_for_model(User)
+
 
         }
         admin_permissions=Permission.objects.filter(content_type__in=admin_content_type)
