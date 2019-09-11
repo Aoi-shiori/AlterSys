@@ -68,7 +68,7 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
         #如果传递了，但是是一个空的字符串，也不会使用，那么可以使用 ('ReviewStatus',0) or 0
         reviewStatus = int(request.GET.get('ReviewStatus',0)) #获取审核状态查询值,因为get到的都是字符串，转换成整形才能在页面中用数值对比
         DatabaseType = int(request.GET.get('DatabaseType',0))
-        Alterd_datas = Alter_managment.objects.all()#获取所有数据库的数据
+        Alterd_datas = Alter_managment.objects.all().order_by('-modifytime')#获取所有数据库的数据
         Databases = Alt_Database.objects.all()
         AltTypes=Alt_Type.objects.all()
 
@@ -117,8 +117,8 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
                 'start': start or '',
                 'end':end or '',
                 'cxtj':cxtj or '',
-                'reviewStatus':reviewStatus or '',
-                'DatabaseType':DatabaseType or '',
+                'reviewStatus':reviewStatus or 0,
+                'DatabaseType':DatabaseType or 0,
             })#用于拼接url,让页面在查询后进行翻页，任然保留查询条件
 
         }#返回包含分页信息的数据

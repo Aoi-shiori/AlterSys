@@ -604,7 +604,7 @@ def export_alt_data(request):
 
                 if exportData:
                     # 调用导出文件生成函数
-                    File_Generate = Export_file_Generate(exportData)
+                    File_Generate = Export_file_Generate(exportData,hospitalId)
                 else:
                     return resful.params_error(message='您已经导出过数据至最新！')
 
@@ -631,7 +631,7 @@ def export_alt_data(request):
                     return resful.params_error(message='导出文件生成失败！')
             else:
 
-                File_Generate = Export_file_Generate(exportData)
+                File_Generate = Export_file_Generate(exportData,hospitalId)
 
                 if File_Generate:
                     # 创建新的导出执行记录
@@ -689,16 +689,19 @@ def download(request):
 # * @时间: 2019-8-30 09:34:30
 # * @最后编辑时间: 2019-8-30 09:34:37
 # * @最后编辑者: 郭军
-def Export_file_Generate(export_datas):
+def Export_file_Generate(request,export_datas,hospitalId):
     if export_datas:
+            #将数据按照修改时间从小到大排序，如果要倒序则加负号‘-
+            export_datas.order_by('modifytime') #从小到大排序
+            # export_datas.order_by('-modifytime')
             # 打开Alter.sql
             f = open(r'../AlterSys/Download/' + 'Alter.sql', "w", encoding='utf-8')
             # 写入数据
             for export_data in export_datas:
                 # 写头部说明信息
                 f.write('-- ----------------------------\n')
-                f.write('-- 变更ID:' + str(export_data.alterid) + '\n-- 变更库:' + str(export_data.databaseid) + '\n')
-                f.write('--审核时间：' + str(export_data.reviewtime.strftime("%Y-%m-%d %H:%M:%S")) + '\n')
+                f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(Alt_Hospital.objects.get(pk=hospitalId).hospitalname) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
+                f.write('-- 提交时间:' + str(export_data.modifytime.strftime("%Y-%m-%d %H:%M:%S")) + '\n')
                 f.write('-- ----------------------------\n')
                 ##判断是否以;结尾
                 if export_data.altercontent.endswith(';'):
@@ -712,6 +715,20 @@ def Export_file_Generate(export_datas):
 
                 # 每个变更之间进行换行
                 f.write('\n')
+                f.write('-- ----------------------------\n')
+                f.write('-- 执行记录表-执行记录插入\n')
+                f.write('-- ----------------------------\n')
+                #id,userid,alterid,hospitalid,databaseid,executor,executiontime,executionresult,exportlist
+
+                alterid =export_datas.order_by('-alterid').values().first()['alterid']
+                databaseid =export_datas.values().first()['databaseid']
+                executor = request.user.username
+                userid=request.user.pk
+                executiontime = datetime.now()
+                #两种在字符串中引用变量的方法
+            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '{0}', '{1}', {2}, {3}, '{4}', '{5}', '首次执行到变更ID：2', '2');\n'''.format(userid,alterid,hospitalId,databaseid,executor,executiontime))
+            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %d, %d, '%s', '%s', '首次执行到变更ID：2', '2');\n'''%(userid,alterid,int(hospitalId),databaseid,executor,executiontime))
+            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %s, %s, '%s', '%s', '首次执行到变更ID：2', '2');\n'''%(userid,alterid,hospitalId,databaseid,executor,executiontime))
 
             f.close()
             return True
@@ -800,7 +817,7 @@ class export_alt_datas_view(View):
 
                 # 获取可导出数据中，ID最大的值
                     #方法一：数据转换成列表，并且指定返回指定字段的值列表(flat=True),不加设置返回的是字典
-                export_max_alter_ids = max(exportData.values_list('id', flat=True))
+                #export_max_alter_ids = max(exportData.values_list('id', flat=True))
                     #方法二：将数据按指定字典id 从大到小进行排序，然后取首条数据的id值，这里是主键也就可以用Pk
                 export_max_alter_id =exportData.order_by('-id').first().pk
 
@@ -836,8 +853,9 @@ class export_alt_datas_view(View):
                     exportData=exportData.filter(id__gt=old_alter_id)
 
                     if exportData:
+
                         # 调用导出文件生成函数
-                        File_Generate = Export_file_Generate(exportData)
+                        File_Generate = Export_file_Generate(request,exportData,hospitalId)
                     else:
                         return resful.params_error(message='您已经导出过数据至最新！')
 
@@ -863,7 +881,7 @@ class export_alt_datas_view(View):
                         return resful.params_error(message='导出文件生成失败！')
                 else:
 
-                    File_Generate = Export_file_Generate(exportData)
+                    File_Generate = Export_file_Generate(request,exportData,hospitalId)
 
                     if File_Generate:
                         # 创建新的导出执行记录
