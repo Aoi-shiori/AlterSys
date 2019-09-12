@@ -1,5 +1,6 @@
 from django.db import models
 from Apps.Alter_Dict.models import Alt_Database,Alt_Type
+from  shortuuidfield import ShortUUIDField
 
 # Create your models here.
 class Alter_managment(models.Model):
@@ -11,6 +12,7 @@ class Alter_managment(models.Model):
         databaseid=models.IntegerField()
         altercontent=models.CharField(max_length=1000) #变更内容
         modifier=models.CharField(max_length=50)# '填报人',
+        userid=ShortUUIDField()
         modifytime=models.DateTimeField(auto_now=True)#'填报时间'
         reviewer=models.CharField(max_length=50, null=True)# '审核人'
         reviewstatus=models.CharField(max_length=2, null=True, default='0')#'审核状态',
@@ -35,6 +37,7 @@ class Alter_managment_checked(models.Model):
         databaseid=models.IntegerField()
         altercontent=models.CharField(max_length=5000) #变更内容
         modifier=models.CharField(max_length=50)# '填报人',
+        userid = ShortUUIDField()
         modifytime=models.DateTimeField(auto_now=True)#'填报时间'
         reviewer=models.CharField(max_length=50, null=True)# '审核人'
         reviewstatus=models.CharField(max_length=2, null=True, default='0')#'审核状态',

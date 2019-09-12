@@ -19,11 +19,11 @@ from utils import resful
 #导入分页用的类
 from django.core.paginator import Paginator
 #导入时间分类
-from datetime import datetime
+from datetime import datetime,timedelta
 #导入设置时区
 import pytz
 #将时间标记为清醒的时间
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware,timezone
 #用于模糊查询
 from django.db.models import Q
 #用于拼接url
@@ -81,16 +81,17 @@ class Alter_Execute_view(View):  # 变更执行管理页面，返回数据
 
         if start or end:  # 查询时间判断
             if start:
-                start_time = datetime.strptime(start, '%Y/%m/%d')
+                start_time = datetime.strptime(start, "%Y/%m/%d")
             else:
-                start_time = datetime(year=2019, month=5, day=1)
+                start_time = datetime.today()-timedelta()
 
             if end:
-                end_time = datetime.strptime(end, '%Y/%m/%d')
+                end_time = datetime.strptime(end, "%Y/%m/%d")+timedelta(hours=23,minutes=59,seconds=59)
             else:
                 end_time = datetime.today()
 
-            Alterd_datas = Alterd_datas.filter(modifytime__range=(make_aware(start_time), make_aware(end_time)))
+            #Alterd_datas = Alterd_datas.filter(modifytime__range=(make_aware(start_time), make_aware(end_time)))
+            Alterd_datas = Alterd_datas.filter(modifytime__range=(start_time, end_time))
 
         if cxtj:  # 查询条件判断
             # 多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
@@ -204,11 +205,13 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
                 start_time = datetime(year=2019, month=5, day=1)
 
             if end:
-                end_time = datetime.strptime(end, '%Y/%m/%d')
+                #end_time = datetime.strptime(end, '%Y/%m/%d')
+                end_time = datetime.strptime(end, '%Y/%m/%d')+timedelta(hours=23,minutes=59,seconds=59)
             else:
                 end_time = datetime.today()
 
-            Alterd_datas = Alterd_datas.filter(executiontime__range=(make_aware(start_time), make_aware(end_time)))
+            #Alterd_datas = Alterd_datas.filter(executiontime__range=(make_aware(start_time), make_aware(end_time)))
+            Alterd_datas = Alterd_datas.filter(executiontime__range=(start_time, end_time))
 
         if cxtj:  # 查询条件判断
             # 多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
@@ -283,380 +286,6 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
         }
 
 
-
-# * @函数名: export
-# * @功能描述: 导出当前条件下所有变更内容
-# * @作者: 郭军
-# * @时间: 2019-08-22 10:01:00
-# * @最后编辑时间: 2019-8-23 15:22:19
-# * @最后编辑者: 郭军
-@csrf_exempt
-def export(request):
-    #checked=request.POST.get('checked')
-    #checked =[1,2,3]
-    #checked=[]
-    Database =request.POST.get('DatabaseType')
-    Hospital = request.POST.get('Hospital')
-
-    #过滤出需要导出的数据
-    #exports =Alter_managment.objects.filter(pk__in=checked,ReviewStatus=1)
-    #Database =1
-
-
-
-
-    if Database != '0':
-        exports = Alter_managment.objects.filter(ReviewStatus=1,Database=Database)
-    else:
-        exports = Alter_managment.objects.filter(ReviewStatus=1)
-
-
-
-    # 获取当前导出数据的ID列表
-    Exports_Nums = list(exports.values_list('id', flat=True))
-    # 将列表转换成字符串，用于存储数据库
-    Exports_Nums = ','.join([str(id) for id in Exports_Nums])
-    print('转换字符串', Exports_Nums)
-
-
-    if exports:
-
-        ids = exports.values_list('id')
-        nowMax = list(max(ids))[0]
-        #打开Alter.sql
-        f = open(r'../AlterSys/Download/' + 'Alter.sql', "w", encoding='utf-8')
-        #写入数据
-        for export in exports:
-            #写头部说明信息
-            f.write('-- ----------------------------\n')
-            f.write('-- ID:' + str(export.pk)+'\n-- 变更库:'+export.Database.Database+'\n')
-            f.write('--审核时间：'+str(export.AuditTime.strftime("%Y-%m-%d %H:%M:%S"))+'\n')
-            f.write('-- ----------------------------\n')
-            ##判断是否以;结尾
-            if export.AlterContent.endswith(';'):
-
-                #，如果是以';'结尾,则进行换行操作
-                f.write(export.AlterContent.replace(';',';\n'))
-
-            else:
-                # 如果不是';'结尾,添加';'结尾，并换行
-                f.write(export.AlterContent+';'+'\n')
-
-            #每个变更之间进行换行
-            f.write('\n')
-
-        f.close()
-
-        #查找并打开文件
-        file = open(r'../AlterSys/Download/'+'Alter.sql','rb')
-        #赋予新的文件名 时间+_Alter.sql
-        the_file_name = datetime.now().strftime('%Y%m%d%H%M%S')+'_Alter.sql'
-        #FileResponse对象，接收二进制对象
-        response =FileResponse(file)
-        #设置返回二进制文件类型
-        #response['Content-Type'] = 'application/text/plain'
-        response['Content-Type'] = 'application/octet/stream'
-        #设置attachment，让浏览器下载，而不是直接打开，并重命名
-        response['Content-Disposition'] = 'attachment;filename='+the_file_name
-
-
-        #判断当前用户，在执行表中是否有记录
-        exits=Alter_execute.objects.filter(UID=request.user.id)
-
-
-
-        if exits:
-            #存在-更新数据
-            #AA=exits.values_list('AlterID')
-            #BB=exits.values('AlterID')
-            #CC=list(AA)[0][0]
-            #hh=CC[0]
-            #DD=BB.get('AlterID')
-            AlterID = exits.values_list('alterid')
-            OldID=list(AlterID)[0][0]
-
-
-
-            #判断还是有点问题 需要修改一下
-            if nowMax < int(OldID):
-                exits.update(AlterID=OldID,Executor=request.user.username,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
-
-            else:
-                exits.update(AlterID=nowMax,Executor=request.user.username,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='本次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
-
-        else:
-            #不存在-插入数据
-            Alter_execute.objects.create(AlterID=nowMax,Hospital=Hospital,Executor=request.user.username,ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),ExecutionResult='首次执行到变更ID：'+str(nowMax),UID=request.user.id,Exports=Exports_Nums)
-
-        return resful.OK()
-    else:
-        return resful.params_error(message="需要导出的数据不存在")
-
-
-# * @函数名: export_New
-# * @功能描述: 导出最新的变更内容
-# * @作者: 郭军
-# * @时间: 2019-08-23 15:01:00
-# * @最后编辑时间: 2019-8-23 15:22:19
-# * @最后编辑者: 郭军
-@csrf_exempt
-def export_New(request):
-    #获取被选中的
-    #checked=request.POST.get('checked')
-    #获取当前选中的数据库类型
-    Database =request.POST.get('DatabaseType')
-    Hospital =request.POST.get('Hospital')
-
-    print('医院ID是',Hospital)
-    #过滤数据库中可导出数据
-    Export_News_datas=Alter_managment.objects.filter(ReviewStatus=1)
-
-    if Export_News_datas:
-        # 过滤出需要导出的数据
-        # exports =Alter_managment.objects.filter(pk__in=checked,ReviewStatus=1)
-
-        # 获取可导出数据中，ID最大的值
-        Now_MaxNum = max(Export_News_datas.values_list('id', flat=True))
-
-        # 获取当前导出数据的ID列表
-        Exports_Nums = list(Export_News_datas.values_list('id', flat=True))
-
-        #判断导出执行表中是否有导出的记录
-        Alt_execute=Alter_execute.objects.filter(UID=request.user.pk)
-        if Alt_execute:
-            # 获取用户已导出的数据
-            Export_old_Nums = Alt_execute.objects.values_list('exportlist', flat=True)[0]
-
-            # 字符串转换成数值列表
-            Export_old_Nums = [int(id) for id in (Export_old_Nums.split(','))]
-
-            # 获取不在已导出列中的ID
-            # export_meiyou = [x for x in Exports_Nums if  x not in Export_old_Nums]
-            # print('还没有导出的ID有', export_meiyou)
-
-            # 过滤出还未导出的数据
-            Export_News_datas = Export_News_datas.exclude(pk__in=Export_old_Nums)
-        else:
-            pass
-        # 判断数据库类型是否选中
-        if Database != '0':
-            # 当选择的不是全部，根据数据库类型过滤出数据
-            Export_News_datas = Export_News_datas.filter(Database=Database)
-        else:
-            Export_News_datas
-
-        if Export_News_datas:
-
-            # 列表转换成字符串
-            # Exports_Nums=','.join([str(id) for id in Exports_Nums])
-            # print('转换字符串',Exports_Nums)
-
-            # 字符串转换成列表
-            # Exports_Nums=[int(id) for id in (Exports_Nums.split(','))]
-            #
-            # print('转换列表',Exports_Nums)
-
-            # 打开Alter.sql
-            f = open(r'../AlterSys/Download/' + 'Alter.sql', "w", encoding='utf-8')
-            # 写入数据
-            for export_News_data in Export_News_datas:
-                # 写头部说明信息
-                f.write('-- ----------------------------\n')
-                f.write('-- ID:' + str(export_News_data.pk) + '\n-- 变更库:' + export_News_data.Database.Database + '\n')
-                f.write('--审核时间：' + str(export_News_data.AuditTime.strftime("%Y-%m-%d %H:%M:%S")) + '\n')
-                f.write('-- ----------------------------\n')
-                ##判断是否以;结尾
-                if export_News_data.AlterContent.endswith(';'):
-
-                    # ，如果是以';'结尾,则进行换行操作
-                    f.write(export_News_data.AlterContent.replace(';', ';\n'))
-
-                else:
-                    # 如果不是';'结尾,添加';'结尾，并换行
-                    f.write(export_News_data.AlterContent + ';' + '\n')
-
-                # 每个变更之间进行换行
-                f.write('\n')
-
-            f.close()
-
-            # 查找并打开文件
-            file = open(r'../AlterSys/Download/' + 'Alter.sql', 'rb')
-            # 赋予新的文件名 时间+_Alter.sql
-            the_file_name = datetime.now().strftime('%Y%m%d%H%M%S') + '_Alter.sql'
-            # FileResponse对象，接收二进制对象
-            response = FileResponse(file)
-            # 设置返回二进制文件类型
-            # response['Content-Type'] = 'application/text/plain'
-            response['Content-Type'] = 'application/octet/stream'
-            # 设置attachment，让浏览器下载，而不是直接打开，并重命名
-            response['Content-Disposition'] = 'attachment;filename=' + the_file_name
-
-            # 判断当前用户，在执行表中是否有记录
-            exits = Alter_execute.objects.filter(UID=request.user.id)
-
-            if exits:
-                # 存在-更新数据
-                # AA=exits.values_list('AlterID')
-                # BB=exits.values('AlterID')
-                # CC=list(AA)[0][0]
-                # hh=CC[0]
-                # DD=BB.get('AlterID')
-
-                # 获取已经导出的最大ID
-                Old_AlterID = list(exits.values_list('alterid'))[0][0]
-
-                # 将列表转换成字符串，用于存储数据库
-                Exports_Nums = ','.join([str(id) for id in Exports_Nums])
-                print('转换字符串', Exports_Nums)
-
-                # 判断还是有点问题 需要修改一下
-                if Now_MaxNum < int(Old_AlterID):
-                    exits.update(AlterID=Old_AlterID, Hospital_id=Hospital, Executor=request.user.username,
-                                 ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                 ExecutionResult='本次执行到变更ID：' + str(Now_MaxNum), UID=request.user.id)
-
-                else:
-                    exits.update(AlterID=Now_MaxNum, Hospital_id=Hospital, Executor=request.user.username,
-                                 ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                 ExecutionResult='本次执行到变更ID：' + str(Now_MaxNum), UID=request.user.id,
-                                 Exports=Exports_Nums)
-
-            else:
-                # 不存在-插入数据
-                Alter_execute.objects.create(AlterID=Now_MaxNum, Hospital_id=Hospital, Executor=request.user.username,
-                                             ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                             ExecutionResult='首次执行到变更ID：' + str(Now_MaxNum), UID=request.user.id,
-                                             Exports=Exports_Nums)
-
-            return resful.OK()
-        else:
-            return resful.params_error(message="需要导出的数据不存在")
-    else:
-     return  resful.params_error(message='没有可导出的数据！')
-
-
-
-
-# * @函数名: export_alt_datas
-# * @功能描述: 生成导出变更数据
-# * @作者: 郭军
-# * @时间: 2019-8-30 09:39:03
-# * @最后编辑时间: 2019-8-30 14:41:00
-# * @最后编辑者: 郭军
-# @csrf_exempt
-def export_alt_data(request):
-    print(request.COOKIES.values())
-
-    #获取当前选中的数据库类型
-    databaseId =request.POST.get('database')
-    # databaseId =1
-
-    #获取当前选择的医院ID
-    hospitalId =request.POST.get('hospital')
-    # hospitalId =1
-
-    #调试用：打印获取到的数据
-    print('获取到的数据库ID是:',databaseId)
-    print('获取到的医院ID是:',hospitalId)
-
-    if hospitalId != '0':
-        # 过滤出可导出数据
-        exportData = Alter_managment_checked.objects.filter(reviewstatus=1)
-
-        # 过滤数据库类型
-        if databaseId != '0':
-            # 当选择的不是全部，根据数据库类型过滤出数据
-            exportData = exportData.filter(dbnumber_id=databaseId)
-        else:
-            exportData
-
-        # 判断是否有可导出数据
-        if exportData:
-
-            # 获取可导出数据中，ID最大的值
-            export_max_alter_id = max(exportData.values_list('id', flat=True))
-
-            # 获取当前导出数据的ID列表
-            exportNumbers = list(exportData.values_list('id', flat=True))
-
-            # 将列表转换成字符串，用于存储数据库
-            exportNumbers = ','.join([str(id) for id in exportNumbers])
-            print('转换字符串', exportNumbers)
-
-            # 导出执行表中是否有历史导出记录
-            exportHistoryData = Alter_execute.objects.filter(userid=request.user.pk, hospital_id=hospitalId)
-
-            if exportHistoryData:
-
-                # 获取用户已导出的数据
-                Export_old_Nums = exportHistoryData.values_list('exportlist', flat=True)[0]
-
-                # 获取已经导出的最大ID
-                old_alter_id = list(exportHistoryData.values_list('alterid'))[0][0]
-
-                # 字符串转换成数值列表
-                Export_old_Nums = [int(id) for id in (Export_old_Nums.split(','))]
-
-                # 过滤出还未导出的数据
-                # exportData = exportData.exclude(pk__in=Export_old_Nums)
-
-
-                if exportData:
-                    # 调用导出文件生成函数
-                    File_Generate = Export_file_Generate(exportData,hospitalId)
-                else:
-                    return resful.params_error(message='您已经导出过数据至最新！')
-
-
-                if File_Generate:
-
-                    # 判断当前导出的最大ID否比原来的小
-                    if export_max_alter_id < int(old_alter_id):
-
-                        exportHistoryData.update(Executor=request.user.username,
-                                                 ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                                 ExecutionResult='本次执行到变更ID：' + str(export_max_alter_id),
-                                                 UID=request.user.id)
-
-                    else:
-
-                        exportHistoryData.update(AlterID=export_max_alter_id, Executor=request.user.username,
-                                                 ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                                 ExecutionResult='本次执行到变更ID：' + str(export_max_alter_id),
-                                                 UID=request.user.id,
-                                                 Exports=exportNumbers)
-                    return resful.OK()
-                else:
-                    return resful.params_error(message='导出文件生成失败！')
-            else:
-
-                File_Generate = Export_file_Generate(exportData,hospitalId)
-
-                if File_Generate:
-                    # 创建新的导出执行记录
-                    Alter_execute.objects.create(AlterID=export_max_alter_id, Hospital_id=int(hospitalId),
-                                                 Executor=request.user.username,
-                                                 ExecutionTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                                 ExecutionResult='首次执行到变更ID：' + str(export_max_alter_id),
-                                                 UID=request.user.id,
-                                                 Exports=exportNumbers)
-                    return resful.OK()
-                else:
-                    return resful.params_error(message='导出文件生成失败！')
-
-        else:
-            return resful.params_error(message='当前条件无可导出数据！')
-
-    else:
-        return resful.params_error(message='请选择医院！')
-
-
-
-
-
-
-
 # * @函数名: download
 # * @功能描述: 获取导出的Sql文件重命名后返回文件进行下载
 # * @作者: 郭军
@@ -724,11 +353,13 @@ def Export_file_Generate(request,export_datas,hospitalId):
                 databaseid =export_datas.values().first()['databaseid']
                 executor = request.user.username
                 userid=request.user.pk
-                executiontime = datetime.now()
+                T1 =datetime.now()
+                T2 =datetime.utcnow()
+                executiontime = datetime.now().astimezone(pytz.timezone('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S")
                 #两种在字符串中引用变量的方法
-            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '{0}', '{1}', {2}, {3}, '{4}', '{5}', '首次执行到变更ID：2', '2');\n'''.format(userid,alterid,hospitalId,databaseid,executor,executiontime))
-            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %d, %d, '%s', '%s', '首次执行到变更ID：2', '2');\n'''%(userid,alterid,int(hospitalId),databaseid,executor,executiontime))
-            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %s, %s, '%s', '%s', '首次执行到变更ID：2', '2');\n'''%(userid,alterid,hospitalId,databaseid,executor,executiontime))
+            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '{0}', '{1}', {2}, {3}, '{4}', '{5}', '执行到变更ID：{6}', '2');\n'''.format(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
+            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %d, %d, '%s', '%s', '行到变更ID：%s', '2');\n'''%(userid,alterid,int(hospitalId),databaseid,executor,executiontime,alterid))
+            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %s, %s, '%s', '%s', '执行到变更ID：%s', '2');\n'''%(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
 
             f.close()
             return True
@@ -804,6 +435,13 @@ class export_alt_datas_view(View):
         if hospitalId != '0'and databaseId != '0':
             # 过滤出可导出数据
             exportData = Alter_managment_checked.objects.filter(reviewstatus=1,databaseid=databaseId)
+
+
+            #获取当前请求医院创建时间
+            begintime=Alt_Hospital.objects.get(pk=hospitalId).begintime
+
+            # 过滤出提交时间在医院创建时间后的数据
+            exportData = exportData.filter(modifytime__gt=begintime)
 
             # # 过滤数据库类型
             # if databaseId != '0':

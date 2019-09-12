@@ -11,7 +11,7 @@ from utils import resful
 #导入分页用的类
 from django.core.paginator import Paginator
 #导入时间分类
-from datetime import datetime
+from datetime import datetime,timedelta
 #将时间标记为清醒的时间
 from django.utils.timezone import make_aware
 #用于模糊查询
@@ -80,11 +80,14 @@ class Alter_manager_newview(View):#变更管理页面，返回数据
                 start_time = datetime(year=2019,month=5,day=1)#如果是空的 就使用默认值
 
             if end:
-                end_time =datetime.strptime(end,'%Y/%m/%d')
+                #end_time = datetime.strptime(end, "%Y/%m/%d")
+                end_time = datetime.strptime(end, "%Y/%m/%d")+timedelta(hours=23,minutes=59,seconds=59)
             else:
                 end_time=datetime.today()
 
-            Alterd_datas=Alterd_datas.filter(modifytime__range=(make_aware(start_time), make_aware(end_time)))
+            #Alterd_datas=Alterd_datas.filter(modifytime__range=(make_aware(start_time), make_aware(end_time)))
+            Alterd_datas=Alterd_datas.filter(modifytime__range=(start_time, end_time))
+
 
         if cxtj:#查询条件判断
             #多条件模糊查询匹配，满足一个即可返回，用到Q对象格式如下
@@ -184,9 +187,12 @@ def edit_Alter_manager(request):#变更内容编辑用
             AssociatedNumber =form.cleaned_data.get("AssociatedNumber")  # '关联编号'#
             Database = form.cleaned_data.get("Database")  # '数据库'#
             AlterContent =form.cleaned_data.get("AlterContent")  # 变更内容
-            Alter_managment.objects.filter(id=id).update(altertypeid=AltType, associatedid=AssociatedNumber, databaseid=Database, altercontent=AlterContent, modifier=request.user.username
-    ,modifytime=datetime.now(),reviewstatus='0')
-            return resful.OK()
+            if request.user.pk ==Alter_managment.objects.get(id=id).userid:
+                Alter_managment.objects.filter(id=id).update(altertypeid=AltType, associatedid=AssociatedNumber, databaseid=Database, altercontent=AlterContent, modifier=request.user.username
+        ,modifytime=datetime.now(),reviewstatus='0',userid=request.user.pk)
+                return resful.OK()
+            else:
+                return resful.unauth(message='您不能编辑别人的数据！')
         else:
             return resful.params_error(message=form.get_error())
     else:
@@ -246,7 +252,7 @@ class add_Alter_managerView(View):
                 exists=Alter_managment.objects.filter(altercontent=AlterContent).exists()
                 if not exists:
                     Alter_managment.objects.create(altertypeid=AltTypes.pk, associatedid=AssociatedNumber, databaseid=Database.pk,altercontent=AlterContent,
-                                                   modifier=request.user.username)
+                                                   modifier=request.user.username,userid=request.user.pk)
                     return resful.OK()
                 else:
 
@@ -314,7 +320,7 @@ def Review_Alter_manager(request):#变更审核用
 
                 else:
                     #如果审核通过则复制创建主表数据到分表
-                    Alter_managment_checked.objects.create(alterid=alter_data.pk,associatedid=alter_data.associatedid,altercontent=alter_data.altercontent,modifier=alter_data.modifier,modifytime=alter_data.modifytime,reviewer=alter_data.reviewer,reviewstatus=alter_data.reviewstatus,reviewcontent=alter_data.reviewcontent,reviewtime=alter_data.reviewtime,altertypeid=alter_data.altertypeid,databaseid=alter_data.databaseid)
+                    Alter_managment_checked.objects.create(userid=alter_data.userid,alterid=alter_data.pk,associatedid=alter_data.associatedid,altercontent=alter_data.altercontent,modifier=alter_data.modifier,modifytime=alter_data.modifytime,reviewer=alter_data.reviewer,reviewstatus=alter_data.reviewstatus,reviewcontent=alter_data.reviewcontent,reviewtime=alter_data.reviewtime,altertypeid=alter_data.altertypeid,databaseid=alter_data.databaseid)
                     return resful.OK()
             else:
                 return resful.params_error(message='审核失败！')
