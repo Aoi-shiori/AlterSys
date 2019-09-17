@@ -16,5 +16,6 @@ urlpatterns = [
     path('Add_hospital_Dict/',views.Add_hospital_Dict,name="Add_hospital_Dict"),
     path('Edit_hospital_Dict/',views.Edit_hospital_Dict,name="Edit_hospital_Dict"),
     path('Del_hospital_Dict/',views.Del_hospital_Dict,name="Del_hospital_Dict"),
+    path('department_Dict_view/',views.department_Dict_view.as_view(),name="department_Dict_view"),
 
 ]

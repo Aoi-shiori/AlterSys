@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('userid', shortuuidfield.fields.ShortUUIDField(blank=True, editable=False, max_length=22)),
                 ('alterid', models.CharField(max_length=50)),
-                ('hospitalid', models.IntegerField(max_length=11)),
+                ('hospitalid', models.CharField(max_length=5)),
                 ('databaseid', models.IntegerField(max_length=11)),
                 ('executor', models.CharField(max_length=50)),
                 ('executiontime', models.DateTimeField(auto_now=True)),

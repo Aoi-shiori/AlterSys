@@ -189,6 +189,9 @@
               {% if perms.Alt_Hospital.change_alt_hospital  or user.is_superuser %}
                          <li ><a href="{% url 'Dict:Hospital_Dict_view' %}"><i class="fa fa-circle-o"></i> 医院字典</a></li>
               {% endif %}
+              {% if perms.Alt_Hospital.change_alt_hospital  or user.is_superuser %}
+                         <li ><a href="{% url 'Dict:department_Dict_view' %}"><i class="fa fa-circle-o"></i> 部門醫院字典</a></li>
+              {% endif %}
 
 {#            <li><a href="{% url 'management:Alter_add' %}"><i class="fa fa-circle-o"></i> 变更提交</a></li>#}
 

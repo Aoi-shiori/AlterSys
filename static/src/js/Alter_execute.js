@@ -562,7 +562,151 @@ Execute.prototype.listenExportNewSbumitEvent=function(){
 
 };
 
+// //新數據導出功能
+// Execute.prototype.listenExportbumitEvent=function(){
+//         var exportbtn = $('.export-btn');
+//         exportbtn.click(function () {
+//                 $.ajax({
+//                 //'url':'/execute/test_select/',
+//                 'url':'/execute/export_alt_datas_view/',
+//                 //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+//                 'type':'GET',
+//                 //'dataType':'json',
+//                 'success': function (result) {
+//                     // console.log(result);
+//                     //var res = JSON.stringify(result);
+//                    if (result['code']===200){
+//                        console.log(result);
 //
+//                         for(var k in result['hospital']){
+//                             //console.log(result[k]);
+//                             //$("#Hospitals_select").append("<option value='"+result['hospital'][k]['pk']+"'>"+result['hospital'][k]["hospitalname"]+"</option>");
+//                             $("#Hospitals_select").append("<option value='"+result['hospital'][k]['dept_id']+"'>"+result['hospital'][k]["dept_name"]+"</option>");
+//
+//                         }
+//
+//                         for(var k in result['database']){
+//                             //console.log(result[k]);
+//                             $("#database_select").append("<option value='"+result['database'][k]['pk']+"'>"+result['database'][k]["dbname"]+"</option>");
+//
+//                         }
+//                    }else {
+//                        console.log('请求失败，没有获取到数据！')
+//                    }
+//
+//
+//
+//                 }
+//             });
+//
+//             //     xfzajax.get({
+//             //     'url':'/execute/test_select/',
+//             //     //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+//             //     //'dataType':'json',
+//             //     'success': function (result) {
+//             //         // console.log(result);
+//             //         //var res = JSON.stringify(result);
+//             //         console.log(result.data);
+//             //         var datas = result.data;
+//             //         for(var k in datas){
+//             //             console.log(datas[k]);
+//             //             $("#Hospitals_select").append("<option value='"+datas[k]["pk"]+"'>"+datas[k]["Hospital"]+"</option>");
+//             //
+//             //         }
+//             //     }
+//             // });
+//
+//
+//
+//
+//
+//                 Swal.fire({
+//                     title: '请选择执行医院和导出数据库',
+//                     //type: "prompt",
+//                     html:
+//                         // Hospitals+
+//                         // '<input id="swal-input1" class="swal2-input">' +
+//                         // '<input id="swal-input2" class="swal2-input">'+
+//                          '<lable style ="float: left;display: inline-block;width:30%;color: grey; border:0;text-align: right;" class="form-control"><b>执行医院:</b></lable>\
+//                          <select style ="float: left;display: inline-block;width:70%" name="Hospitals" id="Hospitals_select" class="form-control">\
+//                                <option value="0">全部</option>\
+//                           </select><br/>'+ '\
+//                           \<lable style ="float: left;display: inline-block;width:30%;color: grey; border:0;text-align: right;" class="form-control"><b>导出数据库:</b></lable>\
+//                           <select  style ="float: left;display: inline-block;width:70%" name="database" id="database_select" class="form-control">\
+//                                <option value="0">全部</option>\
+//                           </select>',
+//                     //focusConfirm: false,
+//                     showCancelButton: true,
+//                     cancelButtonText:'导出取消',
+//                     confirmButtonText: '确认导出',
+//                     }).then(function(result){
+//                         if (result.dismiss === Swal.DismissReason.cancel ||result.dismiss === Swal.DismissReason.backdrop ){
+//                             console.log('用户取消！')
+//                             return;
+//                         }
+//                         var hospital = $("#Hospitals_select option:selected").val();
+//                         var hospitaltext = $("#Hospitals_select option:selected").text();
+//                         //console.log($("#swal-input1").val());
+//                         console.log(hospital);
+//                         console.log(hospitaltext);
+//
+//                         var database = $("#database_select option:selected").val();
+//                         var databasetext = $("#database_select option:selected").text();
+//                         //console.log($("#swal-input1").val());
+//                         console.log(database);
+//                         console.log(databasetext);
+//                          // alert(document.getElementById('swal-input1').value); // value of my-input1
+//                          // alert(document.getElementById('swal-input2').value); // value of my-select
+//                         $.ajax( {
+//                                 //'url':'/execute/exportAltData/',
+//                                 'url':'/execute/export_alt_datas_view/',
+//                                 'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+//                                 'type':'POST',
+//                                 'data':{
+//                                     'database':database,
+//                                     'hospital':hospital
+//                                 },
+//                                 //'dataType':'json',
+//                                 'success': function (result) {
+//                                     if(result['code'] === 200 ) {
+//
+//                                         var form = $('<form action="download/?dbname='+databasetext+'&hospitalid='+hospital+'" method="post">' +
+//                                             '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
+//                                             '</form>');
+//                                         $('body').append(form);
+//                                         // $("#downForm").append('{% csrf_token %}');
+//                                         // $("#downForm").append("<input type='hidden' id='infos' name='csrfmiddlewaretoken' value='' />");
+//                                         console.log($.cookie("csrftoken"));
+//                                         $("#infos").val($.cookie("csrftoken"));
+//
+//                                         // return;
+//                                         // $("#downForm").submit();
+//
+//                                         form.submit(); //自动提交
+//                                         console.log('导出请求提交成功')
+//                                         window.messageBox.show("提交导出成功");
+//
+//                                     }else if(result['code'] !== 200 ){
+//                                         //alert(JSON.stringify(result));
+//                                         //window.messageBox.show(result['message']);
+//                                          console.log(result['message'])
+//                                         swal.fire(
+//                                             result['message'],
+//                                             '如无医院可选，请先维护字典！',
+//                                             'warning'
+//                                         )
+//                                     }
+//                                 }
+//                         });
+//                     })
+//         })
+// };
+
+
+
+
+
+//測試新數據導出功能
 Execute.prototype.listenExportbumitEvent=function(){
         var exportbtn = $('.export-btn');
         exportbtn.click(function () {
@@ -580,7 +724,8 @@ Execute.prototype.listenExportbumitEvent=function(){
 
                         for(var k in result['hospital']){
                             //console.log(result[k]);
-                            $("#Hospitals_select").append("<option value='"+result['hospital'][k]['pk']+"'>"+result['hospital'][k]["hospitalname"]+"</option>");
+                            //$("#Hospitals_select").append("<option value='"+result['hospital'][k]['pk']+"'>"+result['hospital'][k]["hospitalname"]+"</option>");
+                            $("#Hospitals_select").append("<option value='"+result['hospital'][k]['dept_id']+"'>"+result['hospital'][k]["dept_name"]+"</option>");
 
                         }
 
@@ -597,24 +742,6 @@ Execute.prototype.listenExportbumitEvent=function(){
 
                 }
             });
-
-            //     xfzajax.get({
-            //     'url':'/execute/test_select/',
-            //     //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
-            //     //'dataType':'json',
-            //     'success': function (result) {
-            //         // console.log(result);
-            //         //var res = JSON.stringify(result);
-            //         console.log(result.data);
-            //         var datas = result.data;
-            //         for(var k in datas){
-            //             console.log(datas[k]);
-            //             $("#Hospitals_select").append("<option value='"+datas[k]["pk"]+"'>"+datas[k]["Hospital"]+"</option>");
-            //
-            //         }
-            //     }
-            // });
-
 
 
 
@@ -656,50 +783,82 @@ Execute.prototype.listenExportbumitEvent=function(){
                         console.log(databasetext);
                          // alert(document.getElementById('swal-input1').value); // value of my-input1
                          // alert(document.getElementById('swal-input2').value); // value of my-select
-                        $.ajax( {
-                                //'url':'/execute/exportAltData/',
-                                'url':'/execute/export_alt_datas_view/',
-                                'headers':{"X-CSRFToken":$.cookie("csrftoken")},
-                                'type':'POST',
-                                'data':{
-                                    'database':database,
-                                    'hospital':hospital
-                                },
-                                //'dataType':'json',
-                                'success': function (result) {
-                                    if(result['code'] === 200 ) {
+                        if (database==="0"){
+                            console.log('進到循環了！');
+                                            $.ajax({
+                                        //'url':'/execute/test_select/',
+                                        'url':'/execute/export_alt_datas_view/',
+                                        //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+                                        'type':'GET',
+                                        //'dataType':'json',
+                                        'success': function (result) {
+                                            // console.log(result);
+                                            //var res = JSON.stringify(result);
+                                           if (result['code']===200){
+                                               console.log(result);
 
-                                        var form = $('<form action="download/" method="post">' +
-                                            '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
-                                            '</form>');
-                                        $('body').append(form);
-                                        // $("#downForm").append('{% csrf_token %}');
-                                        // $("#downForm").append("<input type='hidden' id='infos' name='csrfmiddlewaretoken' value='' />");
-                                        console.log($.cookie("csrftoken"));
-                                        $("#infos").val($.cookie("csrftoken"));
+                                                for(var k in result['database']){
+                                                    //console.log(result[k]);
+                                                    var databaseid =result['database'][k]['pk'];
+                                                     console.log('數據庫id是',databaseid);
+                                                }
+                                           }else {
+                                               console.log('请求失败，没有获取到数据！')
+                                           }
 
-                                        // return;
-                                        // $("#downForm").submit();
 
-                                        form.submit(); //自动提交
-                                        console.log('导出请求提交成功')
-                                        window.messageBox.show("提交导出成功");
 
-                                    }else if(result['code'] !== 200 ){
-                                        //alert(JSON.stringify(result));
-                                        //window.messageBox.show(result['message']);
-                                         console.log(result['message'])
-                                        swal.fire(
-                                            result['message'],
-                                            '如无医院可选，请先维护字典！',
-                                            'warning'
-                                        )
+                                        }
+                                    });
+
+
+                        }else {
+                            $.ajax( {
+                                    //'url':'/execute/exportAltData/',
+                                    'url':'/execute/export_alt_datas_view/',
+                                    'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+                                    'type':'POST',
+                                    'data':{
+                                        'database':database,
+                                        'hospital':hospital
+                                    },
+                                    //'dataType':'json',
+                                    'success': function (result) {
+                                        if(result['code'] === 200 ) {
+
+                                            var form = $('<form action="download/?dbname='+databasetext+'&hospitalid='+hospital+'" method="post">' +
+                                                '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
+                                                '</form>');
+                                            $('body').append(form);
+                                            // $("#downForm").append('{% csrf_token %}');
+                                            // $("#downForm").append("<input type='hidden' id='infos' name='csrfmiddlewaretoken' value='' />");
+                                            console.log($.cookie("csrftoken"));
+                                            $("#infos").val($.cookie("csrftoken"));
+
+                                            // return;
+                                            // $("#downForm").submit();
+
+                                            form.submit(); //自动提交
+                                            console.log('导出请求提交成功')
+                                            window.messageBox.show("提交导出成功");
+
+                                        }else if(result['code'] !== 200 ){
+                                            //alert(JSON.stringify(result));
+                                            //window.messageBox.show(result['message']);
+                                             console.log(result['message'])
+                                            swal.fire(
+                                                result['message'],
+                                                '如无医院可选，请先维护字典！',
+                                                'warning'
+                                            )
+                                        }
                                     }
-                                }
                             });
+                        }
                     })
         })
 };
+
 
 
 

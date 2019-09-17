@@ -1,43 +1,13 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-# Create your models here.
-#数据库类型字典
-class Alt_Database(models.Model):
-        dbname=models.CharField(max_length=50)#数据库名称
-        #classifycount = models.CharField(max_length=50,null=True) #使用该分类的数据量
-        modifier =models.CharField(max_length=50) #修改人
-        modifytime= models.DateTimeField(auto_now=True) #修改时间
-        begintime= models.DateTimeField(auto_now_add=True) #创建时间
-        # def __unicode__(self):
-        #         return self.Database
-        class Meta:
-                db_table= 'alt_database_dict'
-#变更类型字典
-class Alt_Type(models.Model):
-        altertypename=models.CharField(max_length=50)
-        #classifycount = models.CharField(max_length=50, null=True) #使用该分类的数据量
-        modifier =models.CharField(max_length=50) #修改人
-        modifytime= models.DateTimeField(auto_now=True) #修改时间
-        begintime= models.DateTimeField(auto_now_add=True) #创建时间
 
-        # def __unicode__(self):
-        #         return self.AltType
-        class Meta:
-                db_table='alt_type_dict'
-#医院字典
-class Alt_Hospital(models.Model):
-        hospitalname=models.CharField(max_length=50)
-        #classifycount = models.CharField(max_length=50, null=True)  # 使用该分类的数据量
-        modifier =models.CharField(max_length=50) #修改人
-        modifytime= models.DateTimeField(auto_now=True) #修改时间
-        begintime= models.DateTimeField(auto_now_add=True) #创建时间
-
-        # def __unicode__(self):
-        #         return self.Hospital
-        class Meta:
-                db_table='alt_hospital_dict'
-
-#雲庫醫院字典表
 class CtDepartment(models.Model):
     dept_id = models.CharField(db_column='DEPT_ID', primary_key=True, max_length=5)  # Field name made lowercase.
     dept_code = models.CharField(db_column='DEPT_CODE', max_length=20)  # Field name made lowercase.

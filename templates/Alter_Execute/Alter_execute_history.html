@@ -114,10 +114,14 @@
                                         <td class ='序号'>{{ forloop.counter|add:start_num}}</td>
 {#                                        <td class ='执行记录id '>{{ Alterd_data.id }}</td>#}
                                         <td class ='执行至ID'>{{Alterd_data.alterid}}</td>
-{#                                        <td class ='执行医院'>{{ Alterd_data.hospitalid}}</td>#}
+{#                                        {% for Hospital in Hospitals %}#}
+{#                                            {% ifequal Alterd_data.hospitalid Hospital.pk %}#}
+{#                                                <td class ='执行医院'>{{ Hospital.hospitalname}}</td>#}
+{#                                            {% endifequal %}#}
+{#                                        {% endfor %}                                        #}
                                         {% for Hospital in Hospitals %}
                                             {% ifequal Alterd_data.hospitalid Hospital.pk %}
-                                                <td class ='执行医院'>{{ Hospital.hospitalname}}</td>
+                                                <td class ='执行医院'>{{ Hospital.dept_name}}</td>
                                             {% endifequal %}
                                         {% endfor %}
 {#                                        <td class ='执行数据库'>{{ Alterd_data.databaseid}}</td>#}

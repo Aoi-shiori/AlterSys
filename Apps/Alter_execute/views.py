@@ -31,6 +31,8 @@ from urllib import parse
 
 from django.http import JsonResponse
 
+from django.utils.encoding import escape_uri_path
+
 # 三、FileResponse对象
 # class FileResponse(open_file,as_attachment=False,filename=",**kwargs)
 #
@@ -41,7 +43,7 @@ from django.http import JsonResponse
 # >>> response = FileResponse(open('myfile.png', 'rb'))
 from django.http import FileResponse
 
-from Apps.Alter_Dict.models import Alt_Database,Alt_Hospital,Alt_Type
+from Apps.Alter_Dict.models import Alt_Database,Alt_Hospital,Alt_Type,CtDepartment
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -189,7 +191,8 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
         Alterd_datas = Alter_execute.objects.all()
 
         # 过滤医院类型数据
-        Hospitals = Alt_Hospital.objects.all()
+        # Hospitals = Alt_Hospital.objects.all()
+        Hospitals = CtDepartment.objects.using('ct_department').all()
 
         #过滤数据库类型数据
         Databases = Alt_Database.objects.all()
@@ -294,19 +297,34 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
 # * @最后编辑者: 郭军
 # @csrf_exempt
 def download(request):
+        dbname =request.GET.get('dbname')
+        print('獲取到的數據庫名稱是：',dbname)
+        hospitalid = request.GET.get('hospitalid')
+        print('獲取到的醫院編號是：', hospitalid)
+
         # 查找并打开文件
         file = open(r'../AlterSys/Download/' + 'Alter.sql', 'rb')
         # 赋予新的文件名 时间+_Alter.sql
-        the_file_name = datetime.now().strftime('%Y%m%d%H%M%S') + '_Alter.sql'
+        # the_file_name = ('%s''%s'+datetime.now().strftime('%Y%m%d%H%M%S') +'_alter.sql')%(hospitalid,dbname)
+        the_file_name = hospitalid+'_'+dbname+'_'+datetime.now().strftime('%Y%m%d%H%M%S') +'.sql'
+        # the_file_name =hospitalid+datetime.now().strftime('%Y%m%d%H%M%S') + '數據庫_alter.sql'
+        # the_file_name =hospitalid+ '數據庫_alter.sql'
+        print('生成的文件名是：', the_file_name)
+
         # FileResponse对象，接收二进制对象
         response = FileResponse(file)
         # 设置返回二进制文件类型
         # response['Content-Type'] = 'application/text/plain'
         response['Content-Type'] = 'application/octet/stream'
         # 设置attachment，让浏览器下载，而不是直接打开，并重命名
-        response['Content-Disposition'] = 'attachment;filename=' + the_file_name
+        # response['Content-Disposition'] = 'attachment;filename=' +the_file_name
+        # response['Content-Disposition'] = 'attachment;filename='.format(the_file_name)
+        response['Content-Disposition'] = 'attachment;filename='+the_file_name.encode('utf-8').decode('ISO-8859-1')
+        # response['Content-Disposition'] = 'attachment;filename='+the_file_name+''
+        # response['Content-Disposition'] = 'attachment;filename="{0}"'.format(the_file_name)
+        # response['Content-Disposition'] = 'attachment;filename*=utf-8''{}'.format(the_file_name)
 
-        print('用户下载文件' + the_file_name)
+        print('用户下载文件:' + the_file_name)
         return response
         # return resful.ajax_ok(message="",data=response)
 
@@ -329,7 +347,8 @@ def Export_file_Generate(request,export_datas,hospitalId):
             for export_data in export_datas:
                 # 写头部说明信息
                 f.write('-- ----------------------------\n')
-                f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(Alt_Hospital.objects.get(pk=hospitalId).hospitalname) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
+                # f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(Alt_Hospital.objects.get(pk=hospitalId).hospitalname) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
+                f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(CtDepartment.objects.using('ct_department').get(pk=hospitalId).dept_name) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
                 f.write('-- 提交时间:' + str(export_data.modifytime.strftime("%Y-%m-%d %H:%M:%S")) + '\n')
                 f.write('-- ----------------------------\n')
                 ##判断是否以;结尾
@@ -358,7 +377,7 @@ def Export_file_Generate(request,export_datas,hospitalId):
                 executiontime = datetime.now().astimezone(pytz.timezone('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S")
                 #两种在字符串中引用变量的方法
             f.write('''INSERT INTO `alt_execute` VALUES (NULL, '{0}', '{1}', {2}, {3}, '{4}', '{5}', '执行到变更ID：{6}', '2');\n'''.format(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
-            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %d, %d, '%s', '%s', '行到变更ID：%s', '2');\n'''%(userid,alterid,int(hospitalId),databaseid,executor,executiontime,alterid))
+            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %s, %d, '%s', '%s', '行到变更ID：%s', '2');\n'''%(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
             f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %s, %s, '%s', '%s', '执行到变更ID：%s', '2');\n'''%(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
 
             f.close()
@@ -399,7 +418,8 @@ class export_alt_datas_view(View):
     #get请求：返回医院字典、数据库字典的json数据
     def get(self,request):
         # 取到需要的元组
-        hospitaldict = Alt_Hospital.objects.all().values("pk", "hospitalname")
+        #hospitaldict = Alt_Hospital.objects.all().values("pk", "hospitalname")
+        hospitaldict = CtDepartment.objects.using('ct_department').all().values("dept_id", "dept_name")
         # 转换列表
         hospitaldict = list(hospitaldict)
         # 取到需要的元组
@@ -438,7 +458,8 @@ class export_alt_datas_view(View):
 
 
             #获取当前请求医院创建时间
-            begintime=Alt_Hospital.objects.get(pk=hospitalId).begintime
+            # begintime=Alt_Hospital.objects.get(pk=hospitalId).begintime
+            begintime=CtDepartment.objects.using('ct_department').get(pk=hospitalId).modified_date
 
             # 过滤出提交时间在医院创建时间后的数据
             exportData = exportData.filter(modifytime__gt=begintime)
@@ -468,7 +489,7 @@ class export_alt_datas_view(View):
                 print('转换字符串', exportNumbers)
 
                 # 导出执行表中是否有历史导出记录
-                exportHistoryData = Alter_execute.objects.filter(userid=request.user.pk, hospitalid=int(hospitalId),databaseid=databaseId)
+                exportHistoryData = Alter_execute.objects.filter(userid=request.user.pk, hospitalid=hospitalId,databaseid=databaseId)
 
 
 
@@ -479,7 +500,7 @@ class export_alt_datas_view(View):
 
                     # 获取已经导出的最大ID
                     #old_alter_id = list(exportHistoryData.values_list('alterid'))[0][0] #切片的方式获取id
-                    old_alter_id = Alter_execute.objects.get(userid=request.user.pk, hospitalid=int(hospitalId), databaseid=databaseId).alterid
+                    old_alter_id = Alter_execute.objects.get(userid=request.user.pk, hospitalid=hospitalId, databaseid=databaseId).alterid
 
                     # # 字符串转换成数值列表
                     # Export_old_Nums = [int(id) for id in (Export_old_Nums.split(','))]
@@ -523,7 +544,7 @@ class export_alt_datas_view(View):
 
                     if File_Generate:
                         # 创建新的导出执行记录
-                        Alter_execute.objects.create(alterid=export_max_alter_id, hospitalid=int(hospitalId),
+                        Alter_execute.objects.create(alterid=export_max_alter_id, hospitalid=hospitalId,
                                                      executor=request.user.username,databaseid=databaseId,
                                                      executiontime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                                                      executionresult='首次执行到变更ID：' + str(export_max_alter_id),

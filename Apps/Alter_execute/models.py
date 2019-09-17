@@ -7,7 +7,7 @@ class Alter_execute(models.Model):
     userid = ShortUUIDField() #用户唯一ID
     alterid = models.CharField(max_length=50)#执行到的变更id
     #hospital=models.ForeignKey('Alter_Dict.Alt_Hospital', related_name='Hospital_datas', on_delete=models.SET_NULL, null=True)#'医院'#可通过db_column= 改变字段名
-    hospitalid = models.IntegerField() #医院id
+    hospitalid = models.CharField(max_length=5) #医院id
     databaseid = models.IntegerField() #数据库id
     executor = models.CharField(max_length=50)#执行人
     executiontime = models.DateTimeField(auto_now=True)#上次执行时间
