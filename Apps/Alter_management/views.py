@@ -212,6 +212,7 @@ def delete_Alter_manager(request):#变更内容删除用
         id=request.POST.get("id")
         try:
             Alter_managment.objects.filter(id=id).delete()
+            Alter_managment_checked.objects.filter(alterid=id).delete()
             return resful.OK()
         except:
             return resful.params_error(message="该变更不存在")
@@ -306,7 +307,7 @@ def Review_Alter_manager(request):#变更审核用
                     else:
                         return resful.params_error(message='分数据删除失败')
                 elif alter_data_checked and ReviewStatus=='1':
-                    Alter_managment_checked.objects.update(alterid=alter_data.pk, associatedid=alter_data.associatedid,
+                    Alter_managment_checked.objects.update(userid=alter_data.userid,alterid=alter_data.pk, associatedid=alter_data.associatedid,
                                                            altercontent=alter_data.altercontent,
                                                            modifier=alter_data.modifier,
                                                            modifytime=alter_data.modifytime,

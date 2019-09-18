@@ -1,6 +1,6 @@
 import json
 from django.core import serializers
-from django.shortcuts import render
+from django.shortcuts import render,HttpResponse
 
 from django.views.generic import View
 #导入只接受GET请求和POST请求的装饰器
@@ -30,6 +30,8 @@ from django.db.models import Q
 from urllib import parse
 
 from django.http import JsonResponse
+import os
+import zipfile37
 
 from django.utils.encoding import escape_uri_path
 
@@ -295,7 +297,7 @@ class alter_execute_history_view(View):  # 变更执行管理页面，返回数�
 # * @时间: 2019-08-22 16:01:00
 # * @最后编辑时间: 2019-8-23 15:26:38
 # * @最后编辑者: 郭军
-# @csrf_exempt
+@csrf_exempt
 def download(request):
         dbname =request.GET.get('dbname')
         print('獲取到的數據庫名稱是：',dbname)
@@ -559,5 +561,157 @@ class export_alt_datas_view(View):
 
         else:
             return resful.params_error(message='必须选择医院和数据库！')
+
+
+
+# * @函数名: new_file_down
+# * @功能描述: 1、新的文件下载函数。
+# * @作者: 郭军
+# * @时间: 2019-9-18 15:14:56
+# * @最后编辑时间: 2019-9-18 15:15:01
+# * @最后编辑者: 郭军
+def new_file_down(request):
+    """
+    下载压缩文件
+    :param request:
+    :param id: 数据库id
+    :return:
+    """
+    # data = [{"id": "1", "image": "animation.jpg"}]  # 模拟mysql表数据
+    # file_name = ""  # 文件名
+    # for i in data:
+    #     if i["id"] == id:  # 判断id一致时
+    #         file_name = i["image"]  # 覆盖变量
+
+    dbnamelist = Alt_Database.objects.all()
+    base_dir = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    file_path1 = os.path.join(base_dir, 'Download')  # 保存zip文件的路径
+    zippath = os.path.join(file_path1, 'testzip')
+    zip = zipfile37.ZipFile(zippath, 'w')
+    for db in dbnamelist:
+            file_name = db.dbname
+            file_name=file_name+'.sql'
+
+            # base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # 项目根目录
+
+            base_dir=os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+            # base_dir1=os.path.abspath(os.path.dirname(os.getcwd()))
+            # base_dir2=os.path.abspath(os.path.join(os.getcwd(), ".."))
+            # base_dir3=os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+            # base_dir4=os.path.abspath(os.path.dirname(__file__))
+            # file_path = os.path.join(base_dir, 'upload', 'images', file_name)  # 下载文件的绝对路径
+            file_path = os.path.join(base_dir, 'Download', file_name)  # 下载文件的绝对路径
+
+            if not os.path.isfile(file_path):  # 判断下载文件是否存在
+                # return HttpResponse("Sorry but Not Found the File")
+                return resful.params_error(message=("未找到%s文件！")%(file_name))
+
+
+            zip.write(file_path,file_name)
+    zip.close()
+
+    file_path = os.path.join(base_dir, 'Download', 'testzip')
+
+    def file_iterator(file_path, chunk_size=512):
+        """
+        文件生成器,防止文件过大，导致内存溢出
+        :param file_path: 文件绝对路径
+        :param chunk_size: 块大小
+        :return: 生成器
+        """
+        with open(file_path, mode='rb') as f:
+            while True:
+                c = f.read(chunk_size)
+                if c:
+                    yield c
+                else:
+                    break
+
+    try:
+        file_name = 'Alter'
+        # 设置响应头
+        # StreamingHttpResponse将文件内容进行流式传输，数据量大可以用这个方法
+        response = FileResponse(file_iterator(file_path))
+        # 以流的形式下载文件,这样可以实现任意格式的文件下载
+        response['Content-Type'] = 'application/octet-stream'
+        # Content-Disposition就是当用户想把请求所得的内容存为一个文件的时候提供一个默认的文件名
+        # response['Content-Disposition'] = 'attachment;filename="{}.zip"'.format(file_name).encode('utf-8').decode('ISO-8859-1')
+        response['Content-Disposition'] = 'attachment;filename="{}.zip"'.format(file_name).encode('utf-8').decode('ISO-8859-1')
+    except:
+        # return HttpResponse("Sorry but Not Found the File")
+        return resful.params_error(message="未找到文件！")
+
+    return response
+
+
+
+def test(request):
+    export_datas=Alter_managment_checked.objects.all()
+    hospitalId ='1111'
+    success=test_file_Generate(request,export_datas,hospitalId)
+    if success:
+        return HttpResponse('文件生成成功')
+    else:
+        return HttpResponse('文件生成失败!')
+
+
+# * @函数名: test_file_Generate
+# * @功能描述: 测试生成导出文件
+# * @作者: 郭军
+# * @时间: 2019-9-18 15:35:02
+# * @最后编辑时间: 2019-9-18 15:35:09
+# * @最后编辑者: 郭军
+def test_file_Generate(request,export_datas,hospitalId):
+    if export_datas:
+            #将数据按照修改时间从小到大排序，如果要倒序则加负号‘-
+            export_datas.order_by('modifytime') #从小到大排序
+            # export_datas.order_by('-modifytime')
+            # 打开Alter.sql
+            dbnamelist = Alt_Database.objects.all()
+            for db in dbnamelist:
+                filename= db.dbname
+                # f = open(r'../AlterSys/Download/' + 'Alter.sql', "w", encoding='utf-8')
+                f = open(r'../AlterSys/Download/' + filename+'.sql', "w", encoding='utf-8')
+                    # 写入数据
+                for export_data in export_datas:
+                        # 写头部说明信息
+                        f.write('-- ----------------------------\n')
+                        # f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(Alt_Hospital.objects.get(pk=hospitalId).hospitalname) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
+                        # f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(CtDepartment.objects.using('ct_department').get(pk=hospitalId).dept_name) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
+                        # f.write('-- 提交时间:' + str(export_data.modifytime.strftime("%Y-%m-%d %H:%M:%S")) + '\n')
+                        f.write('-- ----------------------------\n')
+                        ##判断是否以;结尾
+                        if export_data.altercontent.endswith(';'):
+
+                            # ，如果是以';'结尾,则进行换行操作
+                            f.write(export_data.altercontent.replace(';', ';\n'))
+
+                        else:
+                            # 如果不是';'结尾,添加';'结尾，并换行
+                            f.write(export_data.altercontent + ';' + '\n')
+
+                        # 每个变更之间进行换行
+                        f.write('\n')
+                        f.write('-- ----------------------------\n')
+                        f.write('-- 执行记录表-执行记录插入\n')
+                        f.write('-- ----------------------------\n')
+                        #id,userid,alterid,hospitalid,databaseid,executor,executiontime,executionresult,exportlist
+
+                        alterid =export_datas.order_by('-alterid').values().first()['alterid']
+                        databaseid =export_datas.values().first()['databaseid']
+                        executor = request.user.username
+                        userid=request.user.pk
+                        T1 =datetime.now()
+                        T2 =datetime.utcnow()
+                        executiontime = datetime.now().astimezone(pytz.timezone('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S")
+                        #两种在字符串中引用变量的方法
+                f.write('''INSERT INTO `alt_execute` VALUES (NULL, '{0}', '{1}', {2}, {3}, '{4}', '{5}', '执行到变更ID：{6}', '2');\n'''.format(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
+                f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %s, %d, '%s', '%s', '行到变更ID：%s', '2');\n'''%(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
+                f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %s, %s, '%s', '%s', '执行到变更ID：%s', '2');\n'''%(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
+
+                f.close()
+            return True
+    else:
+        return False
 
 

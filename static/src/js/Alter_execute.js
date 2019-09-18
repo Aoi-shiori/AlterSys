@@ -783,7 +783,7 @@ Execute.prototype.listenExportbumitEvent=function(){
                         console.log(databasetext);
                          // alert(document.getElementById('swal-input1').value); // value of my-input1
                          // alert(document.getElementById('swal-input2').value); // value of my-select
-                        if (database==="0"){
+                        if (database==="0"&&hospital !='0'){
                             console.log('進到循環了！');
                                             $.ajax({
                                         //'url':'/execute/test_select/',
@@ -797,11 +797,55 @@ Execute.prototype.listenExportbumitEvent=function(){
                                            if (result['code']===200){
                                                console.log(result);
 
-                                                for(var k in result['database']){
+                                               for(var k in result['database']){
                                                     //console.log(result[k]);
                                                     var databaseid =result['database'][k]['pk'];
+                                                    var databasename=result['database'][k]['dbname'];
+
                                                      console.log('數據庫id是',databaseid);
-                                                }
+                                                     $.ajax({
+                                                        //'url':'/execute/exportAltData/',
+                                                        'url':'/execute/export_alt_datas_view/',
+                                                        'headers':{"X-CSRFToken":$.cookie("csrftoken")},
+                                                        'type':'POST',
+                                                        'data':{
+                                                            'database':databaseid,
+                                                            'hospital':hospital
+                                                        },
+                                                        //'dataType':'json',
+                                                        'success': function (result) {
+                                                            if(result['code'] === 200 ) {
+
+                                                                var form = $('<form action="download/?dbname='+databasename+'&hospitalid='+hospital+'" method="post">' +
+                                                                    '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
+                                                                    '</form>');
+                                                                $('body').append(form);
+                                                                // $("#downForm").append('{% csrf_token %}');
+                                                                // $("#downForm").append("<input type='hidden' id='infos' name='csrfmiddlewaretoken' value='' />");
+                                                                console.log($.cookie("csrftoken"));
+                                                                $("#infos").val($.cookie("csrftoken"));
+
+                                                                // return;
+                                                                // $("#downForm").submit();
+
+                                                                form.submit(); //自动提交
+                                                                console.log('导出请求提交成功')
+                                                                window.messageBox.show("提交导出成功");
+
+                                                            }else if(result['code'] !== 200 ){
+                                                                //alert(JSON.stringify(result));
+                                                                //window.messageBox.show(result['message']);
+                                                                 console.log(result['message'])
+                                                                swal.fire(
+                                                                    result['message'],
+                                                                    '如无医院可选，请先维护字典！',
+                                                                    'warning'
+                                                                )
+                                                            }
+                                                        }
+                                                     });
+                                               }
+
                                            }else {
                                                console.log('请求失败，没有获取到数据！')
                                            }
