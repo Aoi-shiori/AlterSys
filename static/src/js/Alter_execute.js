@@ -744,8 +744,6 @@ Execute.prototype.listenExportbumitEvent=function(){
             });
 
 
-
-
                 Swal.fire({
                     title: '请选择执行医院和导出数据库',
                     //type: "prompt",
@@ -783,80 +781,6 @@ Execute.prototype.listenExportbumitEvent=function(){
                         console.log(databasetext);
                          // alert(document.getElementById('swal-input1').value); // value of my-input1
                          // alert(document.getElementById('swal-input2').value); // value of my-select
-                        if (database==="0"&&hospital !='0'){
-                            console.log('進到循環了！');
-                                            $.ajax({
-                                        //'url':'/execute/test_select/',
-                                        'url':'/execute/export_alt_datas_view/',
-                                        //'headers':{"X-CSRFToken":$.cookie("csrftoken")},
-                                        'type':'GET',
-                                        //'dataType':'json',
-                                        'success': function (result) {
-                                            // console.log(result);
-                                            //var res = JSON.stringify(result);
-                                           if (result['code']===200){
-                                               console.log(result);
-
-                                               for(var k in result['database']){
-                                                    //console.log(result[k]);
-                                                    var databaseid =result['database'][k]['pk'];
-                                                    var databasename=result['database'][k]['dbname'];
-
-                                                     console.log('數據庫id是',databaseid);
-                                                     $.ajax({
-                                                        //'url':'/execute/exportAltData/',
-                                                        'url':'/execute/export_alt_datas_view/',
-                                                        'headers':{"X-CSRFToken":$.cookie("csrftoken")},
-                                                        'type':'POST',
-                                                        'data':{
-                                                            'database':databaseid,
-                                                            'hospital':hospital
-                                                        },
-                                                        //'dataType':'json',
-                                                        'success': function (result) {
-                                                            if(result['code'] === 200 ) {
-
-                                                                var form = $('<form action="download/?dbname='+databasename+'&hospitalid='+hospital+'" method="post">' +
-                                                                    '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
-                                                                    '</form>');
-                                                                $('body').append(form);
-                                                                // $("#downForm").append('{% csrf_token %}');
-                                                                // $("#downForm").append("<input type='hidden' id='infos' name='csrfmiddlewaretoken' value='' />");
-                                                                console.log($.cookie("csrftoken"));
-                                                                $("#infos").val($.cookie("csrftoken"));
-
-                                                                // return;
-                                                                // $("#downForm").submit();
-
-                                                                form.submit(); //自动提交
-                                                                console.log('导出请求提交成功')
-                                                                window.messageBox.show("提交导出成功");
-
-                                                            }else if(result['code'] !== 200 ){
-                                                                //alert(JSON.stringify(result));
-                                                                //window.messageBox.show(result['message']);
-                                                                 console.log(result['message'])
-                                                                swal.fire(
-                                                                    result['message'],
-                                                                    '如无医院可选，请先维护字典！',
-                                                                    'warning'
-                                                                )
-                                                            }
-                                                        }
-                                                     });
-                                               }
-
-                                           }else {
-                                               console.log('请求失败，没有获取到数据！')
-                                           }
-
-
-
-                                        }
-                                    });
-
-
-                        }else {
                             $.ajax( {
                                     //'url':'/execute/exportAltData/',
                                     'url':'/execute/export_alt_datas_view/',
@@ -869,10 +793,21 @@ Execute.prototype.listenExportbumitEvent=function(){
                                     //'dataType':'json',
                                     'success': function (result) {
                                         if(result['code'] === 200 ) {
+                                             console.log('返回的数据库列表是：',result)
+                                            for(var i in result['data']){
+                                                 console.log('返回的数据库：',result['data'][i])
+                                            }
 
-                                            var form = $('<form action="download/?dbname='+databasetext+'&hospitalid='+hospital+'" method="post">' +
+
+                                            if(database !='0'){
+                                                var form = $('<form action="download/?dbname='+databasetext+'&hospitalid='+hospital+'&databaseid='+database+'" method="post">' +
                                                 '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
                                                 '</form>');
+                                            }else {
+                                                var form = $('<form action="new_file_down/?dblist='+result['data']+'" method="post">' +
+                                                '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
+                                                '</form>');
+                                            }
                                             $('body').append(form);
                                             // $("#downForm").append('{% csrf_token %}');
                                             // $("#downForm").append("<input type='hidden' id='infos' name='csrfmiddlewaretoken' value='' />");
@@ -886,7 +821,8 @@ Execute.prototype.listenExportbumitEvent=function(){
                                             console.log('导出请求提交成功')
                                             window.messageBox.show("提交导出成功");
 
-                                        }else if(result['code'] !== 200 ){
+                                        }
+                                        else if(result['code'] !== 200 ){
                                             //alert(JSON.stringify(result));
                                             //window.messageBox.show(result['message']);
                                              console.log(result['message'])
@@ -898,7 +834,7 @@ Execute.prototype.listenExportbumitEvent=function(){
                                         }
                                     }
                             });
-                        }
+
                     })
         })
 };

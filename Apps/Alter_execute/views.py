@@ -303,9 +303,13 @@ def download(request):
         print('獲取到的數據庫名稱是：',dbname)
         hospitalid = request.GET.get('hospitalid')
         print('獲取到的醫院編號是：', hospitalid)
+        databaseid = request.GET.get('databaseid')
+        print('獲取到的数据库編號是：', databaseid)
+
 
         # 查找并打开文件
-        file = open(r'../AlterSys/Download/' + 'Alter.sql', 'rb')
+        # file = open(r'../AlterSys/Download/' + 'Alter.sql', 'rb')
+        file = open(r'../AlterSys/Download/' + databaseid+'.sql', 'rb')
         # 赋予新的文件名 时间+_Alter.sql
         # the_file_name = ('%s''%s'+datetime.now().strftime('%Y%m%d%H%M%S') +'_alter.sql')%(hospitalid,dbname)
         the_file_name = hospitalid+'_'+dbname+'_'+datetime.now().strftime('%Y%m%d%H%M%S') +'.sql'
@@ -338,13 +342,16 @@ def download(request):
 # * @时间: 2019-8-30 09:34:30
 # * @最后编辑时间: 2019-8-30 09:34:37
 # * @最后编辑者: 郭军
-def Export_file_Generate(request,export_datas,hospitalId):
+def Export_file_Generate(request,export_datas,hospitalId,databaseid):
     if export_datas:
-            #将数据按照修改时间从小到大排序，如果要倒序则加负号‘-
+            #将数据按照修改时间从小到大排序，如果要倒序则加负号'-'
             export_datas.order_by('modifytime') #从小到大排序
             # export_datas.order_by('-modifytime')
+
+
             # 打开Alter.sql
-            f = open(r'../AlterSys/Download/' + 'Alter.sql', "w", encoding='utf-8')
+            f = open(r'../AlterSys/Download/' + str(databaseid)+'.sql', "w", encoding='utf-8')
+
             # 写入数据
             for export_data in export_datas:
                 # 写头部说明信息
@@ -371,7 +378,7 @@ def Export_file_Generate(request,export_datas,hospitalId):
                 #id,userid,alterid,hospitalid,databaseid,executor,executiontime,executionresult,exportlist
 
                 alterid =export_datas.order_by('-alterid').values().first()['alterid']
-                databaseid =export_datas.values().first()['databaseid']
+                # databaseid =export_datas.values().first()['databaseid']
                 executor = request.user.username
                 userid=request.user.pk
                 T1 =datetime.now()
@@ -379,7 +386,7 @@ def Export_file_Generate(request,export_datas,hospitalId):
                 executiontime = datetime.now().astimezone(pytz.timezone('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S")
                 #两种在字符串中引用变量的方法
             f.write('''INSERT INTO `alt_execute` VALUES (NULL, '{0}', '{1}', {2}, {3}, '{4}', '{5}', '执行到变更ID：{6}', '2');\n'''.format(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
-            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %s, %d, '%s', '%s', '行到变更ID：%s', '2');\n'''%(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
+            f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %s, %s, '%s', '%s', '行到变更ID：%s', '2');\n'''%(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
             f.write('''INSERT INTO `alt_execute` VALUES (NULL, '%s', '%s', %s, %s, '%s', '%s', '执行到变更ID：%s', '2');\n'''%(userid,alterid,hospitalId,databaseid,executor,executiontime,alterid))
 
             f.close()
@@ -542,7 +549,7 @@ class export_alt_datas_view(View):
                         return resful.params_error(message='导出文件生成失败！')
                 else:
 
-                    File_Generate = Export_file_Generate(request,exportData,hospitalId)
+                    File_Generate = Export_file_Generate(request,exportData,hospitalId,databaseId)
 
                     if File_Generate:
                         # 创建新的导出执行记录
@@ -555,12 +562,125 @@ class export_alt_datas_view(View):
                         return resful.OK()
                     else:
                         return resful.params_error(message='导出文件生成失败！')
-
             else:
                 return resful.params_error(message='当前条件无可导出数据！')
+        #↓↓↓↓↓如果选择了全部数据库↓↓↓↓↓↓↓
+        elif hospitalId!='0' and databaseId =='0':
+            database=Alt_Database.objects.all().order_by('id')
+            dblist = []
+            for db in database:
 
+                # 过滤出可导出数据
+                exportData = Alter_managment_checked.objects.filter(reviewstatus=1, databaseid=db.pk)
+
+                # 获取当前请求医院创建时间
+                # begintime=Alt_Hospital.objects.get(pk=hospitalId).begintime
+                # begintime = CtDepartment.objects.using('ct_department').get(pk=hospitalId).modified_date
+
+                # 过滤出提交时间在医院创建时间后的数据
+                # exportData = exportData.filter(modifytime__gt=begintime)
+
+                # # 过滤数据库类型
+                # if databaseId != '0':
+                #     # 当选择的不是全部，根据数据库类型过滤出数据
+                #     exportData = exportData.filter(databaseid=databaseId)
+                # else:
+                #     exportData
+
+                # 判断是否有可导出数据
+                if exportData:
+
+
+                    # 获取可导出数据中，ID最大的值
+                    # 方法一：数据转换成列表，并且指定返回指定字段的值列表(flat=True),不加设置返回的是字典
+                    # export_max_alter_ids = max(exportData.values_list('id', flat=True))
+                    # 方法二：将数据按指定字典id 从大到小进行排序，然后取首条数据的id值，这里是主键也就可以用Pk
+                    export_max_alter_id = exportData.order_by('-id').first().pk
+
+                    # 获取当前导出数据的ID列表
+                    exportNumbers = list(exportData.values_list('id', flat=True))
+
+                    # 将列表转换成字符串，用于存储数据库
+                    exportNumbers = ','.join([str(id) for id in exportNumbers])
+                    print('转换字符串', exportNumbers)
+
+                    # 导出执行表中是否有历史导出记录
+                    exportHistoryData = Alter_execute.objects.filter(userid=request.user.pk, hospitalid=hospitalId,
+                                                                     databaseid=db.pk)
+
+                    if exportHistoryData:
+
+                        # # 获取用户已导出的数据
+                        # Export_old_Nums = exportHistoryData.values_list('exportlist', flat=True)[0]
+
+                        # 获取已经导出的最大ID
+                        # old_alter_id = list(exportHistoryData.values_list('alterid'))[0][0] #切片的方式获取id
+                        old_alter_id = Alter_execute.objects.get(userid=request.user.pk, hospitalid=hospitalId,
+                                                                 databaseid=db.pk).alterid
+
+                        # # 字符串转换成数值列表
+                        # Export_old_Nums = [int(id) for id in (Export_old_Nums.split(','))]
+
+                        # # 过滤出还未导出的数据,将不在已导出列表中的数据过滤出来
+                        # exportData = exportData.exclude(pk__in=Export_old_Nums)
+
+                        # 过滤出ID大于当前alterid的数据
+                        exportData = exportData.filter(id__gt=old_alter_id)
+
+                        if exportData:
+                            dblist.append(db.pk)
+
+                            # 调用导出文件生成函数
+                            File_Generate = Export_file_Generate(request, exportData, hospitalId, db.pk)
+                        else:
+                            continue
+                            # return resful.params_error(message='您已经导出过数据至最新！')
+
+                        if File_Generate:
+
+
+                            # 判断当前导出的最大ID否比原来的小
+                            if export_max_alter_id < int(old_alter_id):
+
+                                exportHistoryData.update(executor=request.user.username,
+                                                         executiontime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                                         executionresult='本次执行到ID：' + str(export_max_alter_id),
+                                                         userid=request.user.id)
+
+                            else:
+
+                                exportHistoryData.update(alterid=export_max_alter_id, executor=request.user.username,
+                                                         executiontime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                                         executionresult='本次执行到ID：' + str(export_max_alter_id),
+                                                         userid=request.user.id,
+                                                         exportlist=exportNumbers)
+                            # return resful.OK()
+                        else:
+                            return resful.params_error(message='导出文件生成失败！')
+                    else:
+
+                        File_Generate = Export_file_Generate(request, exportData, hospitalId,db.pk)
+
+                        if File_Generate:
+                            dblist.append(db.pk)
+                            # 创建新的导出执行记录
+                            Alter_execute.objects.create(alterid=export_max_alter_id, hospitalid=hospitalId,
+                                                         executor=request.user.username, databaseid=db.pk,
+                                                         executiontime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                                         executionresult='首次执行到变更ID：' + str(export_max_alter_id),
+                                                         userid=request.user.id,
+                                                         exportlist=exportNumbers)
+                            # return resful.OK()
+                        else:
+                            return resful.params_error(message='导出文件生成失败！')
+                else:
+                    pass
+                    # return resful.params_error(message='当前条件无可导出数据！')
+            print('有数据的数据库列表是：',dblist)
+            # return resful.OK()
+            return resful.ajax_ok(data=dblist)
         else:
-            return resful.params_error(message='必须选择医院和数据库！')
+            return resful.params_error(message='必须选择医院！')
 
 
 
@@ -570,6 +690,7 @@ class export_alt_datas_view(View):
 # * @时间: 2019-9-18 15:14:56
 # * @最后编辑时间: 2019-9-18 15:15:01
 # * @最后编辑者: 郭军
+@csrf_exempt
 def new_file_down(request):
     """
     下载压缩文件
@@ -582,15 +703,19 @@ def new_file_down(request):
     # for i in data:
     #     if i["id"] == id:  # 判断id一致时
     #         file_name = i["image"]  # 覆盖变量
+    dblist =request.GET.get('dblist')
+    dblist=[k for k in (dblist.split(','))]
+    for i in dblist:
+        print('数据库列是：',i)
 
-    dbnamelist = Alt_Database.objects.all()
+    dbnamelist = Alt_Database.objects.all().order_by('id')
     base_dir = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
     file_path1 = os.path.join(base_dir, 'Download')  # 保存zip文件的路径
-    zippath = os.path.join(file_path1, 'testzip')
+    zippath = os.path.join(file_path1, 'Alterzip')
     zip = zipfile37.ZipFile(zippath, 'w')
-    for db in dbnamelist:
-            file_name = db.dbname
-            file_name=file_name+'.sql'
+    for db in dblist:
+            #根据数据库id命名生成的sql文件
+            file_name=db+'.sql'
 
             # base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # 项目根目录
 
@@ -602,15 +727,15 @@ def new_file_down(request):
             # file_path = os.path.join(base_dir, 'upload', 'images', file_name)  # 下载文件的绝对路径
             file_path = os.path.join(base_dir, 'Download', file_name)  # 下载文件的绝对路径
 
-            if not os.path.isfile(file_path):  # 判断下载文件是否存在
-                # return HttpResponse("Sorry but Not Found the File")
-                return resful.params_error(message=("未找到%s文件！")%(file_name))
+            # if not os.path.isfile(file_path):  # 判断下载文件是否存在
+            #     # return HttpResponse("Sorry but Not Found the File")
+            #     return resful.params_error(message=("未找到%s文件！")%(file_name))
 
 
             zip.write(file_path,file_name)
     zip.close()
 
-    file_path = os.path.join(base_dir, 'Download', 'testzip')
+    file_path = os.path.join(base_dir, 'Download', 'Alterzip')
 
     def file_iterator(file_path, chunk_size=512):
         """

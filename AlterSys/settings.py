@@ -113,7 +113,17 @@ DATABASES = {
         'PASSWORD': 'Conlin_Alter',
         'HOST': '571987ae25697.sh.cdb.myqcloud.com',
         'PORT': '5407',
-    }
+    },
+    'userdb': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'zentao',
+        # 公司医院配置表
+        'USER': 'altermanage',
+        'PASSWORD': 'conlin360',
+        'HOST': 'company.conlin360.com',
+        'PORT': '3306',
+    },
+
 }
 
 DATABASE_ROUTERS = ['AlterSys.database_router.DatabaseAppsRouter']
