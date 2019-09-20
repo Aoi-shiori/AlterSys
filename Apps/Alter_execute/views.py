@@ -628,6 +628,8 @@ class export_alt_datas_view(View):
                         exportData = exportData.filter(id__gt=old_alter_id)
 
                         if exportData:
+
+                            # 记录生成文件的数据库id
                             dblist.append(db.pk)
 
                             # 调用导出文件生成函数
@@ -662,7 +664,10 @@ class export_alt_datas_view(View):
                         File_Generate = Export_file_Generate(request, exportData, hospitalId,db.pk)
 
                         if File_Generate:
+
+                            #记录生成文件的数据库id
                             dblist.append(db.pk)
+
                             # 创建新的导出执行记录
                             Alter_execute.objects.create(alterid=export_max_alter_id, hospitalid=hospitalId,
                                                          executor=request.user.username, databaseid=db.pk,
@@ -703,23 +708,29 @@ def new_file_down(request):
     # for i in data:
     #     if i["id"] == id:  # 判断id一致时
     #         file_name = i["image"]  # 覆盖变量
+    hospitalid =request.GET.get('hospitalid')
     dblist =request.GET.get('dblist')
     dblist=[k for k in (dblist.split(','))]
     for i in dblist:
         print('数据库列是：',i)
-
     dbnamelist = Alt_Database.objects.all().order_by('id')
     base_dir = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
     file_path1 = os.path.join(base_dir, 'Download')  # 保存zip文件的路径
     zippath = os.path.join(file_path1, 'Alterzip')
     zip = zipfile37.ZipFile(zippath, 'w')
     for db in dblist:
-            #根据数据库id命名生成的sql文件
+            #获取数据库名称
+            dbname = Alt_Database.objects.get(pk=int(db)).dbname
+
+            #用来查找根据数据库id命名生成的sql文件
             file_name=db+'.sql'
+
+            #用于重命名写入压缩包中的文件名
+            file_names =str(hospitalid)+'_'+dbname+'_数据库' +'.sql'
 
             # base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # 项目根目录
 
-            base_dir=os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+            base_dir=os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))#找到项目根目录
             # base_dir1=os.path.abspath(os.path.dirname(os.getcwd()))
             # base_dir2=os.path.abspath(os.path.join(os.getcwd(), ".."))
             # base_dir3=os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -731,8 +742,9 @@ def new_file_down(request):
             #     # return HttpResponse("Sorry but Not Found the File")
             #     return resful.params_error(message=("未找到%s文件！")%(file_name))
 
-
-            zip.write(file_path,file_name)
+            #在内存中将文件写入压缩包，并重命名
+            zip.write(file_path,file_names)
+    #将内存中的文件写入到硬盘中
     zip.close()
 
     file_path = os.path.join(base_dir, 'Download', 'Alterzip')
@@ -753,7 +765,8 @@ def new_file_down(request):
                     break
 
     try:
-        file_name = 'Alter'
+        #压缩包文件名
+        zip_file_name = Alt_Hospital.objects.get(pk=hospitalid).hospitalname+'_'+str(hospitalid)+'_数据库变更压缩包'
         # 设置响应头
         # StreamingHttpResponse将文件内容进行流式传输，数据量大可以用这个方法
         response = FileResponse(file_iterator(file_path))
@@ -761,7 +774,8 @@ def new_file_down(request):
         response['Content-Type'] = 'application/octet-stream'
         # Content-Disposition就是当用户想把请求所得的内容存为一个文件的时候提供一个默认的文件名
         # response['Content-Disposition'] = 'attachment;filename="{}.zip"'.format(file_name).encode('utf-8').decode('ISO-8859-1')
-        response['Content-Disposition'] = 'attachment;filename="{}.zip"'.format(file_name).encode('utf-8').decode('ISO-8859-1')
+        #压缩包文件重新命名
+        response['Content-Disposition'] = 'attachment;filename="{}.zip"'.format(zip_file_name).encode('utf-8').decode('ISO-8859-1')
     except:
         # return HttpResponse("Sorry but Not Found the File")
         return resful.params_error(message="未找到文件！")

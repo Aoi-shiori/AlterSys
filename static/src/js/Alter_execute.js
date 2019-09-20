@@ -798,13 +798,14 @@ Execute.prototype.listenExportbumitEvent=function(){
                                                  console.log('返回的数据库：',result['data'][i])
                                             }
 
-
+                                            //判断数据库是否选中全部
                                             if(database !='0'){
                                                 var form = $('<form action="download/?dbname='+databasetext+'&hospitalid='+hospital+'&databaseid='+database+'" method="post">' +
                                                 '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
                                                 '</form>');
                                             }else {
-                                                var form = $('<form action="new_file_down/?dblist='+result['data']+'" method="post">' +
+                                                console.log('医院ID是：',hospital)
+                                                var form = $('<form action="new_file_down/?dblist='+result['data']+'&hospitalid='+hospital+'" method="post">' +
                                                 '<input type=\'hidden\' id=\'infos\' name=\'csrfmiddlewaretoken\' value=\'\' />' +
                                                 '</form>');
                                             }
