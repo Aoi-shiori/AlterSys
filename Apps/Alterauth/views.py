@@ -13,7 +13,7 @@ from Apps.Alterauth.decorators import Alter_login_required,Alter_superuser_requi
 from django.utils.decorators import method_decorator
 
 
-
+#用户登录视图
 #只接收post请求
 @require_POST
 def login_view(request):

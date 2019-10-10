@@ -25,7 +25,7 @@ import pytz
 #将时间标记为清醒的时间
 from django.utils.timezone import make_aware,timezone
 #用于模糊查询
-from django.db.models import Q
+from django.db.models import Q,F
 #用于拼接url
 from urllib import parse
 
@@ -357,7 +357,7 @@ def Export_file_Generate(request,export_datas,hospitalId,databaseid):
                 # 写头部说明信息
                 f.write('-- ----------------------------\n')
                 # f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(Alt_Hospital.objects.get(pk=hospitalId).hospitalname) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
-                f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(CtDepartment.objects.using('ct_department').get(pk=hospitalId).dept_name) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
+                f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(CtDepartment.objects.using('ct_department').get(pk=hospitalId,dept_id=F('branchcode')).dept_name) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
                 f.write('-- 提交时间:' + str(export_data.modifytime.strftime("%Y-%m-%d %H:%M:%S")) + '\n')
                 f.write('-- ----------------------------\n')
                 ##判断是否以;结尾
@@ -428,7 +428,9 @@ class export_alt_datas_view(View):
     def get(self,request):
         # 取到需要的元组
         #hospitaldict = Alt_Hospital.objects.all().values("pk", "hospitalname")
-        hospitaldict = CtDepartment.objects.using('ct_department').all().values("dept_id", "dept_name")
+        # hospitaldict = CtDepartment.objects.using('ct_department').all().values("dept_id", "dept_name")
+        hospitaldict = CtDepartment.objects.using('ct_department').filter(branchcode=F('dept_id'))
+        hospitaldict = hospitaldict.values("dept_id", "dept_name")
         # 转换列表
         hospitaldict = list(hospitaldict)
         # 取到需要的元组
@@ -468,7 +470,7 @@ class export_alt_datas_view(View):
 
             #获取当前请求医院创建时间
             # begintime=Alt_Hospital.objects.get(pk=hospitalId).begintime
-            begintime=CtDepartment.objects.using('ct_department').get(pk=hospitalId).modified_date
+            begintime=CtDepartment.objects.using('ct_department').get(pk=hospitalId,branchcode=hospitalId).modified_date
 
             # 过滤出提交时间在医院创建时间后的数据
             exportData = exportData.filter(modifytime__gt=begintime)
@@ -683,7 +685,11 @@ class export_alt_datas_view(View):
                     # return resful.params_error(message='当前条件无可导出数据！')
             print('有数据的数据库列表是：',dblist)
             # return resful.OK()
-            return resful.ajax_ok(data=dblist)
+            if dblist:
+
+                return resful.ajax_ok(data=dblist)
+            else:
+                return resful.params_error(message='无可下载文件或已经下载至最新！')
         else:
             return resful.params_error(message='必须选择医院！')
 
@@ -711,13 +717,13 @@ def new_file_down(request):
     hospitalid =request.GET.get('hospitalid')
     dblist =request.GET.get('dblist')
     dblist=[k for k in (dblist.split(','))]
-    for i in dblist:
-        print('数据库列是：',i)
+    print('已生产文件的数据库列表是：',dblist)
     dbnamelist = Alt_Database.objects.all().order_by('id')
     base_dir = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
     file_path1 = os.path.join(base_dir, 'Download')  # 保存zip文件的路径
     zippath = os.path.join(file_path1, 'Alterzip')
     zip = zipfile37.ZipFile(zippath, 'w')
+
     for db in dblist:
             #获取数据库名称
             dbname = Alt_Database.objects.get(pk=int(db)).dbname
@@ -747,7 +753,7 @@ def new_file_down(request):
     #将内存中的文件写入到硬盘中
     zip.close()
 
-    file_path = os.path.join(base_dir, 'Download', 'Alterzip')
+
 
     def file_iterator(file_path, chunk_size=512):
         """
@@ -766,7 +772,12 @@ def new_file_down(request):
 
     try:
         #压缩包文件名
-        zip_file_name = Alt_Hospital.objects.get(pk=hospitalid).hospitalname+'_'+str(hospitalid)+'_数据库变更压缩包'
+        # zip_file_name = Alt_Hospital.objects.get(pk=hospitalid).hospitalname+'_'+str(hospitalid)+'_数据库变更压缩包'
+        zip_file_name = CtDepartment.objects.using('ct_department').get(dept_id=hospitalid,branchcode=F('dept_id')).dept_name+'_'+str(hospitalid)+'_数据库变更压缩包'
+
+        file_path = os.path.join(base_dir, 'Download', 'Alterzip')
+        print('压缩文件地址是：',file_path)
+
         # 设置响应头
         # StreamingHttpResponse将文件内容进行流式传输，数据量大可以用这个方法
         response = FileResponse(file_iterator(file_path))
@@ -778,8 +789,9 @@ def new_file_down(request):
         response['Content-Disposition'] = 'attachment;filename="{}.zip"'.format(zip_file_name).encode('utf-8').decode('ISO-8859-1')
     except:
         # return HttpResponse("Sorry but Not Found the File")
-        return resful.params_error(message="未找到文件！")
-
+        # return resful.params_error(message="未找到文件！")
+        return HttpResponse("未找到文件！")
+    print(zip_file_name+'.zip文件下载成功!')
     return response
 
 
