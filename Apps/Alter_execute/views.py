@@ -358,7 +358,7 @@ def Export_file_Generate(request,export_datas,hospitalId,databaseid):
                 f.write('-- ----------------------------\n')
                 # f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(Alt_Hospital.objects.get(pk=hospitalId).hospitalname) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
                 f.write('-- 变更ID:' + str(export_data.alterid) +'\n-- 执行医院:' + str(CtDepartment.objects.using('ct_department').get(pk=hospitalId,dept_id=F('branchcode')).dept_name) + '\n-- 变更库:' + str(Alt_Database.objects.get(pk=export_data.databaseid).dbname) + '\n')
-                f.write('-- 提交时间:' + str(export_data.modifytime.strftime("%Y-%m-%d %H:%M:%S")) + '\n')
+                f.write('-- 修改时间:' + str(export_data.modifytime.strftime("%Y-%m-%d %H:%M:%S")) + '\n')
                 f.write('-- ----------------------------\n')
                 ##判断是否以;结尾
                 if export_data.altercontent.endswith(';'):
@@ -790,7 +790,7 @@ def new_file_down(request):
     except:
         # return HttpResponse("Sorry but Not Found the File")
         # return resful.params_error(message="未找到文件！")
-        return HttpResponse("未找到文件！")
+        return HttpResponse("未找到文件或从数据库中获取文件名失败！")
     print(zip_file_name+'.zip文件下载成功!')
     return response
 
